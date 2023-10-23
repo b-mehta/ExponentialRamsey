@@ -22,14 +22,14 @@ open Finset
 
 section Paley
 
-variable {F : Type _} [Field F] [Fintype F]
+variable {F : Type*} [Field F] [Fintype F]
 
 /-- If `F` is a finite field with `|F| = 3 mod 4`, the Paley graph on `F` has an edge `x ~ y` if
 `x - y` is a (non-zero) quadratic residue.
 The definition should only be used if `card F % 4 ≠ 3`. If this condition fails, the graph should
 be directed, but we define it here to just be `⊤` for convenience.
 -/
-def paleyGraph.{u} (F : Type _) [Field F] [Fintype F] : SimpleGraph F
+def paleyGraph.{u} (F : Type*) [Field F] [Fintype F] : SimpleGraph F
     where
   Adj x y := x ≠ y ∧ (IsSquare (x - y) ∨ card F % 4 = 3)
   symm := by
@@ -78,7 +78,7 @@ def rescale (x : F) (hx : IsSquare x) (hx' : x ≠ 0) : paleyGraph F ≃g paleyG
     have : a - b ≠ 0 := by rwa [sub_ne_zero]
     refine' or_congr_left _
     haveI : DecidableEq F := Classical.decEq F
-    rw [← quadraticChar_one_iff_isSquare hx'] at hx 
+    rw [← quadraticChar_one_iff_isSquare hx'] at hx
     rw [← not_iff_not, ← mul_sub, ← quadraticChar_neg_one_iff_not_isSquare, map_mul, hx, one_mul,
       quadraticChar_neg_one_iff_not_isSquare]
 
@@ -98,12 +98,12 @@ def selfCompl (hF : card F % 4 ≠ 3) (x : F) (hx : ¬IsSquare x) : paleyGraph F
       intro h
       have : a - b ≠ 0 := by rwa [sub_ne_zero]
       classical
-      rw [← quadraticChar_neg_one_iff_not_isSquare] at hx 
+      rw [← quadraticChar_neg_one_iff_not_isSquare] at hx
       rw [iff_not_comm, ← mul_sub, ← quadraticChar_neg_one_iff_not_isSquare, map_mul, hx, ←
         quadraticChar_one_iff_isSquare this, neg_mul, one_mul, neg_inj] }
 
 /-- The Paley graph on a finite field `F` viewed as a labelling of edges. -/
-def paleyLabelling (F : Type _) [Field F] [Fintype F] [DecidableEq F] :
+def paleyLabelling (F : Type*) [Field F] [Fintype F] [DecidableEq F] :
     TopEdgeLabelling F (Fin 2) :=
   toEdgeLabelling (paleyGraph F)
 
@@ -131,10 +131,10 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
   have : ∃ x : F, ¬IsSquare x := by
     apply FiniteField.exists_nonsquare
     rwa [Ne.def, FiniteField.even_card_iff_char_two, Nat.mod_two_ne_zero]
-  rw [exists_comm] at h 
-  simp only [is_ramsey_valid_iff_embedding_aux] at h 
-  rw [Fin.exists_fin_two, paley_labelling, to_edge_labelling_label_graph,
-    to_edge_labelling_label_graph_compl] at h 
+  rw [exists_comm] at h
+  simp only [is_ramsey_valid_iff_embedding_aux] at h
+  rw [Fin.exists_fin_two, paley_labelling, to_EdgeLabelling_labelGraph,
+    to_EdgeLabelling_labelGraph_compl] at h
   have : Nonempty ((⊤ : SimpleGraph (Fin (k + 2))) ↪g paley_graph F) :=
     by
     rcases h with (⟨⟨h⟩⟩ | h)
@@ -152,7 +152,7 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
       by
       suffices (paley_graph F).Adj (f 1) (f 0)
         by
-        rw [paley_graph_adj card_not_three_mod_four, hf, sub_zero] at this 
+        rw [paley_graph_adj card_not_three_mod_four, hf, sub_zero] at this
         exact this.2
       rw [f.map_rel_iff]
       simp only [top_adj, Ne.def, Fin.one_eq_zero_iff, Nat.succ_succ_ne_one, not_false_iff]
@@ -176,9 +176,9 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
     by
     obtain ⟨m, hm_card, hm₀, hm₁, hm₂⟩ := this
     rw [Set.pairwise_insert_of_symmetric_of_not_mem hss,
-      Set.pairwise_insert_of_symmetric_of_not_mem hss] at hm₂ 
+      Set.pairwise_insert_of_symmetric_of_not_mem hss] at hm₂
     simp only [mem_coe, Set.mem_insert_iff, sub_zero, forall_eq_or_imp, isSquare_one,
-      true_and_iff] at hm₂ 
+      true_and_iff] at hm₂
     · exact ⟨m, hm_card.symm, hm₀, hm₁, hm₂.2, hm₂.1.2, hm₂.1.1⟩
     · exact hm₁
     simp only [hm₀, Set.mem_insert_iff, zero_ne_one, mem_coe, or_self_iff, not_false_iff]
@@ -218,7 +218,7 @@ theorem paley_five_bound : ¬IsRamseyValid (ZMod 5) ![3, 3] :=
     by simpa only [Fin.exists_fin_two] using h
   have := no_paley_mono_set (by norm_num) this
   simp only [card_eq_one, ← exists_and_right, @exists_comm (Finset (ZMod 5)), exists_eq_left,
-    mem_singleton, forall_eq, coe_singleton, Set.pairwise_singleton, and_true_iff] at this 
+    mem_singleton, forall_eq, coe_singleton, Set.pairwise_singleton, and_true_iff] at this
   revert this
   decide
 
@@ -241,14 +241,14 @@ theorem paley_seventeen_bound : ¬IsRamseyValid (ZMod 17) ![4, 4] :=
   have := no_paley_mono_set (by norm_num) this
   simp only [card_eq_two, ← exists_and_right, and_assoc', Ne.def, exists_eq_left, mem_insert,
     @exists_comm (Finset (ZMod 17)), exists_and_left, mem_singleton, forall_eq_or_imp, forall_eq,
-    coe_pair, not_or, @eq_comm (ZMod 17) 0, @eq_comm (ZMod 17) 1] at this 
+    coe_pair, not_or, @eq_comm (ZMod 17) 0, @eq_comm (ZMod 17) 1] at this
   obtain ⟨a, b, hab, ha₀, hb₀, ha₁, hb₁, ha, hb, ha₁', hb₁', h⟩ := this
-  rw [Set.pairwise_insert_of_symmetric_of_not_mem] at h 
+  rw [Set.pairwise_insert_of_symmetric_of_not_mem] at h
   rotate_left
   · intro x y h
     exact symmetric_isSquare (by norm_num) h
   · exact hab
-  simp only [Set.pairwise_singleton, Set.mem_singleton_iff, forall_eq, true_and_iff] at h 
+  simp only [Set.pairwise_singleton, Set.mem_singleton_iff, forall_eq, true_and_iff] at h
   have : a = 2 ∨ a = 9 ∨ a = 16 := paley_seventeen_helper a ha₀ ha₁ ha ha₁'
   have : b = 2 ∨ b = 9 ∨ b = 16 := paley_seventeen_helper b hb₀ hb₁ hb hb₁'
   clear ha₀ ha₁ ha ha₁' hb₀ hb₁ hb hb₁'
@@ -302,8 +302,8 @@ theorem ramseyNumber_three_four : ramseyNumber ![3, 4] = 9 :=
     simp only [Nat.succ_sub_succ_eq_sub, tsub_zero]
     rw [ramsey_number_pair_swap 4]
     linarith only [h]
-  rw [diagonal_ramsey_four] at this 
-  norm_num at this 
+  rw [diagonal_ramsey_four] at this
+  norm_num at this
 
 section
 
@@ -380,13 +380,13 @@ theorem clebsch_bound : ¬IsRamseyValid (Fin 4 → ZMod 2) ![3, 3, 3] :=
       Matrix.cons_vec_bit0_eq_alt0, Matrix.cons_vecAppend, Matrix.empty_vecAppend,
       Matrix.cons_vecAlt0]
   clear hc
-  rw [card_eq_three] at this 
+  rw [card_eq_three] at this
   obtain ⟨x, y, z, hxy, hxz, hyz, rfl⟩ := this
   have hxyz : x ∉ ({y, z} : Set (Fin 4 → ZMod 2)) := by simp [hxy, hxz]
   have hyz' : y ∉ ({z} : Set (Fin 4 → ZMod 2)) := by simp [hyz]
-  simp only [coe_insert, coe_pair, monochromatic_of_insert hxyz, monochromatic_of_insert hyz',
-    Set.mem_singleton_iff, Set.mem_insert_iff, monochromatic_of_singleton, true_and_iff,
-    clebsch_colouring, mk_get] at hm 
+  simp only [coe_insert, coe_pair, MonochromaticOf_insert hxyz, MonochromaticOf_insert hyz',
+    Set.mem_singleton_iff, Set.mem_insert_iff, MonochromaticOf_singleton, true_and_iff,
+    clebsch_colouring, mk_get] at hm
   have hyz'' := parts_pair_get_spec' (hm.1 _ rfl)
   have hxy'' := parts_pair_get_spec' (hm.2 _ (Or.inl rfl))
   have hxz'' := parts_pair_get_spec' (hm.2 _ (Or.inr rfl))
@@ -408,7 +408,7 @@ theorem ramseyNumber_three_three_three : ramseyNumber ![3, 3, 3] = 17 :=
     rw [this, ramsey_number_cons_two, ← diagonal_ramsey, diagonal_ramsey_three]
   rw [← not_lt, Nat.lt_succ_iff]
   have := clebsch_bound
-  rw [← ramsey_number_le_iff, Fintype.card_fun, ZMod.card, Fintype.card_fin] at this 
+  rw [← ramsey_number_le_iff, Fintype.card_fun, ZMod.card, Fintype.card_fin] at this
   exact this
 
 end SimpleGraph

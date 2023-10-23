@@ -16,7 +16,7 @@ import Prereq.Mathlib.Combinatorics.SimpleGraph.Basic
 
 namespace SimpleGraph
 
-variable {V W : Type _} {G : SimpleGraph V} {H : SimpleGraph W} {n : ℕ}
+variable {V W : Type*} {G : SimpleGraph V} {H : SimpleGraph W} {n : ℕ}
 
 theorem not_cliqueFree_iff' (n : ℕ) : ¬G.CliqueFree n ↔ Nonempty ((⊤ : SimpleGraph (Fin n)) →g G) :=
   by rw [not_clique_free_iff, SimpleGraph.topHomGraphEquiv.nonempty_congr]

@@ -41,7 +41,7 @@ theorem convexOn_sub_const {s : Set ℝ} {c : ℝ} (hs : Convex ℝ s) : ConvexO
 
 theorem Convex.union {s t : Set ℝ} (hs : Convex ℝ s) (ht : Convex ℝ t) (hst : ¬Disjoint s t) :
     Convex ℝ (s ∪ t) := by
-  rw [Set.not_disjoint_iff] at hst 
+  rw [Set.not_disjoint_iff] at hst
   obtain ⟨a, has, hat⟩ := hst
   rw [convex_iff_ordConnected, Set.ordConnected_iff_uIcc_subset]
   rintro x (hx | hx) y (hy | hy)
@@ -82,7 +82,7 @@ theorem ConvexOn.congr' {s : Set ℝ} {f g : ℝ → ℝ} (hf : ConvexOn ℝ s f
   exact hf.2 hx hy ha hb hab
 
 /-- the descending factorial but with a more general setting -/
-def descFactorial {α : Type _} [One α] [Mul α] [Sub α] [NatCast α] (x : α) : ℕ → α
+def descFactorial {α : Type*} [One α] [Mul α] [Sub α] [NatCast α] (x : α) : ℕ → α
   | 0 => 1
   | k + 1 => (x - k) * descFactorial k
 
@@ -225,7 +225,7 @@ theorem myGeneralizedBinomial_convex {k : ℕ} (hk : k ≠ 0) :
 
 open scoped BigOperators ExponentialRamsey
 
-theorem my_thing {α : Type _} {s : Finset α} (f : α → ℕ) (b : ℕ) (hb : b ≠ 0) :
+theorem my_thing {α : Type*} {s : Finset α} (f : α → ℕ) (b : ℕ) (hb : b ≠ 0) :
     myGeneralizedBinomial ((∑ i in s, f i) / s.card) b * s.card ≤ ∑ i in s, (f i).choose b :=
   by
   simp only [div_eq_inv_mul, Finset.mul_sum]
@@ -292,7 +292,7 @@ theorem four_two_aux' {m b : ℕ} {σ : ℝ} (hb : (b : ℝ) ≤ σ * m / 2) (h�
   intro i hi
   rw [mul_one_sub, mul_div_assoc', mul_div_mul_left _ _ hσ₀.ne', sub_div']
   · ring_nf
-  rw [Finset.mem_range] at hi 
+  rw [Finset.mem_range] at hi
   have hb' : 0 < b := pos_of_gt hi
   have : (i : ℝ) < b := by rwa [Nat.cast_lt]
   suffices (i : ℝ) < m by linarith only [this]
@@ -302,7 +302,7 @@ theorem four_two_aux' {m b : ℕ} {σ : ℝ} (hb : (b : ℝ) ≤ σ * m / 2) (h�
 theorem four_two_aux'' {m b i : ℕ} {σ : ℝ} (hb : (b : ℝ) ≤ σ * m / 2) (hσ₀ : 0 ≤ σ) (hσ₁ : σ ≤ 1)
     (hi : i ∈ Finset.range b) : (1 : ℝ) - i / (σ * m) ≤ 1 - (1 - σ) * i / (σ * (m - i)) :=
   by
-  rw [Finset.mem_range] at hi 
+  rw [Finset.mem_range] at hi
   have : (i : ℝ) < m := by
     rw [Nat.cast_lt]
     refine' hi.trans_le (b_le_m hb hσ₀ hσ₁)
@@ -324,7 +324,7 @@ theorem exp_thing {x : ℝ} (hx₀ : 0 ≤ x) (hx₁ : x ≤ 1 / 2) : Real.exp (
     linarith only [hx₁]
   have := convexOn_exp.2 (Set.mem_univ (-1)) (Set.mem_univ 0) ha ha' (by simp)
   simp only [smul_eq_mul, mul_neg, ← neg_mul, mul_one, MulZeroClass.mul_zero, add_zero,
-    Real.exp_zero, a] at this 
+    Real.exp_zero, a] at this
   refine' this.trans _
   rw [add_comm, sub_add, sub_le_sub_iff_left, ← mul_one_sub, mul_right_comm]
   refine' le_mul_of_one_le_left hx₀ _
@@ -343,7 +343,7 @@ theorem four_two_aux''' {m b i : ℕ} {σ : ℝ} (hb : (b : ℝ) ≤ σ * m / 2)
   rw [mul_comm, mul_one_div]
   refine' hb.trans' _
   rw [Nat.cast_le]
-  rw [Finset.mem_range] at hi 
+  rw [Finset.mem_range] at hi
   exact hi.le
 
 theorem four_two_aux'''' {m b : ℕ} {σ : ℝ} (hb : (b : ℝ) ≤ σ * m / 2) (hσ₀ : 0 ≤ σ) (hσ₁ : σ ≤ 1) :
@@ -378,7 +378,7 @@ open Filter Finset Real
 
 namespace SimpleGraph
 
-variable {V : Type _} [DecidableEq V] {χ : TopEdgeLabelling V (Fin 2)}
+variable {V : Type*} [DecidableEq V] {χ : TopEdgeLabelling V (Fin 2)}
 
 theorem four_one_part_one [Fintype V] (μ : ℝ) (l k : ℕ) (C : BookConfig χ)
     (hC : ramseyNumber ![k, ⌈(l : ℝ) ^ (2 / 3 : ℝ)⌉₊] ≤ C.numBigBlues μ)
@@ -390,11 +390,11 @@ theorem four_one_part_one [Fintype V] (μ : ℝ) (l k : ℕ) (C : BookConfig χ)
   by
   let W := C.X.filter fun x => μ * C.X.card ≤ ((blue_neighbors χ) x ∩ C.X).card
   have : ramsey_number ![k, ⌈(l : ℝ) ^ (2 / 3 : ℝ)⌉₊] ≤ W.card := hC
-  rw [← Fintype.card_coe W, ramsey_number_le_iff, is_ramsey_valid_iff_eq] at this 
-  obtain ⟨U, hU⟩ := this (χ.pullback (Function.Embedding.subtype _))
-  rw [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] at hU 
+  rw [← Fintype.card_coe W, ramsey_number_le_iff, is_ramsey_valid_iff_eq] at this
+  obtain ⟨U, hU⟩ := this (χ.pullback (Function.Embedding.subType*))
+  rw [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] at hU
   replace hU := hU.resolve_left _
-  · refine' ⟨U.map (Function.Embedding.subtype _), hU.1.map, _, _⟩
+  · refine' ⟨U.map (Function.Embedding.subType*), hU.1.map, _, _⟩
     · rw [card_map, hU.2]
     simp only [Finset.subset_iff, Finset.mem_map, mem_filter, Function.Embedding.coe_subtype,
       forall_exists_index, exists_prop, Finset.exists_coe, Subtype.coe_mk, exists_and_right,
@@ -405,7 +405,7 @@ theorem four_one_part_one [Fintype V] (μ : ℝ) (l k : ℕ) (C : BookConfig χ)
     · rintro x ⟨hx₁, hx₂⟩ hx
       exact hx₂
   rintro ⟨hU', hU''⟩
-  refine' hR ⟨U.map (Function.Embedding.subtype _), _, _⟩
+  refine' hR ⟨U.map (Function.Embedding.subType*), _, _⟩
   · exact hU'.map
   rw [card_map, hU'']
 
@@ -485,15 +485,15 @@ theorem four_one_part_three (μ : ℝ) {k l : ℕ} {C : BookConfig χ} {U : Fins
     refine' mul_le_of_le_one_right (half_pos hk₀).le _
     rwa [sub_le_self_iff]
   refine' this.trans _
-  rw [ramsey_number_pair_swap] at hX 
+  rw [ramsey_number_pair_swap] at hX
   replace hX := (mul_sub_two_le_ramsey_number hm₃).trans hX
-  rw [← @Nat.cast_le ℝ] at hX 
+  rw [← @Nat.cast_le ℝ] at hX
   refine' hX.trans' _
   rw [Nat.cast_mul, Nat.cast_sub, Nat.cast_two]
   swap
   · exact hk₃.trans' (by norm_num1)
   refine' mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)
-  rw [← @Nat.cast_le ℝ, Nat.cast_bit0, Nat.cast_bit1, Nat.cast_one] at hk₆ 
+  rw [← @Nat.cast_le ℝ, Nat.cast_bit0, Nat.cast_bit1, Nat.cast_one] at hk₆
   linarith only [hk₆]
 
 variable [Fintype V] {k l : ℕ} {C : BookConfig χ} {U : Finset V} {μ₀ : ℝ}
@@ -554,7 +554,7 @@ theorem four_one_part_four (hμ₀ : 0 < μ₀) :
     ((tendsto_rpow_atTop h3).comp t).eventually_ge_atTop (4 * 2 / μ₀), mu_div_two_le_sigma hμ₀,
     eventually_gt_at_top 0] with l hl hl'' hl' hl₀ k hlk μ hμ σ hσ
   specialize hl' k hlk μ hμ σ hσ
-  dsimp at hl hl'' 
+  dsimp at hl hl''
   rw [mul_div_assoc]
   refine' (mul_le_mul_of_nonneg_right hl' (by positivity)).trans' _
   rw [div_mul_div_comm, ← bit0_eq_two_mul]
@@ -578,9 +578,9 @@ theorem monochromaticBetween_commonBlues {S : Finset V} :
     χ.MonochromaticBetween S (commonBlues χ S) 1 :=
   by
   intro x hx y hy h
-  simp only [common_blues, mem_filter, mem_univ, true_and_iff, exists_prop] at hy 
+  simp only [common_blues, mem_filter, mem_univ, true_and_iff, exists_prop] at hy
   have := hy x hx
-  rw [mem_col_neighbors] at this 
+  rw [mem_col_neighbors] at this
   obtain ⟨h, z⟩ := this
   exact z
 
@@ -619,7 +619,7 @@ theorem four_one_part_six (χ : TopEdgeLabelling V (Fin 2)) {m b : ℕ} {X U : F
   refine' (my_thing _ _ hb).trans' _
   rw [← col_density_mul, ← hσ', hU]
 
-theorem four_one_part_seven {V : Type _} [DecidableEq V] {m b : ℕ} {X U : Finset V} {μ σ : ℝ}
+theorem four_one_part_seven {V : Type*} [DecidableEq V] {m b : ℕ} {X U : Finset V} {μ σ : ℝ}
     (hσ : (b : ℝ) ≤ σ * m / 2) (hσ₀ : 0 < σ) (hσ₁ : σ ≤ 1) (hμ₀ : 0 < μ) (hσ' : μ - 2 / k ≤ σ)
     (hk : 6 ≤ k) (hm : 3 ≤ m) (hkμ : 4 / μ ≤ k) (hUX : U ⊆ X) (hU : U.card = m)
     (hX : ramseyNumber ![k, m] ≤ X.card) :
@@ -636,7 +636,7 @@ theorem four_one_part_seven {V : Type _} [DecidableEq V] {m b : ℕ} {X U : Fins
     norm_num1
   have h₁ : 3 / 4 * (X.card : ℝ) ≤ (X \ U).card :=
     by
-    rw [← @Nat.cast_le ℝ, Nat.cast_mul, Nat.cast_bit0, Nat.cast_two] at this 
+    rw [← @Nat.cast_le ℝ, Nat.cast_mul, Nat.cast_bit0, Nat.cast_two] at this
     rw [cast_card_sdiff hUX, hU]
     linarith only [this]
   have : μ * (1 - 2 / (μ * k)) ≤ σ := by
@@ -675,7 +675,7 @@ theorem four_one_part_eight {μ : ℝ} {m b : ℕ} {U X : Finset V} (hU : U.card
     ∑ i : Finset V in powerset_len b U, μ ^ b * X.card / 2 ≤ μ ^ b * X.card / 2 * m.choose b := by
     rw [sum_const, card_powerset_len, hU, nsmul_eq_mul, mul_comm]
   obtain ⟨S, hS, hS'⟩ := exists_le_of_sum_le this (h.trans' h')
-  rw [mem_powerset_len] at hS 
+  rw [mem_powerset_len] at hS
   exact ⟨S, hS.1, hS.2, hS'⟩
 
 theorem four_one_part_nine_aux :
@@ -734,7 +734,7 @@ theorem four_one_part_nine (hμ₀ : 0 < μ₀) :
     rwa [inv_div]
   refine' (add_le_add_right this _).trans _
   have h' := ceil_le_two_mul hl
-  dsimp at h' 
+  dsimp at h'
   have : (b ^ 2 : ℝ) / m ≤ 4 * l ^ (-(2 / 3 - (1 / 4 : ℝ) * 2)) :=
     by
     rw [neg_sub, rpow_sub hl'', rpow_mul (Nat.cast_nonneg _), rpow_two, mul_div_assoc']
@@ -909,7 +909,7 @@ theorem four_three_aux' (hμ₀ : 0 < μ₀) :
   · rw [range_zero, inter_empty, card_empty, Nat.cast_zero, MulZeroClass.mul_zero]
     exact Nat.cast_nonneg _
   rw [range_succ]
-  rw [Nat.succ_le_iff] at hi 
+  rw [Nat.succ_le_iff] at hi
   specialize ih hi.le
   by_cases i ∈ big_blue_steps μ k l init
   swap
@@ -923,7 +923,7 @@ theorem four_three_aux' (hμ₀ : 0 < μ₀) :
   rw [big_blue_applied h, book_config.big_blue_step_B, Nat.cast_add_one, mul_add_one,
     card_disjoint_union, Nat.cast_add]
   · refine' add_le_add ih _
-    rw [big_blue_steps, mem_filter] at h 
+    rw [big_blue_steps, mem_filter] at h
     exact hl k hlk μ hμ n χ hχ _ h.2.2
   refine' Disjoint.mono_right book_config.get_book_fst_subset _
   exact (algorithm μ k l init i).hXB.symm
@@ -943,15 +943,15 @@ theorem four_three (hμ₀ : 0 < μ₀) :
   by
   filter_upwards [four_three_aux' hμ₀, eventually_gt_at_top 0] with l hl hl₀ k hlk μ hμ n χ hχ init
   simp only [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-    exists_or, not_or] at hχ 
+    exists_or, not_or] at hχ
   obtain ⟨hχr, hχb⟩ := hχ
   specialize hl k hlk μ hμ n χ hχr init (final_step μ k l init) le_rfl
   have : big_blue_steps μ k l init ∩ range (final_step μ k l init) = big_blue_steps μ k l init :=
     by
     rw [inter_eq_left_iff_subset, big_blue_steps]
     exact filter_subset _ _
-  rw [this] at hl 
-  push_neg at hχb 
+  rw [this] at hl
+  push_neg at hχb
   by_contra'
   refine' ((mul_le_mul_of_nonneg_left this.le (by positivity)).trans hl).not_lt _
   rw [← rpow_add, div_add_div_same, add_comm, bit1, add_assoc, ← bit0, ← bit0, div_self, rpow_one,
@@ -968,7 +968,7 @@ theorem four_four_red_aux {μ : ℝ} {k l : ℕ} (ini : BookConfig χ) (i : ℕ)
   · rw [range_zero, inter_empty, card_empty]
     simp
   rw [range_succ]
-  rw [Nat.succ_le_iff] at hi 
+  rw [Nat.succ_le_iff] at hi
   specialize ih hi.le
   by_cases i ∈ red_steps μ k l ini
   swap
@@ -991,7 +991,7 @@ theorem four_four_blue_density_aux {μ : ℝ} {k l : ℕ} (hk : k ≠ 0) (hl : l
   · rw [range_zero, inter_empty, card_empty]
     simp
   rw [range_succ]
-  rw [Nat.succ_le_iff] at hi 
+  rw [Nat.succ_le_iff] at hi
   specialize ih hi.le
   by_cases i ∈ big_blue_steps μ k l ini ∪ density_steps μ k l ini
   swap
@@ -1001,13 +1001,13 @@ theorem four_four_blue_density_aux {μ : ℝ} {k l : ℕ} (hk : k ≠ 0) (hl : l
   swap
   · simp
   refine' (add_le_add_right ih 1).trans _
-  rw [mem_union] at h 
+  rw [mem_union] at h
   cases h
   · rw [big_blue_applied h, book_config.big_blue_step_B, card_disjoint_union, add_le_add_iff_left]
     swap
     · refine' Disjoint.mono_right book_config.get_book_fst_subset _
       exact (algorithm μ k l ini i).hXB.symm
-    rw [big_blue_steps, mem_filter] at h 
+    rw [big_blue_steps, mem_filter] at h
     exact book_config.one_le_card_get_book_fst (book_config.get_book_condition hk hl h.2.2)
   rw [density_applied h, book_config.density_boost_step_basic_B, card_insert_of_not_mem]
   refine' Finset.disjoint_left.1 (algorithm μ k l ini i).hXB _
@@ -1021,7 +1021,7 @@ theorem t_le_a_card (μ : ℝ) (k l : ℕ) (ini : BookConfig χ) :
     by
     rw [inter_eq_left_iff_subset]
     exact red_steps_subset_red_or_density_steps.trans (filter_subset _ _)
-  rwa [this] at hl 
+  rwa [this] at hl
 
 -- observation 4.4
 theorem four_four_red (μ : ℝ) {k l : ℕ}
@@ -1030,7 +1030,7 @@ theorem four_four_red (μ : ℝ) {k l : ℕ}
   by
   have hl := t_le_A_card μ k l ini
   simp only [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-    exists_or, not_or, not_exists, not_and, not_le] at h 
+    exists_or, not_or, not_exists, not_and, not_le] at h
   exact hl.trans (h.1 _ (end_state μ k l ini).red_a).le
 
 -- observation 4.4
@@ -1047,7 +1047,7 @@ theorem four_four_blue_density (μ : ℝ) {k l : ℕ} (hk : k ≠ 0) (hl : l ≠
     exact ⟨filter_subset _ _, density_steps_subset_red_or_density_steps.trans (filter_subset _ _)⟩
   rw [← card_disjoint_union, ← this]
   · simp only [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-      exists_or, not_or, not_exists, not_and, not_le] at h 
+      exists_or, not_or, not_exists, not_and, not_le] at h
     exact hl.trans (h.2 _ (end_state μ k l ini).blue_b).le
   refine' big_blue_steps_disjoint_red_or_density_steps.mono_right _
   exact density_steps_subset_red_or_density_steps

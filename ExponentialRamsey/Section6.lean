@@ -18,7 +18,7 @@ open scoped BigOperators ExponentialRamsey
 
 open Filter Finset Real
 
-variable {V : Type _} [DecidableEq V] [Fintype V] {χ : TopEdgeLabelling V (Fin 2)}
+variable {V : Type*} [DecidableEq V] [Fintype V] {χ : TopEdgeLabelling V (Fin 2)}
 
 variable {k l : ℕ} {ini : BookConfig χ} {i : ℕ}
 
@@ -88,7 +88,7 @@ theorem six_four_red {μ : ℝ} (hi : i ∈ redSteps μ k l ini) :
   rw [red_applied hi, book_config.red_step_basic_X, book_config.red_step_basic_Y]
   have hi' := hi
   simp only [red_steps, mem_image, mem_filter, exists_prop, Subtype.coe_mk, mem_attach,
-    true_and_iff, Subtype.exists, exists_and_right, exists_eq_right] at hi' 
+    true_and_iff, Subtype.exists, exists_and_right, exists_eq_right] at hi'
   obtain ⟨hx, hx'⟩ := hi'
   exact hx'
 
@@ -118,7 +118,7 @@ theorem six_four_density' (μ₁ p₀ : ℝ) (hμ₁ : μ₁ < 1) (hp₀ : 0 < p
                   ∀ ini : BookConfig χ, p₀ ≤ ini.p → ∀ i : ℕ, i ∈ 𝒮 → p_ i ≤ p_ (i + 1) :=
   six_four_density μ₁ p₀ hμ₁ hp₀
 
-theorem increase_average {α : Type _} {s : Finset α} {f : α → ℝ} {k : ℝ}
+theorem increase_average {α : Type*} {s : Finset α} {f : α → ℝ} {k : ℝ}
     (hk : k ≤ (∑ i in s, f i) / s.card) :
     (∑ i in s, f i) / s.card ≤
       (∑ i in s.filterₓ fun j => k ≤ f j, f i) / (s.filterₓ fun j => k ≤ f j).card :=
@@ -131,8 +131,8 @@ theorem increase_average {α : Type _} {s : Finset α} {f : α → ℝ} {k : ℝ
     by
     rw [nonempty_iff_ne_empty, Ne.def, filter_eq_empty_iff]
     intro h
-    simp only [not_le] at h 
-    rw [le_div_iff' hs'] at hk 
+    simp only [not_le] at h
+    rw [le_div_iff' hs'] at hk
     refine' (sum_lt_sum_of_nonempty hs h).not_le _
     rwa [sum_const, nsmul_eq_mul]
   have hs'' : (0 : ℝ) < (s.filter fun j => k ≤ f j).card := by rwa [Nat.cast_pos, card_pos]
@@ -174,7 +174,7 @@ theorem six_four_degree {μ : ℝ} (hi : i ∈ degreeSteps μ k l ini) : p_ i �
     rw [le_div_iff]
     rw [Nat.cast_pos, card_pos]
     refine' Y_nonempty _
-    rw [degree_steps, mem_filter, mem_range] at hi 
+    rw [degree_steps, mem_filter, mem_range] at hi
     exact hi.1
   rw [this]
   rw [col_density_eq_average]
@@ -182,7 +182,7 @@ theorem six_four_degree {μ : ℝ} (hi : i ∈ degreeSteps μ k l ini) : p_ i �
   rw [← col_density_eq_average, book_config.p, sub_le_self_iff]
   exact mul_nonneg (rpow_nonneg_of_nonneg (Nat.cast_nonneg _) _) (α_nonneg _ _)
 
-theorem BookConfig.getBook_snd_nonempty {V : Type _} [DecidableEq V] {χ} {μ : ℝ} (hμ₀ : 0 < μ)
+theorem BookConfig.getBook_snd_nonempty {V : Type*} [DecidableEq V] {χ} {μ : ℝ} (hμ₀ : 0 < μ)
     {X : Finset V} (hX : X.Nonempty) : (BookConfig.getBook χ μ X).2.Nonempty :=
   by
   rw [← card_pos, ← @Nat.cast_pos ℝ]
@@ -197,11 +197,11 @@ theorem six_four_blue' {μ : ℝ} (hμ₀ : 0 < μ) (hi : i + 1 ∈ bigBlueSteps
   rw [big_blue_applied hi, book_config.big_blue_step_X, book_config.big_blue_step_Y]
   have h : i + 1 < final_step μ k l ini :=
     by
-    rw [big_blue_steps, mem_filter, mem_range] at hi 
+    rw [big_blue_steps, mem_filter, mem_range] at hi
     exact hi.1
   have hi' : i ∈ degree_steps μ k l ini :=
     by
-    rw [big_blue_steps, mem_filter, Nat.even_add_one, Classical.not_not] at hi 
+    rw [big_blue_steps, mem_filter, Nat.even_add_one, Classical.not_not] at hi
     rw [degree_steps, mem_filter, mem_range]
     exact ⟨h.trans_le' (Nat.le_succ _), hi.2.1⟩
   rw [degree_regularisation_applied hi', book_config.degree_regularisation_step_Y, ←
@@ -217,7 +217,7 @@ theorem six_four_blue' {μ : ℝ} (hμ₀ : 0 < μ) (hi : i + 1 ∈ bigBlueSteps
     intro x hx
     have : x ∈ (algorithm μ k l ini (i + 1)).X := book_config.get_book_snd_subset hx
     rw [degree_regularisation_applied hi', book_config.degree_regularisation_step_X, mem_filter] at
-      this 
+      this
     rw [le_div_iff]
     · exact this.2
     rw [Nat.cast_pos, card_pos]
@@ -236,7 +236,7 @@ theorem six_four_blue {μ : ℝ} (hμ₀ : 0 < μ) (hi : i ∈ bigBlueSteps μ k
       (algorithm μ k l ini (i + 1)).p :=
   by
   have hi' := hi
-  rw [big_blue_steps, mem_filter, ← Nat.odd_iff_not_even, odd_iff_exists_bit1] at hi 
+  rw [big_blue_steps, mem_filter, ← Nat.odd_iff_not_even, odd_iff_exists_bit1] at hi
   obtain ⟨b, rfl⟩ := hi.2.1
   refine' six_four_blue' hμ₀ _
   rw [bit1, Nat.add_sub_cancel]
@@ -290,7 +290,7 @@ theorem six_five_red_aux : ∀ᶠ x : ℝ in 𝓝[≥] 0, x * (1 + x) ^ 2 + 1 �
   by
   rw [eventually_nhdsWithin_iff]
   filter_upwards [eventually_le_nhds (show (0 : ℝ) < 1 / 2 by norm_num)] with x hx₂ hx₀
-  rw [Set.mem_Ici] at hx₀ 
+  rw [Set.mem_Ici] at hx₀
   rw [← sub_nonpos]
   ring_nf
   refine' mul_nonpos_of_nonpos_of_nonneg _ hx₀
@@ -332,14 +332,14 @@ theorem six_five_red :
   set h := height k ini.p p
   specialize hk' k hlk
   cases' lt_or_le h 4 with hh hh
-  · rw [Nat.lt_succ_iff] at hh 
+  · rw [Nat.lt_succ_iff] at hh
     rw [tsub_le_iff_right]
     refine' hh.trans _
     rw [Nat.succ_le_succ_iff, Nat.succ_le_succ_iff]
     exact one_le_height
   suffices ht : q_function k ini.p (h - 3) < (algorithm μ k l ini (i + 1)).p
   · by_contra' ht'
-    rw [lt_tsub_iff_right, Nat.lt_iff_add_one_le, add_assoc, ← bit1, ← le_tsub_iff_right] at ht' 
+    rw [lt_tsub_iff_right, Nat.lt_iff_add_one_le, add_assoc, ← bit1, ← le_tsub_iff_right] at ht'
     swap
     · exact hh.trans' (Nat.le_succ _)
     have := (q_increasing ht').trans_lt ht
@@ -369,7 +369,7 @@ theorem general_convex_thing {a x : ℝ} (hx : 0 ≤ x) (hxa : x ≤ a) (ha : a 
     exact div_le_one_of_le hxa (hx.trans hxa)
   have := convexOn_exp.2 (Set.mem_univ 0) (Set.mem_univ a) h₂ h₁ (by simp)
   simp only [ha, smul_eq_mul, MulZeroClass.mul_zero, div_mul_cancel, Ne.def, not_false_iff,
-    zero_add, Real.exp_zero, mul_one] at this 
+    zero_add, Real.exp_zero, mul_one] at this
   refine' this.trans_eq _
   ring_nf
 
@@ -382,7 +382,7 @@ theorem general_convex_thing' {a x : ℝ} (hx : x ≤ 0) (hxa : a ≤ x) (ha : a
     exact lt_of_le_of_ne (hxa.trans hx) ha
   have := convexOn_exp.2 (Set.mem_univ 0) (Set.mem_univ a) h₂ h₁ (by simp)
   simp only [ha, smul_eq_mul, MulZeroClass.mul_zero, div_mul_cancel, Ne.def, not_false_iff,
-    zero_add, Real.exp_zero, mul_one] at this 
+    zero_add, Real.exp_zero, mul_one] at this
   refine' this.trans_eq _
   ring_nf
 
@@ -423,7 +423,7 @@ theorem six_five_blue_aux : ∀ᶠ x : ℝ in 𝓝 0, 0 < x → (1 + x ^ 2) ^ (-
   by
   have h₁ := tendsto_inv_zero_at_top.const_mul_at_top (show (0 : ℝ) < 2 by norm_num)
   have h₂ := h₁.eventually (eventually_le_floor (7 / 8) (by norm_num))
-  rw [eventually_nhdsWithin_iff] at h₂ 
+  rw [eventually_nhdsWithin_iff] at h₂
   filter_upwards [h₂, eventually_lt_nhds (show (0 : ℝ) < 1 by norm_num),
     eventually_le_nhds (show (0 : ℝ) < 2 / 7 by norm_num)] with x hε hε₁ hε₂₇ hε₀
   specialize hε hε₀
@@ -495,7 +495,7 @@ theorem six_five_blue (μ₀ : ℝ) (hμ₀ : 0 < μ₀) :
   suffices ht :
     q_function k ini.p (h - ⌊2 * (k : ℝ) ^ (1 / 8 : ℝ)⌋₊ - 1) < (algorithm μ k l ini (i + 1)).p
   · by_contra' ht'
-    rw [Nat.lt_iff_add_one_le, ← le_tsub_iff_right z] at ht' 
+    rw [Nat.lt_iff_add_one_le, ← le_tsub_iff_right z] at ht'
     have := (q_increasing ht').trans_lt ht
     exact this.not_le (height_spec hk₀.ne')
   refine' (six_four_blue (hμ₀.trans_le hμl) hi).trans_lt' _
@@ -537,7 +537,7 @@ noncomputable def decreaseSteps (μ : ℝ) (k l : ℕ) (ini : BookConfig χ) : F
 theorem sub_one_mem_degree {μ : ℝ} {i : ℕ} (hi : i < finalStep μ k l ini) (hi' : Odd i) :
     1 ≤ i ∧ i - 1 ∈ degreeSteps μ k l ini :=
   by
-  rw [odd_iff_exists_bit1] at hi' 
+  rw [odd_iff_exists_bit1] at hi'
   obtain ⟨i, rfl⟩ := hi'
   refine' ⟨by simp, _⟩
   rw [bit1, Nat.add_sub_cancel, degree_steps, mem_filter, mem_range]
@@ -546,13 +546,13 @@ theorem sub_one_mem_degree {μ : ℝ} {i : ℕ} (hi : i < finalStep μ k l ini) 
 theorem bigBlueSteps_sub_one_mem_degree {μ : ℝ} {i : ℕ} (hi : i ∈ bigBlueSteps μ k l ini) :
     1 ≤ i ∧ i - 1 ∈ degreeSteps μ k l ini :=
   by
-  rw [big_blue_steps, mem_filter, mem_range, ← Nat.odd_iff_not_even] at hi 
+  rw [big_blue_steps, mem_filter, mem_range, ← Nat.odd_iff_not_even] at hi
   exact sub_one_mem_degree hi.1 hi.2.1
 
 theorem redOrDensitySteps_sub_one_mem_degree {μ : ℝ} {i : ℕ}
     (hi : i ∈ redOrDensitySteps μ k l ini) : 1 ≤ i ∧ i - 1 ∈ degreeSteps μ k l ini :=
   by
-  rw [red_or_density_steps, mem_filter, mem_range, ← Nat.odd_iff_not_even] at hi 
+  rw [red_or_density_steps, mem_filter, mem_range, ← Nat.odd_iff_not_even] at hi
   exact sub_one_mem_degree hi.1 hi.2.1
 
 theorem redSteps_sub_one_mem_degree {μ : ℝ} {i : ℕ} (hi : i ∈ redSteps μ k l ini) :
@@ -599,13 +599,13 @@ theorem six_three_blue (μ₀ : ℝ) (hμ₀ : 0 < μ₀) :
   have : ∀ i ∈ BZ, (algorithm μ k l ini (i - 1)).p - (algorithm μ k l ini (i + 1)).p ≤ 1 / k :=
     by
     intro i hi
-    rw [mem_filter] at hi 
+    rw [mem_filter] at hi
     have : height k ini.p (algorithm μ k l ini (i - 1)).p = 1 :=
       by
       refine' height_eq_one _
       exact hi.2.2
     have h' := six_four_blue (hμ₀.trans_le hμl) hi.1
-    rw [this, sub_le_comm] at h' 
+    rw [this, sub_le_comm] at h'
     refine' h'.trans _
     rw [α_one, mul_div_assoc']
     refine' div_le_div_of_le (Nat.cast_nonneg _) _
@@ -630,7 +630,7 @@ theorem six_three_blue (μ₀ : ℝ) (hμ₀ : 0 < μ₀) :
 theorem p₀_lt_of_one_lt_height {k : ℕ} {p₀ p : ℝ} (h : 1 < height k p₀ p) : p₀ < p :=
   by
   by_contra'
-  rw [height_eq_one this] at h 
+  rw [height_eq_one this] at h
   simpa using h
 
 theorem six_three_red_aux :
@@ -695,7 +695,7 @@ theorem six_three_red :
   have : ∀ i ∈ RZ, (algorithm μ k l ini (i - 1)).p - (algorithm μ k l ini (i + 1)).p ≤ ε / k :=
     by
     intro i hi
-    simp only [RZ, mem_filter] at hi 
+    simp only [RZ, mem_filter] at hi
     exact hlr k hlk μ n χ ini i hi.1 hi.2.1 hi.2.2
   refine' (sum_le_card_nsmul _ _ _ this).trans _
   have : (RZ.card : ℝ) ≤ k := by
@@ -803,7 +803,7 @@ theorem six_four_weak (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ
   filter_upwards [six_four_density μ₁ p₀ hμ₁ hp₀, six_five_red,
     top_adjuster (tendsto_coe_nat_at_top_at_top.eventually six_four_weak_aux)] with l hl hr hk k hlk
     μ hμl hμu n χ ini hini i hi hi'
-  simp only [mem_union, or_assoc'] at hi 
+  simp only [mem_union, or_assoc'] at hi
   rcases hi with (hir | hib | his)
   rotate_left
   · exact six_four_blue (hμ₀.trans_le hμl) hib
@@ -816,10 +816,10 @@ theorem six_four_weak (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ
   refine' (six_four_red hir).trans' _
   have hirs := red_steps_sub_one_mem_degree hir
   have := six_four_degree hirs.2
-  rw [Nat.sub_add_cancel hirs.1] at this 
+  rw [Nat.sub_add_cancel hirs.1] at this
   refine' sub_le_sub this _
   have := hr k hlk μ n χ ini i hir
-  rw [height_eq_one hi', tsub_le_iff_right] at this 
+  rw [height_eq_one hi', tsub_le_iff_right] at this
   have :
     height k ini.p (algorithm μ k l ini i).p ≤ height k ini.p (algorithm μ k l ini (i - 1)).p + 2 :=
     by
@@ -836,10 +836,10 @@ theorem six_four_weak (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ
 theorem six_two_part_one {f : ℕ → ℝ} {j j' : ℕ} (hj : Odd j) (hj' : Odd j') (hjj : j' ≤ j) :
     f (j' + 1) - f (j + 1) = ∑ i in (Finset.Icc (j' + 2) j).filterₓ Odd, (f (i - 1) - f (i + 1)) :=
   by
-  rw [odd_iff_exists_bit1] at hj hj' 
+  rw [odd_iff_exists_bit1] at hj hj'
   obtain ⟨j, rfl⟩ := hj
   obtain ⟨j', rfl⟩ := hj'
-  rw [bit1_le_bit1] at hjj 
+  rw [bit1_le_bit1] at hjj
   have :
     (Icc (bit1 j' + 2) (bit1 j)).filterₓ Odd =
       (Icc (j' + 1) j).map ⟨(bit1 : ℕ → ℕ), fun i i' => Nat.bit1_inj⟩ :=
@@ -849,8 +849,8 @@ theorem six_two_part_one {f : ℕ → ℝ} {j j' : ℕ} (hj : Odd j) (hj' : Odd 
       Function.Embedding.coeFn_mk, and_assoc']
     constructor
     · rintro ⟨hi, hi', i, rfl⟩
-      simp only [add_le_add_iff_right, bit0_le_bit0] at hi' 
-      rw [add_right_comm, add_le_add_iff_right, ← bit0_add, bit0_le_bit0] at hi 
+      simp only [add_le_add_iff_right, bit0_le_bit0] at hi'
+      rw [add_right_comm, add_le_add_iff_right, ← bit0_add, bit0_le_bit0] at hi
       exact ⟨i, hi, hi', rfl⟩
     rintro ⟨i, hi, hi', rfl⟩
     rw [add_right_comm, add_le_add_iff_right, add_le_add_iff_right, bit0_le_bit0, ← bit0_add,
@@ -869,7 +869,7 @@ theorem six_two_part_one {f : ℕ → ℝ} {j j' : ℕ} (hj : Odd j) (hj' : Odd 
   rw [sum_range_sub', add_zero, bit1, bit1, add_assoc, add_assoc, ← bit0, ← bit0_add, ← bit0_add,
     add_assoc, add_left_comm, add_tsub_cancel_of_le hjj, add_comm j]
 
-theorem sum_le_of_nonneg {α : Type _} {f : α → ℝ} {s : Finset α} :
+theorem sum_le_of_nonneg {α : Type*} {f : α → ℝ} {s : Finset α} :
     ∑ x in s, f x ≤ ∑ x in s.filterₓ fun i => 0 < f i, f x :=
   by
   rw [← sum_filter_add_sum_filter_not s fun i => 0 < f i, add_le_iff_nonpos_right]
@@ -980,9 +980,9 @@ theorem six_two_main (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
   · refine' h.trans' _
     rw [sub_le_self_iff]
     positivity
-  dsimp at h 
+  dsimp at h
   have hj₂ : Odd j := by
-    rw [degree_steps, mem_filter, mem_range] at hj₁ 
+    rw [degree_steps, mem_filter, mem_range] at hj₁
     simpa only [hj, true_and_iff, ← Nat.odd_iff_not_even] using hj₁
   let js := (range (j + 1)).filterₓ fun j' => Odd j' ∧ ini.p ≤ p_ (j' - 1)
   have hjs : js.nonempty := by
@@ -1002,9 +1002,9 @@ theorem six_two_main (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
     have : i ∈ js := by
       rw [mem_filter, mem_range_succ_iff]
       exact ⟨hi₂, hi₃, hi₄.le⟩
-    rw [Nat.succ_le_iff] at hi₁ 
+    rw [Nat.succ_le_iff] at hi₁
     exact (Finset.le_max' _ _ this).not_lt hi₁
-  dsimp at this 
+  dsimp at this
   have p_first : p_ (j' + 1) - 2 * ε ≤ p_ (j + 1) :=
     by
     rw [sub_le_comm, six_two_part_one hj₂ hj'.2.1 hj'.1]
@@ -1016,11 +1016,11 @@ theorem six_two_main (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
     cases' eq_or_lt_of_le hj'.1 with hjj hjj
     · rw [hjj]
       exact h.le
-    rw [← Nat.add_one_le_iff] at hjj 
+    rw [← Nat.add_one_le_iff] at hjj
     refine' this (j' + 2) (Nat.le_succ _) _ (by simp [hj', parity_simps])
     cases' eq_or_lt_of_le hjj with hjj' hjj'
-    · rw [← hjj'] at hj₂ 
-      simp only [Nat.odd_iff_not_even] at hj₂ 
+    · rw [← hjj'] at hj₂
+      simp only [Nat.odd_iff_not_even] at hj₂
       refine' (hj₂ _).elim
       simpa [parity_simps] using hj'.2.1
     rw [Nat.add_one_le_iff]
@@ -1051,10 +1051,10 @@ theorem six_two (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ₁ < 
   · rw [algorithm_zero, sub_le_self_iff]
     positivity
   rw [Nat.succ_eq_add_one] at hi ⊢
-  rw [Nat.succ_le_iff] at hi 
+  rw [Nat.succ_le_iff] at hi
   by_cases i ∈ 𝒟
   · refine' (six_four_degree h).trans' _
-    rw [degree_steps, mem_filter, even_iff_exists_two_mul, mem_range] at h 
+    rw [degree_steps, mem_filter, even_iff_exists_two_mul, mem_range] at h
     obtain ⟨rfl | i, rfl⟩ := h.2
     · dsimp
       rw [MulZeroClass.mul_zero, algorithm_zero, sub_le_self_iff]
@@ -1074,7 +1074,7 @@ theorem two_approx {x : ℝ} (hx : 0 ≤ x) (hx' : x ≤ 1 / 2) : 2 ^ (-2 * x) �
   have hu₁ : -log 2 ≤ x * (-2 * log 2) := by nlinarith
   have := general_convex_thing' hu₀ hu₁ (neg_ne_zero.2 (log_pos one_lt_two).ne')
   rw [← mul_assoc, ← mul_assoc, div_neg, mul_div_cancel _ (log_pos one_lt_two).ne', ←
-    sub_eq_add_neg, mul_comm, ← rpow_def_of_pos zero_lt_two, mul_comm] at this 
+    sub_eq_add_neg, mul_comm, ← rpow_def_of_pos zero_lt_two, mul_comm] at this
   refine' this.trans_eq _
   rw [Real.exp_neg, exp_log]
   · norm_num
@@ -1111,9 +1111,9 @@ theorem six_one_ind (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
     six_two μ₀ μ₁ p₀ hμ₀ hμ₁ hp₀] with l hl hl' hl₂ hl₃ k hlk μ hμl hμu n χ hχ ini hini i hi
   induction' i with i ih
   · rw [Nat.zero_eq, range_zero, inter_empty, card_empty, pow_zero, one_mul, algorithm_zero]
-  rw [Nat.succ_le_iff] at hi 
+  rw [Nat.succ_le_iff] at hi
   have hi' := hi
-  rw [← mem_range, ← union_partial_steps, mem_union, mem_union, or_assoc', or_rotate] at hi' 
+  rw [← mem_range, ← union_partial_steps, mem_union, mem_union, or_assoc', or_rotate] at hi'
   rw [range_succ]
   rcases hi' with (hib | hid | hirs)
   · have hi'' := Finset.disjoint_left.1 big_blue_steps_disjoint_red_or_density_steps hib
@@ -1122,7 +1122,7 @@ theorem six_one_ind (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
     rw [big_blue_applied hib, book_config.big_blue_step_Y]
   · have hi'' :=
       Finset.disjoint_left.1 degree_steps_disjoint_big_blue_steps_union_red_or_density_steps hid
-    rw [mem_union, not_or] at hi'' 
+    rw [mem_union, not_or] at hi''
     rw [inter_insert_of_not_mem hi''.2]
     refine' (ih hi.le).trans_eq _
     rw [degree_regularisation_applied hid, book_config.degree_regularisation_step_Y]
@@ -1146,7 +1146,7 @@ theorem six_one_ind (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
   have :
     (algorithm μ k l ini i.succ).y = (red_neighbors χ) (get_x hirs) ∩ (algorithm μ k l ini i).y :=
     by
-    rw [← red_steps_union_density_steps, mem_union] at hirs 
+    rw [← red_steps_union_density_steps, mem_union] at hirs
     cases' hirs with hir his
     · rw [red_applied hir, book_config.red_step_basic_Y]
     · rw [density_applied his, book_config.density_boost_step_basic_Y]
@@ -1156,7 +1156,7 @@ theorem six_one_ind (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
     rw [one_div]
     exact inv_le_of_inv_le hp₀ (hl₂ k hlk)
   have := five_eight hp₀' hd.2 (get_x hirs)
-  rw [Nat.sub_add_cancel hd.1] at this 
+  rw [Nat.sub_add_cancel hd.1] at this
   refine' (this (book_config.get_central_vertex_mem_X _ _ _)).trans' _
   refine' mul_le_mul_of_nonneg_right _ (Nat.cast_nonneg _)
   refine' mul_le_mul_of_nonneg_left _ hk₈
@@ -1358,7 +1358,7 @@ theorem six_one (p₀ : ℝ) (hp₀ : 0 < p₀) :
     rw [inter_eq_left_iff_subset]
     exact density_steps_subset_red_or_density_steps.trans (filter_subset _ _)
   specialize hl k hlk μ hμl hμu n χ hχ ini hini _ le_rfl
-  rw [h₁, h₂] at hl 
+  rw [h₁, h₂] at hl
   exact hl
 
 end SimpleGraph

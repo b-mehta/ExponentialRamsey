@@ -18,11 +18,11 @@ open scoped Classical Topology BigOperators
 
 open Filter Asymptotics Set
 
-variable {𝕜 : Type _} [NontriviallyNormedField 𝕜]
+variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
 
-variable {F : Type _} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
 
-variable {E : Type _} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
 
 -- lemma iterated_deriv_within_univ {n : ℕ} {f : 𝕜 → F} {n : ℕ} :
 --   iterated_deriv_within n f univ = iterated_deriv n f :=

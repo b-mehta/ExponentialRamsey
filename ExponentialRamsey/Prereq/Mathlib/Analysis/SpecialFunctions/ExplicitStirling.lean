@@ -23,7 +23,7 @@ open scoped Topology Real Nat
 
 open Finset Filter Nat Real
 
-theorem centralBinom_ratio {α : Type _} [Field α] [CharZero α] (n : ℕ) :
+theorem centralBinom_ratio {α : Type*} [Field α] [CharZero α] (n : ℕ) :
     (centralBinom (n + 1) : α) / centralBinom n = 4 * ((n + 1 / 2) / (n + 1)) :=
   by
   rw [mul_div_assoc', mul_add, eq_div_iff, ← cast_add_one, div_mul_eq_mul_div, mul_comm, ← cast_mul,

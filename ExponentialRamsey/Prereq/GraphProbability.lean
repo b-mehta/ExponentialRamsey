@@ -26,85 +26,85 @@ open scoped BigOperators
 
 open Fintype (card)
 
-variable {V : Type _} {G G₁ G₂ : SimpleGraph V}
+variable {V : Type*} {G G₁ G₂ : SimpleGraph V}
 
-theorem card_filter_not_diag {α : Type _} [Fintype α] [DecidableEq α] :
+theorem card_filter_not_diag {α : Type*} [Fintype α] [DecidableEq α] :
     (Finset.univ.filterₓ fun a : Sym2 α => ¬Sym2.IsDiag a).card = (card α).choose 2 := by
   rw [← Sym2.card_subtype_not_diag, Fintype.card_subtype]
 
-theorem edgeSetEmbedding_top :
-    (⊤ : SimpleGraph V).edgeSetEmbedding = {a : Sym2 V | ¬Sym2.IsDiag a} :=
+theorem edgeSet_top :
+    (⊤ : SimpleGraph V).edgeSet = {a : Sym2 V | ¬Sym2.IsDiag a} :=
   by
   ext e
   induction' e using Sym2.inductionOn with x y
   simp
 
-theorem edgeFinset_bot' [Fintype (edgeSetEmbedding (⊥ : SimpleGraph V))] :
+theorem edgeFinset_bot' [Fintype (edgeSet (⊥ : SimpleGraph V))] :
     (⊥ : SimpleGraph V).edgeFinset = ∅ := by simp [edge_finset]
 
-theorem edgeFinset_sup' [DecidableEq V] [Fintype (edgeSetEmbedding G₁)]
-    [Fintype (edgeSetEmbedding G₂)] [Fintype (edgeSetEmbedding (G₁ ⊔ G₂))] :
+theorem edgeFinset_sup' [DecidableEq V] [Fintype (edgeSet G₁)]
+    [Fintype (edgeSet G₂)] [Fintype (edgeSet (G₁ ⊔ G₂))] :
     (G₁ ⊔ G₂).edgeFinset = G₁.edgeFinset ∪ G₂.edgeFinset := by simp [edge_finset]
 
-theorem edgeFinset_inf' [DecidableEq V] [Fintype (edgeSetEmbedding G₁)]
-    [Fintype (edgeSetEmbedding G₂)] [Fintype (edgeSetEmbedding (G₁ ⊓ G₂))] :
+theorem edgeFinset_inf' [DecidableEq V] [Fintype (edgeSet G₁)]
+    [Fintype (edgeSet G₂)] [Fintype (edgeSet (G₁ ⊓ G₂))] :
     (G₁ ⊓ G₂).edgeFinset = G₁.edgeFinset ∩ G₂.edgeFinset := by simp [edge_finset]
 
-theorem edgeFinset_sdiff' [DecidableEq V] [Fintype (edgeSetEmbedding G₁)]
-    [Fintype (edgeSetEmbedding G₂)] [Fintype (edgeSetEmbedding (G₁ \ G₂))] :
+theorem edgeFinset_sdiff' [DecidableEq V] [Fintype (edgeSet G₁)]
+    [Fintype (edgeSet G₂)] [Fintype (edgeSet (G₁ \ G₂))] :
     (G₁ \ G₂).edgeFinset = G₁.edgeFinset \ G₂.edgeFinset := by simp [edge_finset]
 
 theorem edgeFinset_top [Fintype V] [DecidableEq V] :
     (⊤ : SimpleGraph V).edgeFinset = univ.filterₓ fun a : Sym2 V => ¬Sym2.IsDiag a :=
   by
   refine' coe_injective _
-  rw [coe_edge_finset, edge_set_top, coe_filter_univ]
+  rw [coe_edge_finset, edgeSet_top, coe_filter_univ]
 
 theorem edgeFinset_top_card [Fintype V] [DecidableEq V] :
     (⊤ : SimpleGraph V).edgeFinset.card = (card V).choose 2 := by
-  rw [edge_finset_card, card_top_edge_set]
+  rw [edge_finset_card, card_top_edgeSet]
 
-theorem edgeFinset_card_le [Fintype V] [Fintype G.edgeSetEmbedding] :
+theorem edgeFinset_card_le [Fintype V] [Fintype G.edgeSet] :
     G.edgeFinset.card ≤ (card V).choose 2 := by
   classical
   rw [← edge_finset_top_card]
   exact card_le_of_subset (edge_finset_mono le_top)
 
-theorem compl_edgeSetEmbedding_eq :
-    edgeSetEmbedding (Gᶜ) = {x : Sym2 V | ¬x.IsDiag} \ edgeSetEmbedding G := by
-  rw [← edge_set_top, ← edge_set_sdiff, top_sdiff]
+theorem compl_edgeSet_eq :
+    edgeSet (Gᶜ) = {x : Sym2 V | ¬x.IsDiag} \ edgeSet G := by
+  rw [← edgeSet_top, ← edgeSet_sdiff, top_sdiff]
 
-theorem compl_edgeSetEmbedding_eq' :
-    edgeSetEmbedding G = {x : Sym2 V | ¬x.IsDiag} \ edgeSetEmbedding (Gᶜ) := by
-  rw [← edge_set_top, ← edge_set_sdiff, top_sdiff, compl_compl]
+theorem compl_edgeSet_eq' :
+    edgeSet G = {x : Sym2 V | ¬x.IsDiag} \ edgeSet (Gᶜ) := by
+  rw [← edgeSet_top, ← edgeSet_sdiff, top_sdiff, compl_compl]
 
-theorem compl_edgeFinset_eq [Fintype V] [DecidableEq V] [Fintype G.edgeSetEmbedding]
-    [Fintype Gᶜ.edgeSetEmbedding] :
+theorem compl_edgeFinset_eq [Fintype V] [DecidableEq V] [Fintype G.edgeSet]
+    [Fintype Gᶜ.edgeSet] :
     Gᶜ.edgeFinset = (univ.filterₓ fun a : Sym2 V => ¬Sym2.IsDiag a) \ G.edgeFinset :=
   by
   refine' coe_injective _
-  rw [coe_edge_finset, coe_sdiff, coe_edge_finset, coe_filter_univ, compl_edge_set_eq]
+  rw [coe_edge_finset, coe_sdiff, coe_edge_finset, coe_filter_univ, compl_edgeSet_eq]
 
-theorem compl_edgeFinset_eq' [Fintype V] [DecidableEq V] [Fintype G.edgeSetEmbedding]
-    [Fintype Gᶜ.edgeSetEmbedding] :
+theorem compl_edgeFinset_eq' [Fintype V] [DecidableEq V] [Fintype G.edgeSet]
+    [Fintype Gᶜ.edgeSet] :
     G.edgeFinset = (univ.filterₓ fun a : Sym2 V => ¬Sym2.IsDiag a) \ Gᶜ.edgeFinset :=
   by
   refine' coe_injective _
-  rw [coe_edge_finset, coe_sdiff, coe_edge_finset, coe_filter_univ, compl_edge_set_eq']
+  rw [coe_edge_finset, coe_sdiff, coe_edge_finset, coe_filter_univ, compl_edgeSet_eq']
 
-theorem card_compl_edgeFinset_eq [Fintype V] [Fintype G.edgeSetEmbedding]
-    [Fintype Gᶜ.edgeSetEmbedding] : Gᶜ.edgeFinset.card = (card V).choose 2 - G.edgeFinset.card := by
+theorem card_compl_edgeFinset_eq [Fintype V] [Fintype G.edgeSet]
+    [Fintype Gᶜ.edgeSet] : Gᶜ.edgeFinset.card = (card V).choose 2 - G.edgeFinset.card := by
   classical
   rw [compl_edge_finset_eq, card_sdiff, card_filter_not_diag]
   simp only [subset_iff, mem_edge_finset, mem_filter, mem_univ, true_and_iff]
-  apply not_is_diag_of_mem_edge_set
+  apply not_is_diag_of_mem_edgeSet
 
-theorem card_edgeFinset_eq_sub_compl' [Fintype V] [Fintype G.edgeSetEmbedding]
-    [Fintype Gᶜ.edgeSetEmbedding] : G.edgeFinset.card = (card V).choose 2 - Gᶜ.edgeFinset.card := by
+theorem card_edgeFinset_eq_sub_compl' [Fintype V] [Fintype G.edgeSet]
+    [Fintype Gᶜ.edgeSet] : G.edgeFinset.card = (card V).choose 2 - Gᶜ.edgeFinset.card := by
   classical
   rw [compl_edge_finset_eq', card_sdiff, card_filter_not_diag]
   simp only [subset_iff, mem_edge_finset, mem_filter, mem_univ, true_and_iff]
-  apply not_is_diag_of_mem_edge_set
+  apply not_is_diag_of_mem_edgeSet
 
 variable {p : ℝ} {s : Finset (Sym2 V)}
 
@@ -116,24 +116,24 @@ theorem weightingAux_pos [Fintype V] (hp₀ : 0 < p) (hp₁ : p < 1) : 0 < weigh
   mul_pos (pow_pos hp₀ _) (pow_pos (sub_pos_of_lt hp₁) _)
 
 /-- the probability of the simple graph G appearing in the G(|V|,p) model of random graphs -/
-def weighting (V : Type _) [Fintype V] (p : ℝ) (G : SimpleGraph V) [Fintype G.edgeSetEmbedding] :
+def weighting (V : Type*) [Fintype V] (p : ℝ) (G : SimpleGraph V) [Fintype G.edgeSet] :
     ℝ :=
   weightingAux p G.edgeFinset
 
-theorem weighting_pos [Fintype V] [Fintype G.edgeSetEmbedding] (hp₀ : 0 < p) (hp₁ : p < 1) :
+theorem weighting_pos [Fintype V] [Fintype G.edgeSet] (hp₀ : 0 < p) (hp₁ : p < 1) :
     0 < weighting V p G :=
   weightingAux_pos hp₀ hp₁
 
-theorem weighting_eq [Fintype V] [Fintype G.edgeSetEmbedding] [Fintype Gᶜ.edgeSetEmbedding] :
+theorem weighting_eq [Fintype V] [Fintype G.edgeSet] [Fintype Gᶜ.edgeSet] :
     weighting V p G = p ^ G.edgeFinset.card * (1 - p) ^ Gᶜ.edgeFinset.card := by
   rw [weighting, weighting_aux, card_compl_edge_finset_eq]
 
-theorem weighting_compl [Fintype V] [Fintype G.edgeSetEmbedding] [Fintype Gᶜ.edgeSetEmbedding]
+theorem weighting_compl [Fintype V] [Fintype G.edgeSet] [Fintype Gᶜ.edgeSet]
     (p : ℝ) : weighting V (1 - p) (Gᶜ) = weighting V p G := by
   rw [weighting, weighting, weighting_aux, weighting_aux, sub_sub_self, ←
     card_edge_finset_eq_sub_compl', ← card_compl_edge_finset_eq, mul_comm]
 
-theorem disjUnion_inj_left {α : Type _} {s t₁ t₂ : Finset α} {hst₁ : Disjoint s t₁}
+theorem disjUnion_inj_left {α : Type*} {s t₁ t₂ : Finset α} {hst₁ : Disjoint s t₁}
     {hst₂ : Disjoint s t₂} : disjUnion s t₁ hst₁ = disjUnion s t₂ hst₂ → t₁ = t₂ :=
   by
   intro h
@@ -147,14 +147,14 @@ theorem disjUnion_inj_left {α : Type _} {s t₁ t₂ : Finset α} {hst₁ : Dis
   have : i ∈ s.disj_union t₁ hst₁ := by
     rw [mem_disj_union]
     exact Or.inr h'
-  rw [h, mem_disj_union] at this 
+  rw [h, mem_disj_union] at this
   exact this.resolve_left (Finset.disjoint_right.1 hst₁ h')
 
-theorem disjUnion_inj_right {α : Type _} {s₁ s₂ t : Finset α} {hst₁ : Disjoint s₁ t}
+theorem disjUnion_inj_right {α : Type*} {s₁ s₂ t : Finset α} {hst₁ : Disjoint s₁ t}
     {hst₂ : Disjoint s₂ t} : disjUnion s₁ t hst₁ = disjUnion s₂ t hst₂ → s₁ = s₂ :=
   by
   intro h
-  rw [disj_union_comm s₁, disj_union_comm s₂] at h 
+  rw [disj_union_comm s₁, disj_union_comm s₂] at h
   exact disj_union_inj_left h
 
 attribute [local instance] Fintype.toLocallyFiniteOrder
@@ -177,30 +177,30 @@ theorem weighting_aux_sum_between [Fintype V] [DecidableEq V] (H₁ H₂ : Simpl
       (H₁ᶜ ⊓ H₂).edgeFinset.powerset.image fun s => s ∪ H₁.edge_finset :=
     by
     ext s
-    simp only [mem_image, mem_powerset, mem_Icc, exists_prop, compl_sup, edge_set_inf,
+    simp only [mem_image, mem_powerset, mem_Icc, exists_prop, compl_sup, edgeSet_inf,
       Set.subset_toFinset, Set.subset_inter_iff, and_assoc', compl_compl]
     constructor
     · rintro ⟨G, hG₁, hG₂, rfl⟩
       refine' ⟨(G \ H₁).edgeFinset, _, _, _⟩
-      · rw [coe_edge_finset, sdiff_eq, edge_set_subset_edge_set]
+      · rw [coe_edge_finset, sdiff_eq, edgeSet_subset_edgeSet]
         exact inf_le_right
-      · rw [coe_edge_finset, edge_set_subset_edge_set]
+      · rw [coe_edge_finset, edgeSet_subset_edgeSet]
         exact sdiff_le.trans hG₂
       rwa [← edge_finset_sup', ← coe_inj, coe_edge_finset, coe_edge_finset, sdiff_sup_cancel]
     rintro ⟨s, hs₁, hs₂, rfl⟩
-    refine' ⟨from_edge_set s ⊔ H₁, le_sup_right, sup_le _ h, _⟩
-    · exact (from_edge_set_mono hs₂).trans_eq (from_edge_set_edge_set _)
-    rw [← coe_inj, coe_union, coe_edge_finset, coe_edge_finset, edge_set_sup,
-      edge_set_from_edge_set, sdiff_eq_left.2]
+    refine' ⟨from_edgeSet s ⊔ H₁, le_sup_right, sup_le _ h, _⟩
+    · exact (from_edgeSet_mono hs₂).trans_eq (from_edgeSet_edgeSet _)
+    rw [← coe_inj, coe_union, coe_edge_finset, coe_edge_finset, edgeSet_sup,
+      edgeSet_from_edgeSet, sdiff_eq_left.2]
     rw [Set.disjoint_left]
     intro e he
-    exact not_is_diag_of_mem_edge_set _ (hs₁ he)
+    exact not_is_diag_of_mem_edgeSet _ (hs₁ he)
   rw [h₁, Finset.sum_image]
   swap
   · simp only [edge_finset_inf', mem_powerset, subset_inter_iff, and_imp, compl_edge_finset_eq,
       subset_sdiff]
     rintro G - hG₁ hG₂ G' - hG'₁ hG'₂ h'
-    rw [← disj_union_eq_union _ _ hG₁, ← disj_union_eq_union _ _ hG'₁] at h' 
+    rw [← disj_union_eq_union _ _ hG₁, ← disj_union_eq_union _ _ hG'₁] at h'
     exact disj_union_inj_right h'
   have h₂ : ∀ x ∈ (H₁ᶜ ⊓ H₂).edgeFinset.powerset, Disjoint x H₁.edge_finset :=
     by
@@ -214,7 +214,7 @@ theorem weighting_aux_sum_between [Fintype V] [DecidableEq V] (H₁ H₂ : Simpl
     congr 1
     · rwa [← coe_inj, coe_edge_finset, coe_edge_finset, inf_comm, ← sdiff_eq, sdiff_sup_cancel]
     rw [← disjoint_coe, coe_edge_finset, coe_edge_finset, Set.disjoint_iff_inter_eq_empty, ←
-      edge_set_inf, @inf_comm _ _ (H₁ᶜ), inf_assoc, compl_inf_eq_bot, inf_bot_eq, edge_set_bot]
+      edgeSet_inf, @inf_comm _ _ (H₁ᶜ), inf_assoc, compl_inf_eq_bot, inf_bot_eq, edgeSet_bot]
   have h₃ : (H₁ᶜ ⊓ H₂).edgeFinset.card = H₂.edge_finset.card - H₁.edge_finset.card := by
     rw [← this, Nat.add_sub_cancel]
   have :
@@ -233,7 +233,7 @@ theorem weighting_aux_sum_between [Fintype V] [DecidableEq V] (H₁ H₂ : Simpl
   · apply edge_finset_card_le
   rw [add_comm, ← card_union_eq (h₂ x hx)]
   refine' card_le_of_subset _
-  rw [mem_powerset, edge_finset_inf, subset_inter_iff] at hx 
+  rw [mem_powerset, edge_finset_inf, subset_inter_iff] at hx
   exact union_subset hx.2 (edge_finset_subset_edge_finset.2 h)
 
 theorem sum_weighting [Fintype V] : ∑ G, weighting V p G = 1 :=
@@ -241,23 +241,23 @@ theorem sum_weighting [Fintype V] : ∑ G, weighting V p G = 1 :=
   have : Icc (⊥ : SimpleGraph V) ⊤ = Finset.univ := by
     rw [← coe_inj, coe_Icc, Set.Icc_bot_top, coe_univ]
   rw [← this, weighting_aux_sum_between ⊥ ⊤ bot_le, edge_finset_bot', edge_finset_card]
-  simp only [compl_top, edge_set_bot, Set.empty_card, card_empty, pow_zero, pow_zero, mul_one]
+  simp only [compl_top, edgeSet_bot, Set.empty_card, card_empty, pow_zero, pow_zero, mul_one]
 
 end
 
-theorem card_edgeSetEmbedding_map {V V' : Type _} (f : V ↪ V') (G : SimpleGraph V)
-    [Fintype (edgeSetEmbedding G)] [Fintype (edgeSetEmbedding (G.map f))] :
-    card (G.map f).edgeSetEmbedding = card G.edgeSetEmbedding :=
+theorem card_edgeSet_map {V V' : Type*} (f : V ↪ V') (G : SimpleGraph V)
+    [Fintype (edgeSet G)] [Fintype (edgeSet (G.map f))] :
+    card (G.map f).edgeSet = card G.edgeSet :=
   by
   let f' := SimpleGraph.Embedding.mapEdgeSet (embedding.map f G)
   have : Function.Bijective f' := by
     refine' ⟨f'.injective, _⟩
     rintro ⟨x, hx⟩
     induction' x using Sym2.inductionOn with x y
-    simp only [embedding.map_edge_set_apply, SetCoe.exists, Sym2.exists, mem_edge_set, exists_prop,
-      Subtype.ext_iff, hom.map_edge_set_coe, RelEmbedding.coe_coeFn, embedding.map_apply,
+    simp only [embedding.map_edgeSet_apply, SetCoe.exists, Sym2.exists, mem_edgeSet, exists_prop,
+      Subtype.ext_iff, hom.map_edgeSet_coe, RelEmbedding.coe_coeFn, embedding.map_apply,
       Function.Embedding.toFun_eq_coe, Subtype.coe_mk, Sym2.map_pair_eq]
-    simp only [mem_edge_set, map_adj] at hx 
+    simp only [mem_edgeSet, map_adj] at hx
     obtain ⟨x, y, huv, rfl, rfl⟩ := hx
     exact ⟨x, y, huv, rfl⟩
   exact (Fintype.card_of_bijective this).symm
@@ -276,16 +276,16 @@ theorem cliqueOn_compl (s : Set V) : CliqueOn (Gᶜ) s ↔ IndepOn G s := by
 theorem indepOn_iff {t : Set V} : IndepOn G t ↔ Disjoint G (spanningCoe (⊤ : SimpleGraph t)) := by
   rw [indep_on, le_compl_iff_disjoint_right]
 
-instance decidableAdjMap [Fintype V] {V' : Type _} [DecidableEq V'] {G : SimpleGraph V}
+instance decidableAdjMap [Fintype V] {V' : Type*} [DecidableEq V'] {G : SimpleGraph V}
     [DecidableRel G.Adj] {f : V ↪ V'} : DecidableRel (G.map f).Adj := fun x y =>
   decidable_of_iff' _ (G.map_adj f _ _)
 
 -- todo: lhs should probably have an explicit fintype instance
-theorem card_edgeSetEmbedding_spanningCoe_top [Fintype V] [DecidableEq V] (s : Finset V) :
-    Fintype.card (spanningCoe (⊤ : SimpleGraph s)).edgeSetEmbedding = s.card.choose 2 :=
+theorem card_edgeSet_spanningCoe_top [Fintype V] [DecidableEq V] (s : Finset V) :
+    Fintype.card (spanningCoe (⊤ : SimpleGraph s)).edgeSet = s.card.choose 2 :=
   by
-  rw [card_edge_set_map, card_top_edge_set]
-  change (Fintype.card (s : Type _)).choose 2 = _
+  rw [card_edgeSet_map, card_top_edgeSet]
+  change (Fintype.card (s : Type*)).choose 2 = _
   rw [Fintype.card_coe]
 
 instance decidableLe [Fintype V] {H : SimpleGraph V} [DecidableRel G.Adj] [DecidableRel H.Adj] :
@@ -298,7 +298,7 @@ instance decidablePredCliqueOn [Fintype V] [DecidableEq V] [DecidableRel G.Adj] 
 instance decidablePredIndepOn [Fintype V] [DecidableEq V] [DecidableRel G.Adj] :
     DecidablePred fun s : Finset V => IndepOn G s := fun s => SimpleGraph.decidableLe
 
-theorem Le.def {V : Type _} {G H : SimpleGraph V} : G ≤ H ↔ ∀ ⦃x y : V⦄, G.Adj x y → H.Adj x y :=
+theorem Le.def {V : Type*} {G H : SimpleGraph V} : G ≤ H ↔ ∀ ⦃x y : V⦄, G.Adj x y → H.Adj x y :=
   Iff.rfl
 
 theorem Fin.fin_two_eq_zero_iff_ne_one {x : Fin 2} : x = 0 ↔ x ≠ 1 :=
@@ -307,11 +307,11 @@ theorem Fin.fin_two_eq_zero_iff_ne_one {x : Fin 2} : x = 0 ↔ x ≠ 1 :=
   rw [Fin.forall_fin_two]
   simp
 
-theorem cliqueOn_monochromaticOf {K : Type _} (C : TopEdgeLabelling V K) (k : K) (m : Set V) :
+theorem cliqueOn_monochromaticOf {K : Type*} (C : TopEdgeLabelling V K) (k : K) (m : Set V) :
     CliqueOn (C.labelGraph k) m ↔ C.MonochromaticOf m k :=
   by
-  simp only [clique_on, top_edge_labelling.monochromatic_of, le.def, map_adj, SetCoe.exists,
-    top_edge_labelling.label_graph_adj, Function.Embedding.coe_subtype, Subtype.coe_mk, top_adj,
+  simp only [clique_on, TopEdgeLabelling.MonochromaticOf, le.def, map_adj, SetCoe.exists,
+    TopEdgeLabelling.labelGraph_adj, Function.Embedding.coe_subtype, Subtype.coe_mk, top_adj,
     Ne.def, Subtype.mk_eq_mk, forall_exists_index, and_imp]
   constructor
   · intro h x hx y hy h'
@@ -322,12 +322,12 @@ theorem cliqueOn_monochromaticOf {K : Type _} (C : TopEdgeLabelling V K) (k : K)
 
 theorem labelGraph_fin_two_compl (C : TopEdgeLabelling V (Fin 2)) :
     C.labelGraph 1ᶜ = C.labelGraph 0 := by
-  classical rw [← label_graph_to_edge_labelling C, to_edge_labelling_label_graph,
-    to_edge_labelling_label_graph_compl]
+  classical rw [← labelGraph_to_EdgeLabelling C, to_EdgeLabelling_labelGraph,
+    to_EdgeLabelling_labelGraph_compl]
 
 theorem indepOn_monochromaticOf (C : TopEdgeLabelling V (Fin 2)) (m : Set V) :
     IndepOn (C.labelGraph 1) m ↔ C.MonochromaticOf m 0 := by
-  rw [← clique_on_compl, label_graph_fin_two_compl, clique_on_monochromatic_of]
+  rw [← clique_on_compl, labelGraph_fin_two_compl, clique_on_MonochromaticOf]
 
 /-- the number of cliques of size k in the graph G -/
 def numberOfCliques [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj] (k : ℕ) :
@@ -373,15 +373,15 @@ theorem weighted_number_cliques [DecidableEq V] {k : ℕ} :
   rw [this]
   have : ∑ G : SimpleGraph V in _, weighting V p G = _ :=
     weighting_aux_sum_between (spanning_coe (⊤ : SimpleGraph x)) ⊤ le_top
-  rw [edge_finset_card, edge_finset_card] at this 
-  simp only [compl_top, edge_set_bot, Set.empty_card', pow_zero, mul_one] at this 
+  rw [edge_finset_card, edge_finset_card] at this
+  simp only [compl_top, edgeSet_bot, Set.empty_card', pow_zero, mul_one] at this
   convert this using 2
   · congr 1
   refine' Eq.symm _
-  convert (card_edge_set_spanning_coe_top x).trans _ using 1
+  convert (card_edgeSet_spanning_coe_top x).trans _ using 1
   · convert Fintype.card_congr' _
     rfl
-  rw [mem_powerset_len_univ_iff] at hx 
+  rw [mem_powerset_len_univ_iff] at hx
   rw [hx]
 
 theorem weighted_number_indeps [DecidableEq V] {k : ℕ} :
@@ -440,15 +440,15 @@ theorem basic_ramsey_bound {k l n : ℕ} {p : ℝ} (hp : 0 < p) (hp' : p < 1)
     n < ramseyNumber ![k, l] := by
   let V := Fin n
   rw [← Fintype.card_fin n]
-  rw [← Fintype.card_fin n] at hV 
+  rw [← Fintype.card_fin n] at hV
   rw [← not_le, ramsey_number_pair_swap, ramsey_number_le_iff, is_ramsey_valid_iff_eq]
   intro h
   obtain ⟨G, hG₁, hG₂⟩ := basic_bound hp hp' hV
   letI := Classical.decRel G.adj
-  let C := G.to_edge_labelling
+  let C := G.to_EdgeLabelling
   obtain ⟨m, hm⟩ := h C
   rw [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, ←
-    indep_on_monochromatic_of, ← clique_on_monochromatic_of, to_edge_labelling_label_graph] at hm 
+    indep_on_MonochromaticOf, ← clique_on_MonochromaticOf, to_EdgeLabelling_labelGraph] at hm
   cases hm
   · exact hG₂ m hm.2.symm hm.1
   · exact hG₁ m hm.2.symm hm.1
@@ -510,7 +510,7 @@ theorem diagonalRamsey_bound_refined_aux {n k : ℕ} (hk : k ≠ 0)
     · positivity
     · positivity
     · positivity
-  rw [← div_le_iff _, ← div_pow, div_div_eq_mul_div, mul_comm] at this 
+  rw [← div_le_iff _, ← div_pow, div_div_eq_mul_div, mul_comm] at this
   swap
   · positivity
   rcases eq_or_ne n 0 with (rfl | hn')
@@ -560,7 +560,7 @@ theorem diagonalRamsey_bound_simpler_aux {k : ℕ} (hk' : exp 1 * sqrt 2 + log 2
   by
   have : k ≠ 0 := by
     have := e_times_sqrt_two_plus_log_two_gt_four.trans_le hk'
-    rw [← Nat.cast_one, ← Nat.cast_bit0, ← Nat.cast_bit0, Nat.cast_lt] at this 
+    rw [← Nat.cast_one, ← Nat.cast_bit0, ← Nat.cast_bit0, Nat.cast_lt] at this
     rw [← pos_iff_ne_zero]
     exact this.trans_le' (by norm_num)
   refine' (diagonal_ramsey_bound_refined_again this).trans_le' _
@@ -574,7 +574,7 @@ theorem diagonalRamsey_lower_bound_simpler {k : ℕ} (hk : 2 ≤ k) : sqrt 2 ^ k
   cases le_total (exp 1 * sqrt 2 + log 2) k
   · exact (diagonal_ramsey_bound_simpler_aux h).le
   replace h := h.trans_lt e_times_sqrt_two_plus_log_two_lt_five
-  norm_cast at h 
+  norm_cast at h
   interval_cases
   · rw [sq_sqrt, diagonal_ramsey_two, Nat.cast_two]; exact zero_le_two
   · rw [diagonal_ramsey_three, Nat.cast_bit0, Nat.cast_bit1, Nat.cast_one]
@@ -597,7 +597,7 @@ theorem diagonalRamsey_upper_bound_refined {k : ℕ} :
   refine' sqrt_le_sqrt (mul_le_mul_of_nonneg_left _ pi_pos.le)
   rw [Nat.cast_sub, Nat.cast_one]
   · linarith only
-  rwa [Nat.one_le_cast] at this 
+  rwa [Nat.one_le_cast] at this
 
 theorem diagonalRamsey_upper_bound_simpler {k : ℕ} : (diagonalRamsey k : ℝ) ≤ 4 ^ k / sqrt k :=
   by

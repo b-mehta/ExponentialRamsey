@@ -18,7 +18,7 @@ open scoped BigOperators ExponentialRamsey
 
 open Filter Finset Nat Real Asymptotics
 
-variable {V : Type _} [DecidableEq V] [Fintype V] {χ : TopEdgeLabelling V (Fin 2)}
+variable {V : Type*} [DecidableEq V] [Fintype V] {χ : TopEdgeLabelling V (Fin 2)}
 
 variable {k l : ℕ} {ini : BookConfig χ} {i : ℕ}
 
@@ -243,7 +243,7 @@ theorem prop_33 :
   · refine' (hl k hlk _ _ _ _ _ _ le_rfl).trans _
     exact q_increasing le_rfl
   specialize hl' k hlk
-  rw [max_height, lt_add_iff_pos_left] at hl' 
+  rw [max_height, lt_add_iff_pos_left] at hl'
   exact hl'
 
 theorem p'_le_p'_of_p_le_p {μ : ℝ} {h i j : ℕ}
@@ -282,10 +282,10 @@ theorem forall_nonneg_iff_nonneg :
     rw [← hl _ hlk]
     refine' sum_nonneg _
     intro j hj
-    rw [mem_Ico] at hj 
+    rw [mem_Ico] at hj
     exact hi _ hj.1
   intro hi j hj
-  rw [Δ, sub_nonneg] at hi 
+  rw [Δ, sub_nonneg] at hi
   exact Δ'_nonneg_of_p_le_p hi
 
 theorem forall_nonpos_iff_nonpos :
@@ -303,10 +303,10 @@ theorem forall_nonpos_iff_nonpos :
   · intro hi
     rw [← hl _ hlk]
     refine' sum_nonpos fun j hj => _
-    rw [mem_Ico] at hj 
+    rw [mem_Ico] at hj
     exact hi _ hj.1
   intro hi j hj
-  rw [Δ, sub_nonpos] at hi 
+  rw [Δ, sub_nonpos] at hi
   exact Δ'_nonpos_of_p_le_p hi
 
 theorem prop_34 :
@@ -328,7 +328,7 @@ theorem prop_34 :
     simp only [Δ']
     rw [sum_range_sub fun x => p' μ k l ini x h]
     dsimp
-    rw [mem_Ico] at hh 
+    rw [mem_Ico] at hh
     rw [p', p']
     have : α_function k h = q_function k ini.p h - q_function k ini.p (h - 1) := by
       rw [← Nat.sub_add_cancel hh.1, α_function_eq_q_diff, Nat.add_sub_cancel]
@@ -388,7 +388,7 @@ theorem eight_two (μ₁ p₀ : ℝ) (hμ₁ : μ₁ < 1) (hp₀ : 0 < p₀) :
     intro j hj hj'
     exact div_nonneg (Δ'_nonneg_of_p_le_p (h₅₃ j hj)) (α_nonneg _ _)
   intro i hi
-  rw [moderate_steps, mem_filter] at hi 
+  rw [moderate_steps, mem_filter] at hi
   have :
     ∀ h ∈ Ico 1 (max_height k),
       Δ' μ k l ini i h / α_function k (height k ini.p (algorithm μ k l ini (i + 1)).p) ≤
@@ -418,7 +418,7 @@ theorem eight_two (μ₁ p₀ : ℝ) (hμ₁ : μ₁ < 1) (hp₀ : 0 < p₀) :
   · refine' div_nonneg _ hβ.le
     rw [sub_nonneg]
     exact blue_X_ratio_le_one
-  dsimp at hi 
+  dsimp at hi
   have :
     α_function k (height k ini.p (algorithm μ k l ini (i + 1)).p) =
       (1 + ε) ^
@@ -502,7 +502,7 @@ theorem eight_three :
   cases' le_or_lt 0 (Δ μ k l ini i) with hΔ hΔ
   · refine' (sum_nonneg _).trans' (neg_nonpos_of_nonneg (by positivity))
     intro j hj
-    rw [mem_Ico] at hj 
+    rw [mem_Ico] at hj
     exact div_nonneg ((hl₁ i).2 hΔ j hj.1) (α_nonneg _ _)
   specialize hl₃ i hi
   have : ∀ h, 1 ≤ h → h < height k ini.p (algorithm μ k l ini i).p - 2 → Δ' μ k l ini i h = 0 :=
@@ -532,13 +532,13 @@ theorem eight_three :
         Δ' μ k l ini i h / α_function k h :=
     by
     intro h hh
-    rw [mem_Ico] at hh 
+    rw [mem_Ico] at hh
     cases' lt_or_le h (height k ini.p (algorithm μ k l ini i).p - 2) with hp hp
     · rw [this h hh.1 hp, MulZeroClass.mul_zero, zero_div, zero_div]
     rw [div_le_div_iff (α_pos _ _ (hk k hlk)) (α_pos _ _ (hk k hlk)), mul_comm (_ ^ 2 : ℝ),
       mul_assoc]
     refine' mul_le_mul_of_nonpos_left _ ((hl₂ _).2 hΔ.le _ hh.1)
-    rw [tsub_le_iff_right] at hp 
+    rw [tsub_le_iff_right] at hp
     refine' (α_increasing hp).trans_eq _
     rw [α_function, α_function, mul_div_assoc', mul_left_comm, ← pow_add]
     congr 3
@@ -625,7 +625,7 @@ theorem eq_39 (μ₀ : ℝ) (hμ₀ : 0 < μ₀) :
     by
     intro h hh₁ hh₂
     have := hh₂.trans_le h₆₅
-    rw [Nat.cast_lt] at this 
+    rw [Nat.cast_lt] at this
     rw [Δ', Δ', Nat.sub_add_cancel hi₁, sub_add_sub_cancel']
     have h₁ : p' μ k l ini (i + 1) h = q_function k ini.p h :=
       by
@@ -655,7 +655,7 @@ theorem eq_39 (μ₀ : ℝ) (hμ₀ : 0 < μ₀) :
         (Δ' μ k l ini (i - 1) h + Δ' μ k l ini i h) / α_function k h :=
     by
     intro h hh'
-    rw [mem_Ico] at hh' 
+    rw [mem_Ico] at hh'
     cases'
       lt_or_le (h : ℝ) (height k ini.p (algorithm μ k l ini (i - 1)).p - 2 * k ^ (1 / 8 : ℝ)) with
       hp hp
@@ -719,7 +719,7 @@ theorem eight_four (μ₀ : ℝ) (hμ₀ : 0 < μ₀) :
       intro h
       refine' div_nonneg _ (α_nonneg _ _)
       rw [Δ', Δ', Nat.sub_add_cancel this.1, sub_add_sub_cancel', sub_nonneg]
-      rw [Δ, Δ, Nat.sub_add_cancel this.1, sub_add_sub_cancel', sub_nonneg] at hΔ 
+      rw [Δ, Δ, Nat.sub_add_cancel this.1, sub_add_sub_cancel', sub_nonneg] at hΔ
       exact p'_le_p'_of_p_le_p hΔ
     refine' (sum_nonneg fun i _ => this i).trans' _
     rw [neg_mul]
@@ -729,7 +729,7 @@ theorem eight_four (μ₀ : ℝ) (hμ₀ : 0 < μ₀) :
     by
     intro h
     rw [Δ', Δ', Nat.sub_add_cancel this.1, sub_add_sub_cancel', sub_nonpos]
-    rw [Δ, Δ, Nat.sub_add_cancel this.1, sub_add_sub_cancel', sub_neg] at hΔ 
+    rw [Δ, Δ, Nat.sub_add_cancel this.1, sub_add_sub_cancel', sub_neg] at hΔ
     exact p'_le_p'_of_p_le_p hΔ.le
   exact hl i hi hΔ this
 
@@ -824,10 +824,10 @@ theorem polynomial_ineq :
     ← rpow_nat_cast, ← rpow_mul (Nat.cast_nonneg k), le_sub_iff_add_le, mul_assoc, ← add_assoc]
   refine' le_of_mul_le_mul_right _ (rpow_pos_of_pos hk' (1 / 2))
   simp only [add_mul, mul_assoc, ← rpow_add hk']
-  dsimp at hk₂ 
-  simp only [← rpow_nat_cast, ← rpow_mul (Nat.cast_nonneg k)] at hk₂ 
+  dsimp at hk₂
+  simp only [← rpow_nat_cast, ← rpow_mul (Nat.cast_nonneg k)] at hk₂
   norm_num [rpow_zero]
-  norm_num at hk₂ 
+  norm_num at hk₂
   exact hk₂
 
 -- bound is implicit because of the is_o, but should work for k >= 5/3 ^ 16
@@ -861,7 +861,7 @@ theorem log_ineq :
   have h₁ : (k : ℝ) ^ (1 / 4 : ℝ) * log k ≤ 1 / 25 * k ^ (15 / 16 : ℝ) :=
     by
     rw [norm_of_nonneg (log_nonneg (Nat.one_le_cast.2 hk₁.le)),
-      norm_of_nonneg (rpow_nonneg_of_nonneg (Nat.cast_nonneg _) _)] at hk₂ 
+      norm_of_nonneg (rpow_nonneg_of_nonneg (Nat.cast_nonneg _) _)] at hk₂
     refine' (mul_le_mul_of_nonneg_left hk₂ (rpow_nonneg_of_nonneg (Nat.cast_nonneg _) _)).trans_eq _
     rw [mul_left_comm, ← rpow_add hk']
     norm_num1
@@ -913,7 +913,7 @@ theorem eq_42 (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ₁ < 1)
     norm_num1
   specialize hk₁ k hlk this
   specialize hk₂ k hlk this
-  rw [sub_le_iff_le_add, sub_le_iff_le_add, ← le_div_iff' this, add_div, ← div_mul_eq_mul_div] at hl 
+  rw [sub_le_iff_le_add, sub_le_iff_le_add, ← le_div_iff' this, add_div, ← div_mul_eq_mul_div] at hl
   refine' hl.trans _
   refine' (add_le_add hk₂ (mul_le_mul_of_nonneg_right hk₁ (Nat.cast_nonneg _))).trans _
   rw [add_comm, one_add_mul, add_assoc, add_le_add_iff_left, ← le_sub_iff_add_le, ← sub_mul]
@@ -1017,12 +1017,12 @@ theorem eight_five (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ₁
     rw [← Nat.smul_one_eq_coe, ← sum_const _]
     refine' sum_congr rfl fun i hi => _
     rw [div_self (hβ i (filter_subset _ _ hi)).ne']
-  rw [this] at h₄₂ 
+  rw [this] at h₄₂
   have : moderate_steps μ k l ini ⊆ density_steps μ k l ini := filter_subset _ _
   replace h₄₂ := h₄₂.trans' (sub_le_sub_left (Nat.cast_le.2 (card_le_of_subset this)) _)
   have hμ' : μ < 1 := hμu.trans_lt hμ₁
   cases' (moderate_steps μ k l ini).eq_empty_or_nonempty with hS hS
-  · rw [hS, sdiff_empty] at h₇₅ 
+  · rw [hS, sdiff_empty] at h₇₅
     refine' h₇₅.trans (le_add_of_nonneg_of_le _ _)
     · refine' mul_nonneg (div_nonneg (beta_nonneg (hμ₀.trans_le hμl)) _) (Nat.cast_nonneg _)
       exact sub_nonneg_of_le (hβ'.trans hμ'.le)
@@ -1089,7 +1089,7 @@ theorem eight_six (μ₁ : ℝ) (hμ₁ : μ₁ < 1) :
   specialize hβμ k hlk μ hμl hμu n χ ini hini
   specialize hk₀ k hlk
   have hk₀' : (0 : ℝ) < k := Nat.cast_pos.2 hk₀
-  rw [div_mul_eq_mul_div, ← sub_le_iff_le_add, le_div_iff, mul_one_sub] at hl 
+  rw [div_mul_eq_mul_div, ← sub_le_iff_le_add, le_div_iff, mul_one_sub] at hl
   swap
   · rw [sub_pos]
     exact hβμ.trans_lt (hμu.trans_lt hμ₁)
@@ -1112,7 +1112,7 @@ theorem eight_six (μ₁ : ℝ) (hμ₁ : μ₁ < 1) :
     refine' mul_nonneg (div_nonneg (by norm_num1) (sub_nonneg_of_le hμ₁.le)) _
     exact rpow_nonneg_of_nonneg (Nat.cast_nonneg _) _
   replace hl := (sub_le_sub h₁ h₂).trans hl
-  rw [sub_le_iff_le_add', mul_comm _ (beta μ k l ini), ← mul_add] at hl 
+  rw [sub_le_iff_le_add', mul_comm _ (beta μ k l ini), ← mul_add] at hl
   rw [mul_div_assoc']
   exact div_le_of_nonneg_of_le_mul (by positivity) (beta_nonneg (hμ₀.trans_le hμl)) hl
 

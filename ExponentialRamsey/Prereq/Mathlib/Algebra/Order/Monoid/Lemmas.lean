@@ -13,7 +13,7 @@ import Mathlib.Algebra.Order.Monoid.Lemmas
 
 
 @[to_additive]
-theorem MulLECancellable.hMul {α : Type _} [LE α] [Semigroup α] {a b : α} (ha : MulLECancellable a)
+theorem MulLECancellable.hMul {α : Type*} [LE α] [Semigroup α] {a b : α} (ha : MulLECancellable a)
     (hb : MulLECancellable b) : MulLECancellable (a * b) :=
   by
   intro x y h
@@ -21,7 +21,7 @@ theorem MulLECancellable.hMul {α : Type _} [LE α] [Semigroup α] {a b : α} (h
   exact hb (ha h)
 
 @[to_additive]
-theorem MulLECancellable.of_hMul_left {α : Type _} [LE α] [Semigroup α]
+theorem MulLECancellable.of_hMul_left {α : Type*} [LE α] [Semigroup α]
     [CovariantClass α α (· * ·) (· ≤ ·)] {a b : α} (hab : MulLECancellable (a * b)) :
     MulLECancellable b := by
   intro x y h

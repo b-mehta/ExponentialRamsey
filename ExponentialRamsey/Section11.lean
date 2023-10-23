@@ -63,10 +63,10 @@ theorem eleven_two_start (μ : ℝ) (hμ₀ : 0 < μ) (hμ₁ : μ < 1) :
   have hμ₁' : 0 < 1 - μ := sub_pos_of_lt hμ₁
   replace hf₂' := hf₂'.trans hf₁'
   rw [← le_div_iff', div_eq_mul_inv, mul_inv, ← inv_pow, inv_div, mul_inv, mul_inv, ← inv_pow, ←
-    inv_pow, ← rpow_neg two_pos.le, mul_assoc, mul_assoc] at hf₂' 
+    inv_pow, ← rpow_neg two_pos.le, mul_assoc, mul_assoc] at hf₂'
   swap; · positivity
   replace hf₂' := (large_X _ _ hn'' hn').trans hf₂'
-  rw [← le_div_iff'] at hf₂' 
+  rw [← le_div_iff'] at hf₂'
   swap; · positivity
   refine' hf₂'.trans_eq _
   rw [div_eq_mul_inv, mul_comm, rpow_neg two_pos.le, inv_inv, ← mul_assoc, ← rpow_add two_pos, ←
@@ -107,7 +107,7 @@ theorem logb_one_add_o {b : ℝ} (f : ℕ → ℝ) (hf : f =o[atTop] fun _ => (1
     (fun k => logb b (1 + f k)) =o[atTop] fun _ => (1 : ℝ) :=
   by
   refine' (is_O.comp_tendsto (logb_is_O_log _ (nhds 1)) _).trans_isLittleO (log_one_add_o _ hf)
-  rw [is_o_one_iff] at hf 
+  rw [is_o_one_iff] at hf
   convert (@tendsto_const_nhds _ _ _ 1 _).add hf using 1
   rw [add_zero]
 
@@ -266,7 +266,7 @@ theorem eleven_two_aux_error_one_other (μ : ℝ) (hμ₀ : 0 < μ) :
     rw [rpow_one, id.def]
   intro k s β hβ' hβ hs
   cases' le_or_lt (s : ℝ) 0 with hs' hs'
-  · rw [← Nat.cast_zero, Nat.cast_le, le_zero_iff] at hs' 
+  · rw [← Nat.cast_zero, Nat.cast_le, le_zero_iff] at hs'
     rw [hs', Nat.cast_zero, MulZeroClass.zero_mul]
     exact norm_nonneg _
   cases' le_or_lt (logb 2 (μ / β)) 0 with hβ'' hβ''
@@ -402,12 +402,12 @@ theorem y_small {μ k n} {χ : TopEdgeLabelling (Fin n) (Fin 2)} {ini : BookConf
   by_contra' h'
   obtain ⟨m, hm⟩ := ramsey_number_le_finset h'.le χ
   simp only [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-    tsub_le_iff_right] at hm 
+    tsub_le_iff_right] at hm
   rcases hm with ⟨⟩
   swap
   · exact hχ ⟨m, 1, hm.2⟩
   refine' hχ ⟨m ∪ (algorithm μ k k ini i).A, 0, _, hm.2.2.trans _⟩
-  · rw [Finset.coe_union, top_edge_labelling.monochromatic_of_union]
+  · rw [Finset.coe_union, TopEdgeLabelling.MonochromaticOf_union]
     refine' ⟨hm.2.1, (algorithm μ k k ini i).red_a, _⟩
     refine' (algorithm μ k k ini i).red_XYA.subset_left _
     exact hm.1.trans (Finset.subset_union_right _ _)
@@ -442,7 +442,7 @@ theorem eleven_three (μ : ℝ) (hμ₀ : 0 < μ) (hμ₁ : μ < 1) :
   clear hf'
   specialize hf k le_rfl μ le_rfl le_rfl n χ hχ ini hini i hi
   replace hf := hf.trans (Nat.cast_le.2 (Y_small hχ hi))
-  rw [mul_right_comm] at hf 
+  rw [mul_right_comm] at hf
   have :
     2 ^
         (-((red_steps μ k k ini ∩ Finset.range i).card +
@@ -456,11 +456,11 @@ theorem eleven_three (μ : ℝ) (hμ₀ : 0 < μ) (hμ₁ : μ < 1) :
     refine' pow_le_pow_of_le_left (by norm_num1) _ _
     rwa [← one_div]
   replace hf := hf.trans' (mul_le_mul_of_nonneg_left this (by positivity))
-  rw [mul_right_comm, ← rpow_add two_pos] at hf 
+  rw [mul_right_comm, ← rpow_add two_pos] at hf
   replace hf := hf.trans' (mul_le_mul_of_nonneg_left (large_X _ _ hn hn') (by positivity))
-  rw [← mul_assoc, ← rpow_add two_pos] at hf 
+  rw [← mul_assoc, ← rpow_add two_pos] at hf
   replace hf := logb_le_logb_of_le one_le_two (by positivity) hf
-  rw [logb_mul, logb_rpow two_pos one_lt_two.ne', ← le_sub_iff_add_le'] at hf 
+  rw [logb_mul, logb_rpow two_pos one_lt_two.ne', ← le_sub_iff_add_le'] at hf
   rotate_left
   · positivity
   · positivity
@@ -494,7 +494,7 @@ theorem eleven_three_special (μ : ℝ) (hμ₀ : 0 < μ) (hμ₁ : μ < 1) :
     by
     rw [Finset.inter_eq_left_iff_subset]
     exact red_steps_subset_red_or_density_steps.trans (Finset.filter_subset _ _)
-  rwa [this] at hf 
+  rwa [this] at hf
 
 theorem ramseyNumber_diag_ge {k : ℕ} (hk : 2 ≤ k) : k ≤ ramseyNumber ![k, k] :=
   by
@@ -509,20 +509,20 @@ theorem two_le_n_of_large_k {k : ℕ} (hk : 4 ≤ k) : 2 ≤ ⌈(ramseyNumber ![
   refine' (Nat.cast_le.2 (hk.trans this)).trans' _
   norm_num1
 
-theorem compRight_labelGraph_apply {V K K' : Type _} {k : K} {χ : TopEdgeLabelling V K} (f : K → K')
+theorem compRight_labelGraph_apply {V K K' : Type*} {k : K} {χ : TopEdgeLabelling V K} (f : K → K')
     (hf : Function.Injective f) : (χ.compRight f).labelGraph (f k) = χ.labelGraph k :=
   by
   ext x y
-  simp only [top_edge_labelling.label_graph_adj, top_edge_labelling.comp_right_get, hf.eq_iff]
+  simp only [TopEdgeLabelling.labelGraph_adj, TopEdgeLabelling.comp_right_get, hf.eq_iff]
 
-theorem compRight_density_apply {V K K' : Type _} [Fintype V] [DecidableEq V] [DecidableEq K]
+theorem compRight_density_apply {V K K' : Type*} [Fintype V] [DecidableEq V] [DecidableEq K]
     [DecidableEq K'] (k : K) {χ : TopEdgeLabelling V K} (f : K → K') (hf : Function.Injective f) :
     (χ.compRight f).density (f k) = χ.density k :=
   by
-  rw [top_edge_labelling.density, top_edge_labelling.density, Rat.cast_inj]
-  exact density_congr _ _ (comp_right_label_graph_apply _ hf)
+  rw [TopEdgeLabelling.density, TopEdgeLabelling.density, Rat.cast_inj]
+  exact density_congr _ _ (comp_right_labelGraph_apply _ hf)
 
-theorem density_sum {V : Type _} [Fintype V] [DecidableEq V] (hV : 2 ≤ Fintype.card V)
+theorem density_sum {V : Type*} [Fintype V] [DecidableEq V] (hV : 2 ≤ Fintype.card V)
     (χ : TopEdgeLabelling V (Fin 2)) : χ.density 0 + (χ.compRight (Equiv.swap 0 1)).density 0 = 1 :=
   by
   have : (χ.comp_right (Equiv.swap 0 1)).density 0 = χ.density 1 :=
@@ -532,10 +532,10 @@ theorem density_sum {V : Type _} [Fintype V] [DecidableEq V] (hV : 2 ≤ Fintype
     exact Equiv.injective _
   rwa [this, density_zero_one, sub_add_cancel]
 
-theorem density_nonneg {V : Type _} [Fintype V] [DecidableEq V] (G : SimpleGraph V)
+theorem density_nonneg {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V)
     [DecidableRel G.Adj] : 0 ≤ G.density := by rw [SimpleGraph.density]; positivity
 
-theorem some_large_density {V : Type _} [Fintype V] [DecidableEq V] (hV : 2 ≤ Fintype.card V)
+theorem some_large_density {V : Type*} [Fintype V] [DecidableEq V] (hV : 2 ≤ Fintype.card V)
     (χ : TopEdgeLabelling V (Fin 2)) :
     1 / 2 ≤ χ.density 0 ∨ 1 / 2 ≤ (χ.compRight (Equiv.swap 0 1)).density 0 :=
   by
@@ -596,7 +596,7 @@ theorem sInf_mem_of_upclosed {s : Set ℝ} {ε : ℝ} (hf' : s.Nonempty)
     by_contra'
     exact hε' (hf'' _ hx _ this)
   have : Inf s + ε ≤ Inf s := le_csInf hf' fun x hx => (this _ hx).le
-  simp only [add_le_iff_nonpos_right] at this 
+  simp only [add_le_iff_nonpos_right] at this
   exact hε.not_le this
 
 theorem le_limsup_add (f : ℕ → ℝ) (hf : BddAbove (Set.range f)) (ε : ℝ) (hε : 0 < ε) :
@@ -617,14 +617,14 @@ theorem exists_nice_χ {k n : ℕ} (hn2 : 2 ≤ n) (hnr : n < ramseyNumber ![k, 
       1 / 2 ≤ χ.density 0 ∧
         ¬∃ (m : Finset (Fin n)) (c : Fin 2), χ.MonochromaticOf m c ∧ ![k, k] c ≤ m.card :=
   by
-  rw [← not_le, ramsey_number_le_iff_fin, is_ramsey_valid, Classical.not_forall] at hnr 
-  obtain ⟨χ : top_edge_labelling (Fin n) (Fin 2), hχ⟩ := hnr
+  rw [← not_le, ramsey_number_le_iff_fin, is_ramsey_valid, Classical.not_forall] at hnr
+  obtain ⟨χ : TopEdgeLabelling (Fin n) (Fin 2), hχ⟩ := hnr
   wlog hχ' : 1 / 2 ≤ χ.density 0 generalizing χ
   · have hd : 1 / 2 ≤ χ.density 0 ∨ 1 / 2 ≤ (χ.comp_right (Equiv.swap 0 1)).density 0 :=
       some_large_density (hn2.trans_eq (Fintype.card_fin _).symm) _
     refine' this (χ.comp_right (Equiv.swap 0 1)) _ (hd.resolve_left hχ')
-    simp only [Fin.exists_fin_two, top_edge_labelling.monochromatic_of, Finset.mem_coe,
-      top_edge_labelling.comp_right_get, Equiv.apply_eq_iff_eq_symm_apply, Ne.def, Equiv.symm_swap,
+    simp only [Fin.exists_fin_two, TopEdgeLabelling.MonochromaticOf, Finset.mem_coe,
+      TopEdgeLabelling.comp_right_get, Equiv.apply_eq_iff_eq_symm_apply, Ne.def, Equiv.symm_swap,
       Equiv.swap_apply_left, Matrix.cons_val_zero, Equiv.swap_apply_right, Matrix.cons_val_one,
       Matrix.head_cons, not_exists, not_or] at hχ ⊢
     intro x
@@ -639,7 +639,7 @@ theorem exists_nicer_χ (k : ℕ) :
               χ.MonochromaticOf m c ∧ ![k, k] c ≤ m.card :=
   by
   cases' lt_or_le k 4 with hk hk
-  · exact ⟨top_edge_labelling.mk (fun _ _ _ => 0) (by simp), fun h => False.elim (hk.not_le h)⟩
+  · exact ⟨TopEdgeLabelling.mk (fun _ _ _ => 0) (by simp), fun h => False.elim (hk.not_le h)⟩
   let n := ⌈(ramsey_number ![k, k] : ℝ) / 2⌉₊
   have hn2 : 2 ≤ n := two_le_n_of_large_k hk
   have hnr : n < ramsey_number ![k, k] :=
@@ -775,7 +775,7 @@ theorem strictAntiOn_binEnt_half_one {b : ℝ} (hb : 1 < b) :
   have :=
     strict_mono_on_bin_ent_zero_half hb ⟨sub_nonneg_of_le hy₂, by linarith⟩
       ⟨sub_nonneg_of_le hx₂, by linarith⟩ (sub_lt_sub_left h _)
-  rw [binEnt_symm, binEnt_symm] at this 
+  rw [binEnt_symm, binEnt_symm] at this
   exact this
 
 theorem strictMonoOn_Icc_iff {f : ℝ → ℝ} {a b : ℝ} :
@@ -855,7 +855,7 @@ theorem twelve_one {b' : ℝ} (hb' : 1 < b') {a b : ℕ} (h : b ≤ a) :
   have : (b / a : ℝ) ^ b * (1 - b / a) ^ (a - b) * a.choose b ≤ 1 :=
     by
     have := add_pow (b / a : ℝ) (1 - b / a) a
-    rw [add_sub_cancel'_right, one_pow] at this 
+    rw [add_sub_cancel'_right, one_pow] at this
     refine' this.symm.trans_ge _
     have : b ∈ Finset.range (a + 1) := by rwa [Finset.mem_range_succ_iff]
     refine' (Finset.single_le_sum _ this).trans_eq' rfl
@@ -879,8 +879,8 @@ theorem twelve_one {b' : ℝ} (hb' : 1 < b') {a b : ℕ} (h : b ≤ a) :
 --   ∃ f : ℕ → ℝ, f =o[at_top] (λ i, (i : ℝ)) ∧
 --     ∀ᶠ k : ℕ in at_top,
 --     ∀ n : ℕ, 2 ≤ n →
---     ∀ χ : top_edge_labelling (fin n) (fin 2),
---     ¬ (∃ (m : finset (fin n)) (c : fin 2), χ.monochromatic_of m c ∧ ![k, k] c ≤ m.card) →
+--     ∀ χ : TopEdgeLabelling (fin n) (fin 2),
+--     ¬ (∃ (m : finset (fin n)) (c : fin 2), χ.MonochromaticOf m c ∧ ![k, k] c ≤ m.card) →
 --     ∀ (ini : book_config χ), 1 / 2 ≤ ini.p → ⌊(n / 2 : ℝ)⌋₊ ≤ ini.Y.card →
 --     let s := (density_steps μ k k ini).card,
 --         t := (red_steps μ k k ini).card
@@ -919,7 +919,7 @@ theorem y_le_x_hMul (μ η : ℝ) (hμ₀ : 0 < μ) (hμ₁ : μ < 1) (hη : 0 <
     rwa [div_le_div_iff, mul_one_sub, mul_one_sub, mul_comm, sub_le_sub_iff_right]
     · exact sub_pos_of_lt (hβμ.trans_lt hμ₁)
     · exact sub_pos_of_lt hμ₁
-  · rw [norm_eq_abs, norm_coe_nat] at hη' 
+  · rw [norm_eq_abs, norm_coe_nat] at hη'
     exact (le_abs_self _).trans hη'
 
 theorem x_le_1 :
@@ -1031,7 +1031,7 @@ theorem F_le_f1 {k t : ℕ} {x : ℝ} (hx : x = t / k) (hk : 0 < k) (hx1 : x ≤
     rwa [hx, one_lt_div, Nat.cast_lt]
     rwa [Nat.cast_pos]
   rcases eq_or_ne t k with (rfl | htk)
-  · rw [div_self] at hx 
+  · rw [div_self] at hx
     rw [hx, ramsey_number_pair_swap]
     · norm_num
     positivity
@@ -1064,7 +1064,7 @@ theorem eleven_one_special (η : ℝ) (hη : 0 < η) :
   have h₁ : ⌈(k : ℝ) * (1 / 100)⌉₊ ≤ k - t :=
     by
     rw [Nat.ceil_le, Nat.cast_sub htk]
-    rw [div_le_iff] at hxu 
+    rw [div_le_iff] at hxu
     · linarith only [hxu]
     positivity
   have h2x : 0 < 2 - x := sub_pos_of_lt (hxu.trans_lt (by norm_num1))
@@ -1091,8 +1091,8 @@ theorem eleven_one_special (η : ℝ) (hη : 0 < η) :
       by
       rw [htk, div_self]
       positivity
-    rw [this] at hxu 
-    norm_num1 at hxu 
+    rw [this] at hxu
+    norm_num1 at hxu
   have : 0 < k - t := Nat.sub_pos_of_lt (lt_of_le_of_ne htk htk')
   have h₅ : (0 : ℝ) < ramsey_number ![k, k - t] :=
     by
@@ -1125,7 +1125,7 @@ theorem eleven_one_large_end {x y : ℝ} (hx : x ∈ Set.Icc (0 : ℝ) 1) (hy : 
     · nlinarith
     linarith only [hx₁]
   have hb := (strict_anti_on_bin_ent_half_one one_lt_two).AntitoneOn
-  rw [antitone_on_Icc_iff] at hb 
+  rw [antitone_on_Icc_iff] at hb
   have : (2 - x) * binEnt 2 (1 / (2 - x)) ≤ 2 * binEnt 2 x :=
     by
     have h : 1 / (2 - x) ≤ 1 := by rw [div_le_one] <;> linarith
@@ -1164,22 +1164,22 @@ theorem eleven_one (η : ℝ) (hη : 0 < η) :
   replace hf₂ : logb 2 R - 1 ≤ logb 2 (ramsey_number ![_, k - t]) + s + t + _ :=
     (R_k_close_to_n k hk₆).trans
       (hf₂ _ (two_le_n_of_large_k hk₆) _ (get_χ_ramsey hk₆) _ (get_ini_p' hk₆) (get_ini_card_Y hk₆))
-  rw [sub_le_iff_le_add] at hf₁ hf₂ 
+  rw [sub_le_iff_le_add] at hf₁ hf₂
   specialize h₁₁ hx₁.1
   have hk₀ : 0 < k := hk₆.trans_lt' (by norm_num1)
   have hx : (t : ℝ) / k ∈ Set.Icc (0 : ℝ) 1 := ⟨by positivity, hx₁.2⟩
   have hy : (s : ℝ) / k ∈ Set.Icc (0 : ℝ) 0.75 := ⟨by positivity, hy₃₄⟩
   have hk₀' : (0 : ℝ) < k := Nat.cast_pos.2 hk₀
-  rw [← g] at hf₁ 
+  rw [← g] at hf₁
   refine' ⟨_, hx, _, hy, _⟩
   rw [← sub_le_iff_le_add, max_min_distrib_right]
   have h₁ : f₁ k + 1 ≤ k * η :=
     by
-    rw [norm_coe_nat, norm_eq_abs, mul_comm] at hη₁ 
+    rw [norm_coe_nat, norm_eq_abs, mul_comm] at hη₁
     exact (le_abs_self _).trans hη₁
   have h₂ : (f₂ k + 1) / k ≤ η / 2 :=
     by
-    rw [norm_coe_nat, norm_eq_abs, abs_le, ← div_le_iff hk₀'] at hη₂ 
+    rw [norm_coe_nat, norm_eq_abs, abs_le, ← div_le_iff hk₀'] at hη₂
     exact hη₂.2
   refine' le_min _ _
   swap

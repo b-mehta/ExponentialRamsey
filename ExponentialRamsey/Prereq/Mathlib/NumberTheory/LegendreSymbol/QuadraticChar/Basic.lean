@@ -17,7 +17,7 @@ open Fintype (card)
 
 open Finset
 
-variable {F : Type _} [Fintype F] [Field F]
+variable {F : Type*} [Fintype F] [Field F]
 
 theorem symmetric_isSquare (hF : card F % 4 ≠ 3) : Symmetric fun x y : F => IsSquare (x - y) :=
   fun _ _ h => by simpa using h.mul (FiniteField.isSquare_neg_one_iff.2 hF)
@@ -32,9 +32,9 @@ theorem card_non_zero_square_non_square [DecidableEq F] (hF : ringChar F ≠ 2) 
     simp (config := { contextual := true }) [not_imp_not]
   rw [this]
   have cf := quadraticChar_sum_zero hF
-  simp only [quadraticChar_apply, quadraticCharFun] at cf 
+  simp only [quadraticChar_apply, quadraticCharFun] at cf
   rw [sum_ite, sum_const_zero, zero_add, sum_ite, sum_const, sum_const, nsmul_eq_mul, nsmul_eq_mul,
-    mul_neg, mul_one, mul_one, add_neg_eq_zero, Nat.cast_inj, filter_filter, filter_filter] at cf 
+    mul_neg, mul_one, mul_one, add_neg_eq_zero, Nat.cast_inj, filter_filter, filter_filter] at cf
   rw [← cf, and_self_iff]
   have :
     ((univ.filter fun x : F => x ≠ 0 ∧ IsSquare x) ∪ univ.filter fun x : F => x ≠ 0 ∧ ¬IsSquare x) ∪
@@ -46,13 +46,13 @@ theorem card_non_zero_square_non_square [DecidableEq F] (hF : ringChar F ≠ 2) 
     exact mem_univ _
   have h' := congr_arg Finset.card this
   rw [card_disjoint_union, card_disjoint_union, card_singleton, card_univ, ← cf, ← two_mul, ←
-    bit0_eq_two_mul, ← bit1] at h' 
+    bit0_eq_two_mul, ← bit1] at h'
   · rw [← h', Nat.bit1_div_two]
   · rw [Finset.disjoint_left]
     simp (config := { contextual := true })
   · simp
 
-theorem card_square (F : Type _) [Fintype F] [Field F] [DecidableEq F] (hF : ringChar F ≠ 2) :
+theorem card_square (F : Type*) [Fintype F] [Field F] [DecidableEq F] (hF : ringChar F ≠ 2) :
     ((univ : Finset F).filterₓ IsSquare).card = card F / 2 + 1 :=
   by
   rw [← (card_non_zero_square_non_square hF).1]

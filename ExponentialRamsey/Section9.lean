@@ -43,7 +43,7 @@ theorem weak_little_o_stirling :
       (f =o[atTop] fun i => (i : ℝ)) ∧ ∀ᶠ n : ℕ in atTop, (n ! : ℝ) = 2 ^ f n * (n / exp 1) ^ n :=
   by
   obtain ⟨f, hf, hf'⟩ := little_o_stirling
-  rw [is_o_one_iff] at hf 
+  rw [is_o_one_iff] at hf
   refine' ⟨fun n => (log 2)⁻¹ * (log (1 + f n) + (1 / 2 * log (2 * π) + 1 / 2 * log n)), _, _⟩
   · refine' is_o.const_mul_left _ _
     refine' is_o.add _ _
@@ -93,7 +93,7 @@ theorem nine_four_log_aux :
 theorem nine_four_aux_aux {f : ℕ → ℝ} (hf : f =o[atTop] fun i => (1 : ℝ)) :
     ∀ᶠ l : ℕ in atTop, ∀ k, l ≤ k → 2 ^ (-3 : ℝ) ≤ (1 + f (k + l)) / ((1 + f k) * (1 + f l)) :=
   by
-  rw [is_o_one_iff] at hf 
+  rw [is_o_one_iff] at hf
   have h₁ : (-1 / 2 : ℝ) < 0 := by norm_num
   filter_upwards [eventually_gt_at_top 0, top_adjuster (hf.eventually (eventually_ge_nhds h₁)),
     top_adjuster (hf.eventually (eventually_le_nhds zero_lt_one))] with l hn1 hneg h1 k hlk
@@ -245,7 +245,7 @@ theorem end_ramsey_number_pow_isLittleO :
     rpow_def_of_pos (Nat.cast_pos.2 _)]
   swap
   · exact hl₁.trans hlk
-  rw [ramsey_number_pair_swap] at hl 
+  rw [ramsey_number_pair_swap] at hl
   refine' (Nat.cast_le.2 (hl.trans ramsey_number_le_right_pow_left')).trans _
   rw [Nat.cast_pow, ← rpow_nat_cast]
   refine' rpow_le_rpow_of_exponent_le (Nat.one_le_cast.2 (hl₁.trans hlk)) _
@@ -276,7 +276,7 @@ theorem pow_div_le_choose {n k : ℕ} (h : k ≤ n) : (n / k : ℝ) ^ k ≤ n.ch
         positivity
       simp
     intro x hx
-    rw [mem_range] at hx 
+    rw [mem_range] at hx
     have : 0 < k - x := Nat.sub_pos_of_lt hx
     rw [Nat.sub_sub, add_comm 1, ← Nat.sub_sub, Nat.sub_add_cancel, div_le_div_iff,
       Nat.cast_sub hx.le, mul_sub, sub_mul, sub_le_sub_iff_left, mul_comm, ← Nat.cast_mul, ←
@@ -297,7 +297,7 @@ theorem exp_le_one_sub_inv {x : ℝ} (hx : x < 1) : exp x ≤ (1 - x)⁻¹ :=
 theorem le_of_gamma_le_half {l k : ℕ} {γ : ℝ} (h : γ = l / (k + l)) (hl : 0 < l) (hγ : γ ≤ 1 / 2) :
     l ≤ k :=
   by
-  rwa [h, div_le_div_iff, one_mul, mul_comm, two_mul, add_le_add_iff_right, Nat.cast_le] at hγ 
+  rwa [h, div_le_div_iff, one_mul, mul_comm, two_mul, add_le_add_iff_right, Nat.cast_le] at hγ
   · exact lt_add_of_le_of_pos (Nat.cast_nonneg k) (Nat.cast_pos.2 hl)
   · exact two_pos
 
@@ -410,7 +410,7 @@ theorem nine_three_part_one :
     by positivity
   replace hn := hn.trans' (mul_le_mul_of_nonneg_left hc (exp_pos _).le)
   replace hgk := (mul_le_mul_of_nonneg_left this h₅.le).trans hgk
-  rw [← mul_assoc] at hgk 
+  rw [← mul_assoc] at hgk
   replace hgk := (mul_le_mul_of_nonneg_left hn (mul_nonneg h₅.le (by norm_num1))).trans hgk
   replace hgk := hgk.trans hfk
   rw [sub_add, sub_sub, sub_eq_add_neg (f₁ k), rpow_add two_pos]
@@ -501,11 +501,11 @@ theorem nine_three_part_two :
     refine' rpow_le_rpow (exp_pos _).le (exp_le_one_sub_inv hγ₁) (sub_nonneg_of_le _)
     rw [Nat.cast_le]
     exact four_four_red _ hχ _
-  rw [mul_right_comm] at h₁ 
+  rw [mul_right_comm] at h₁
   clear hn hδ hχ hini hn' hγ
   replace h₁ := (mul_le_mul_of_nonneg_left this (by positivity)).trans h₁
   rw [neg_mul, Real.exp_neg, ← inv_div, inv_pow, ← mul_inv, inv_mul_eq_div, div_le_iff, ←
-    le_log_iff_exp_le, log_mul, log_mul, log_exp, log_pow, log_rpow two_pos, mul_comm (f k)] at h₁ 
+    le_log_iff_exp_le, log_mul, log_mul, log_exp, log_pow, log_rpow two_pos, mul_comm (f k)] at h₁
   rotate_left
   · positivity
   · positivity
@@ -541,13 +541,13 @@ theorem hMul_log_ineq {x : ℝ} (hx : 0 < x) : -x * log x ≤ exp (-1) :=
   by
   have := add_one_le_exp (-log x - 1)
   rwa [sub_add_cancel, sub_eq_add_neg, Real.exp_add, Real.exp_neg, exp_log hx, inv_mul_eq_div,
-    le_div_iff hx, mul_comm, mul_neg, ← neg_mul] at this 
+    le_div_iff hx, mul_comm, mul_neg, ← neg_mul] at this
 
 theorem hMul_log_ineq_special {c x : ℝ} (hc : 0 < c) (hx : 0 < x) : x * log (c / x) ≤ c / exp 1 :=
   by
   have := mul_log_ineq (div_pos hx hc)
   rwa [neg_mul, ← mul_neg, ← log_inv, inv_div, div_mul_eq_mul_div, div_le_iff hc, Real.exp_neg,
-    inv_mul_eq_div] at this 
+    inv_mul_eq_div] at this
 
 theorem nine_three_part_three (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
     ∃ f : ℕ → ℝ,
@@ -587,7 +587,7 @@ theorem nine_three_part_three (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
   specialize hβ k hlk γ hγl hγu n χ ini hini
   have hγ₀' : 0 < γ := hγ₀.trans_le hγl
   have hγ₁' : γ < 1 := hγu.trans_lt (by norm_num)
-  rw [mul_div_assoc, mul_right_comm, add_assoc, ← sub_le_iff_le_add] at hl 
+  rw [mul_div_assoc, mul_right_comm, add_assoc, ← sub_le_iff_le_add] at hl
   replace hl :=
     hl.trans
       (mul_le_mul_of_nonneg_right (mul_log_ineq_special hγ₀' hβ)
@@ -598,7 +598,7 @@ theorem nine_three_part_three (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
   rw [mul_div_assoc', ← div_mul_eq_mul_div, div_div, mul_sub, sub_sub, add_comm, ← sub_sub,
     sub_le_iff_le_add, ← add_mul, div_eq_mul_inv, ← mul_add_one, ← one_div, add_comm _ (1 : ℝ), ←
     div_le_iff', ← div_div, sub_div, div_eq_mul_inv, mul_div_cancel_left, add_div, mul_comm δ,
-    mul_div_assoc, ← sub_sub, ← mul_one_sub, sub_mul, div_mul_eq_mul_div, mul_div_assoc] at hl 
+    mul_div_assoc, ← sub_sub, ← mul_one_sub, sub_mul, div_mul_eq_mul_div, mul_div_assoc] at hl
   · refine' hl.trans' (sub_le_sub_left _ _)
     rw [mul_comm (1 / γ₀)]
     refine' mul_le_mul (le_abs_self _) (div_le_div zero_le_one _ hγ₀ hγl) _ (abs_nonneg _)
@@ -806,7 +806,7 @@ theorem nine_three (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
   have hl₀ : 0 < l := hk₀ l le_rfl
   specialize h9 k γ hγ hγl hγu hlk δ hδ n χ hχ ini hini hn' hn
   specialize herr k hlk
-  rw [norm_eq_abs, norm_coe_nat, abs_le] at herr 
+  rw [norm_eq_abs, norm_coe_nat, abs_le] at herr
   refine' h9.trans' _
   rw [mul_rotate]
   refine' (add_le_add_left herr.1 _).trans' _
@@ -870,7 +870,7 @@ theorem fact_d_two_part_one {l k t : ℕ} (h : t ≤ k) :
   rw [this, choose_ratio h, ← prod_mul_distrib]
   refine' prod_congr rfl _
   intro i hi
-  rw [mem_range] at hi 
+  rw [mem_range] at hi
   have hik : i < k := hi.trans_le h
   have : 0 < k := pos_of_gt hik
   have : 0 < k - i := Nat.sub_pos_of_lt hik
@@ -888,7 +888,7 @@ theorem fact_d_two_part_two {l k t : ℕ} (h : t ≤ k) :
   rw [mul_sum, Real.exp_sum]
   refine' Finset.prod_le_prod _ _
   · intro i hi
-    rw [mem_range] at hi 
+    rw [mem_range] at hi
     have hik : i < k := hi.trans_le h
     have : 0 < k := pos_of_gt hik
     have : 0 < k - i := Nat.sub_pos_of_lt hik
@@ -897,7 +897,7 @@ theorem fact_d_two_part_two {l k t : ℕ} (h : t ≤ k) :
     rw [← Nat.cast_add, ← Nat.cast_mul, ← Nat.cast_mul, Nat.cast_le]
     exact Nat.mul_le_mul hik.le (Nat.le_add_left _ _)
   intro i hi
-  rw [mem_range] at hi 
+  rw [mem_range] at hi
   refine' (add_one_le_exp _).trans' _
   rw [neg_div, neg_mul, neg_add_eq_sub, sub_le_sub_iff_left, mul_comm, mul_div_assoc']
   have hik : i < k := hi.trans_le h
@@ -1086,11 +1086,11 @@ theorem nine_five :
     by
     refine' (Nat.cast_le.2 hn').trans' ((ge_floor _).trans_eq' _)
     · rw [one_le_div (zero_lt_two' ℝ)]
-      rw [← @Nat.cast_le ℝ, Nat.cast_two] at hn'' 
+      rw [← @Nat.cast_le ℝ, Nat.cast_two] at hn''
       exact hn''
     rw [div_div, div_eq_mul_inv, mul_comm, ← sq, rpow_neg zero_lt_two.le, rpow_two]
   replace this := (mul_le_mul_of_nonneg_left hn (by positivity)).trans this
-  rw [← mul_assoc] at this 
+  rw [← mul_assoc] at this
   have h₉₆ := nine_six l k (red_steps γ k l ini).card γ (hk₀ k hlk) htk hγ
   replace this := (mul_le_mul_of_nonneg_left h₉₆ (by positivity)).trans this
   clear h₉₆
@@ -1112,36 +1112,36 @@ theorem nine_five :
 
 section
 
-variable {V : Type _}
+variable {V : Type*}
 
 open Fintype
 
 section
 
 /-- The density of a simple graph. -/
-def density [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSetEmbedding] : ℚ :=
+def density [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet] : ℚ :=
   G.edgeFinset.card / (card V).choose 2
 
-theorem density_congr [Fintype V] (G₁ G₂ : SimpleGraph V) [Fintype G₁.edgeSetEmbedding]
-    [Fintype G₂.edgeSetEmbedding] (h : G₁ = G₂) : G₁.density = G₂.density :=
+theorem density_congr [Fintype V] (G₁ G₂ : SimpleGraph V) [Fintype G₁.edgeSet]
+    [Fintype G₂.edgeSet] (h : G₁ = G₂) : G₁.density = G₂.density :=
   by
   rw [density, density, edge_finset_card, edge_finset_card]
   congr 2
   refine' card_congr' _
   rw [h]
 
-theorem edgeFinset_eq_filter [Fintype (Sym2 V)] (G : SimpleGraph V) [Fintype G.edgeSetEmbedding]
+theorem edgeFinset_eq_filter [Fintype (Sym2 V)] (G : SimpleGraph V) [Fintype G.edgeSet]
     [DecidableRel G.Adj] : G.edgeFinset = univ.filterₓ (· ∈ Sym2.fromRel G.symm) :=
   by
   rw [← Finset.coe_inj, coe_edge_finset, coe_filter, coe_univ, Set.sep_univ]
   rfl
 
-theorem univ_image_quotient_mk' {α : Type _} (s : Finset α) [DecidableEq α] :
+theorem univ_image_quotient_mk' {α : Type*} (s : Finset α) [DecidableEq α] :
     s.offDiag.image Quotient.mk' = s.Sym2.filterₓ fun a => ¬a.IsDiag :=
   (Sym2.filter_image_quotient_mk''_not_isDiag _).symm
 
 theorem edgeFinset_eq_filter_filter [DecidableEq V] [Fintype (Sym2 V)] (G : SimpleGraph V)
-    [Fintype G.edgeSetEmbedding] [DecidableRel G.Adj] :
+    [Fintype G.edgeSet] [DecidableRel G.Adj] :
     G.edgeFinset = (univ.filterₓ fun a : Sym2 V => ¬a.IsDiag).filterₓ (· ∈ Sym2.fromRel G.symm) :=
   by
   rw [edge_finset_eq_filter, filter_filter]
@@ -1153,16 +1153,16 @@ theorem edgeFinset_eq_filter_filter [DecidableEq V] [Fintype (Sym2 V)] (G : Simp
   exact h.ne
 
 theorem edgeFinset_eq_filter' [Fintype V] [DecidableEq V] (G : SimpleGraph V)
-    [Fintype G.edgeSetEmbedding] [DecidableRel G.Adj] :
+    [Fintype G.edgeSet] [DecidableRel G.Adj] :
     G.edgeFinset = (univ.offDiag.image Quotient.mk').filterₓ (· ∈ Sym2.fromRel G.symm) := by
   rw [edge_finset_eq_filter_filter, ← sym2_univ, ← univ_image_quotient_mk]
 
-theorem sum_sym2 {α β : Type _} [DecidableEq α] [AddCommMonoid β] {s : Finset α} {f : Sym2 α → β} :
+theorem sum_sym2 {α β : Type*} [DecidableEq α] [AddCommMonoid β] {s : Finset α} {f : Sym2 α → β} :
     2 • ∑ x in s.offDiag.image Quotient.mk', f x = ∑ x in s.offDiag, f (Quotient.mk' x) :=
   by
   rw [smul_sum, sum_image']
   rintro ⟨x, y⟩ hxy
-  rw [mem_off_diag] at hxy 
+  rw [mem_off_diag] at hxy
   obtain ⟨hx : x ∈ s, hy : y ∈ s, hxy : x ≠ y⟩ := hxy
   have hxy' : y ≠ x := hxy.symm
   have : (s.off_diag.filter fun z => ⟦z⟧ = ⟦(x, y)⟧) = ({(x, y), (y, x)} : Finset _) :=
@@ -1174,13 +1174,13 @@ theorem sum_sym2 {α β : Type _} [DecidableEq α] [AddCommMonoid β] {s : Finse
   rw [this, sum_pair, Sym2.eq_swap, two_smul]
   simpa using hxy
 
-theorem sum_offDiag {α β : Type _} [DecidableEq α] [AddCommMonoid β] {s : Finset α}
+theorem sum_offDiag {α β : Type*} [DecidableEq α] [AddCommMonoid β] {s : Finset α}
     {f : α × α → β} : ∑ x in s.offDiag, f x = ∑ x in s, ∑ y in s.eraseₓ x, f (x, y) :=
   by
   rw [sum_sigma']
   refine' sum_bij (fun x _ => ⟨x.1, x.2⟩) _ _ _ _
   · rintro ⟨x, y⟩ h
-    rw [mem_off_diag] at h 
+    rw [mem_off_diag] at h
     rw [mem_sigma, mem_erase, Ne.def]
     exact ⟨h.1, Ne.symm h.2.2, h.2.1⟩
   · rintro ⟨x, y⟩ h
@@ -1188,12 +1188,12 @@ theorem sum_offDiag {α β : Type _} [DecidableEq α] [AddCommMonoid β] {s : Fi
   · rintro ⟨a₁, a₂⟩ ⟨a₃, a₄⟩ _ _ ⟨⟩
     rfl
   rintro ⟨a, b⟩ h
-  simp only [mem_sigma, mem_erase] at h 
+  simp only [mem_sigma, mem_erase] at h
   refine' ⟨(a, b), _⟩
   simp [h.1, h.2.2, Ne.symm h.2.1]
 
 theorem density_eq_average [Fintype V] [DecidableEq V] (G : SimpleGraph V)
-    [Fintype G.edgeSetEmbedding] [DecidableRel G.Adj] :
+    [Fintype G.edgeSet] [DecidableRel G.Adj] :
     G.density =
       (card V * (card V - 1))⁻¹ * ∑ x : V, ∑ y in univ.eraseₓ x, if G.Adj x y then 1 else 0 :=
   by
@@ -1203,7 +1203,7 @@ theorem density_eq_average [Fintype V] [DecidableEq V] (G : SimpleGraph V)
   rfl
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:107:6: warning: expanding binder group (x y) -/
-theorem density_eq_average' [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSetEmbedding]
+theorem density_eq_average' [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet]
     [DecidableRel G.Adj] :
     G.density = (card V * (card V - 1))⁻¹ * ∑ (x : V) (y : V), if G.Adj x y then 1 else 0 := by
   classical
@@ -1211,26 +1211,26 @@ theorem density_eq_average' [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSetEm
   congr 2 with x : 1
   simp
 
-theorem density_eq_average_neighbors [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSetEmbedding]
+theorem density_eq_average_neighbors [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet]
     [DecidableRel G.Adj] :
     G.density = (card V * (card V - 1))⁻¹ * ∑ x : V, (G.neighborFinset x).card :=
   by
   rw [density_eq_average']
   congr 2 with x : 1
-  simp [neighbor_finset_eq_filter]
+  simp [neighborFinset_eq_filter]
 
-theorem density_compl [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSetEmbedding]
-    [Fintype Gᶜ.edgeSetEmbedding] (h : 2 ≤ card V) : Gᶜ.density = 1 - G.density :=
+theorem density_compl [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet]
+    [Fintype Gᶜ.edgeSet] (h : 2 ≤ card V) : Gᶜ.density = 1 - G.density :=
   by
   rw [SimpleGraph.density, card_compl_edge_finset_eq, Nat.cast_sub edge_finset_card_le, ←
     one_sub_div, SimpleGraph.density]
   rw [Nat.cast_ne_zero, ← pos_iff_ne_zero]
   exact Nat.choose_pos h
 
-theorem sum_ite_fintype {α β : Type _} [Fintype α] [DecidableEq α] [AddCommMonoid β] (s : Finset α)
+theorem sum_ite_fintype {α β : Type*} [Fintype α] [DecidableEq α] [AddCommMonoid β] (s : Finset α)
     (f : α → β) : ∑ x in s, f x = ∑ x, ite (x ∈ s) (f x) 0 := by simp only [sum_ite_mem, univ_inter]
 
-theorem sum_powersetCard_erase {α β : Type _} [Fintype α] [DecidableEq α] [AddCommMonoid β] {n : ℕ}
+theorem sum_powersetCard_erase {α β : Type*} [Fintype α] [DecidableEq α] [AddCommMonoid β] {n : ℕ}
     {s : Finset α} (f : Finset α → α → β) :
     ∑ U in powersetCard n s, ∑ y in Uᶜ, f U y = ∑ y, ∑ U in powersetCard n (s.eraseₓ y), f U y :=
   by
@@ -1242,7 +1242,7 @@ theorem sum_powersetCard_erase {α β : Type _} [Fintype α] [DecidableEq α] [A
   simp [mem_powerset_len, subset_erase]
   tauto
 
-theorem powersetCard_filter_mem {α : Type _} [DecidableEq α] {n : ℕ} {s : Finset α} {x : α}
+theorem powersetCard_filter_mem {α : Type*} [DecidableEq α] {n : ℕ} {s : Finset α} {x : α}
     (hx : x ∈ s) :
     ((powersetCard (n + 1) s).filterₓ fun U => x ∈ U) =
       (powersetCard n (s.eraseₓ x)).image (insert x) :=
@@ -1253,7 +1253,7 @@ theorem powersetCard_filter_mem {α : Type _} [DecidableEq α] {n : ℕ} {s : Fi
   · simp (config := { contextual := true }) [mem_powerset_len, subset_erase]
   · simp
 
-theorem sum_powersetCard_insert {α β : Type _} [DecidableEq α] [AddCommMonoid β] {n : ℕ}
+theorem sum_powersetCard_insert {α β : Type*} [DecidableEq α] [AddCommMonoid β] {n : ℕ}
     {s : Finset α} (f : Finset α → α → β) :
     ∑ U in powersetCard (n + 1) s, ∑ x in U, f U x =
       ∑ x in s, ∑ U in powersetCard n (s.eraseₓ x), f (insert x U) x :=
@@ -1270,11 +1270,11 @@ theorem sum_powersetCard_insert {α β : Type _} [DecidableEq α] [AddCommMonoid
   rw [this]
   simp only [sum_filter, @sum_comm _ _ α]
   refine' sum_congr rfl fun U hU => _
-  simp only [mem_powerset_len] at hU 
+  simp only [mem_powerset_len] at hU
   simp only [sum_ite_mem]
   rw [(inter_eq_right_iff_subset _ _).2 hU.1]
 
-theorem erase_eq_filter {α : Type _} [DecidableEq α] {s : Finset α} (a : α) :
+theorem erase_eq_filter {α : Type*} [DecidableEq α] {s : Finset α} (a : α) :
     s.eraseₓ a = s.filterₓ (· ≠ a) :=
   by
   rw [filter_not, Finset.filter_eq']
@@ -1282,7 +1282,7 @@ theorem erase_eq_filter {α : Type _} [DecidableEq α] {s : Finset α} (a : α) 
   · rw [sdiff_singleton_eq_erase]
   · rw [erase_eq_of_not_mem h, sdiff_empty]
 
-theorem sum_pair_subset {α β : Type _} [Fintype α] [DecidableEq α] [AddCommMonoid β] {n : ℕ}
+theorem sum_pair_subset {α β : Type*} [Fintype α] [DecidableEq α] [AddCommMonoid β] {n : ℕ}
     {s : Finset α} (f : Finset α → α → α → β) :
     ∑ U in powersetCard (n + 1) s, ∑ x in U, ∑ y in Uᶜ, f U x y =
       ∑ x in s, ∑ y in univ.eraseₓ x, ∑ U in powersetCard n (s \ {x, y}), f (insert x U) x y :=
@@ -1314,7 +1314,7 @@ theorem choose_helper {n k : ℕ} (h : k + 1 < n) :
   obtain ⟨n, rfl⟩ := le_iff_exists_add'.1 this
   rw [add_tsub_cancel_right]
   clear this h
-  simp only [add_le_add_iff_right] at this 
+  simp only [add_le_add_iff_right] at this
   rw [one_div, mul_left_comm, ← mul_inv, ← one_div, ← one_div, mul_one_div, mul_left_comm, ←
     Nat.cast_add_one, ← Nat.cast_sub, ← Nat.cast_mul, ← Nat.choose_mul_succ_eq, ← Nat.cast_mul, ←
     mul_assoc, mul_comm (k + 1), ← Nat.succ_mul_choose_eq, mul_comm (n + 1), mul_assoc,
@@ -1328,7 +1328,7 @@ theorem choose_helper {n k : ℕ} (h : k + 1 < n) :
 variable [Fintype V]
 
 theorem density_eq_average_partition [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj]
-    [Fintype G.edgeSetEmbedding] (n : ℕ) (hn₀ : 0 < n) (hn : n < card V) :
+    [Fintype G.edgeSet] (n : ℕ) (hn₀ : 0 < n) (hn : n < card V) :
     G.density = ((card V).choose n)⁻¹ * ∑ U in powersetCard n univ, G.edgeDensity U (Uᶜ) :=
   by
   cases n
@@ -1351,14 +1351,14 @@ theorem density_eq_average_partition [DecidableEq V] (G : SimpleGraph V) [Decida
     by
     refine' sum_congr rfl fun U hU => _
     simp only [mem_powerset_len, subset_sdiff, disjoint_insert_right, disjoint_singleton_right,
-      subset_univ, true_and_iff, and_assoc'] at hU 
+      subset_univ, true_and_iff, and_assoc'] at hU
     rw [card_compl, card_insert_of_not_mem hU.1, hU.2.2, Nat.cast_sub hn.le, Nat.cast_add_one]
   rw [this, sum_const, card_powerset_len, card_sdiff (subset_univ _), card_univ,
     card_doubleton h.ne, mul_one, nsmul_eq_mul]
   rw [choose_helper hn]
 
 theorem exists_density_edgeDensity [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj]
-    [Fintype G.edgeSetEmbedding] (n : ℕ) (hn₀ : 0 < n) (hn : n < card V) :
+    [Fintype G.edgeSet] (n : ℕ) (hn₀ : 0 < n) (hn : n < card V) :
     ∃ U : Finset V, U.card = n ∧ G.density ≤ G.edgeDensity U (Uᶜ) :=
   by
   suffices ∃ U ∈ powerset_len n (univ : Finset V), G.density ≤ G.edge_density U (Uᶜ) by
@@ -1372,7 +1372,7 @@ theorem exists_density_edgeDensity [DecidableEq V] (G : SimpleGraph V) [Decidabl
   exact (Nat.choose_pos hn.le).ne'
 
 theorem exists_equibipartition_edgeDensity (G : SimpleGraph V) [DecidableRel G.Adj]
-    [Fintype G.edgeSetEmbedding] (hn : 2 ≤ card V) :
+    [Fintype G.edgeSet] (hn : 2 ≤ card V) :
     ∃ X Y : Finset V,
       Disjoint X Y ∧
         ⌊(card V / 2 : ℝ)⌋₊ ≤ X.card ∧
@@ -1390,8 +1390,8 @@ theorem exists_equibipartition_edgeDensity (G : SimpleGraph V) [DecidableRel G.A
 end
 
 /-- The density of a label in the edge labelling. -/
-def TopEdgeLabelling.density [Fintype V] {K : Type _} (χ : TopEdgeLabelling V K) (k : K)
-    [Fintype (χ.labelGraph k).edgeSetEmbedding] : ℝ :=
+def TopEdgeLabelling.density [Fintype V] {K : Type*} (χ : TopEdgeLabelling V K) (k : K)
+    [Fintype (χ.labelGraph k).edgeSet] : ℝ :=
   density (χ.labelGraph k)
 
 theorem exists_equibipartition_col_density {n : ℕ} (χ : TopEdgeLabelling (Fin n) (Fin 2))
@@ -1400,19 +1400,19 @@ theorem exists_equibipartition_col_density {n : ℕ} (χ : TopEdgeLabelling (Fin
       χ.density 0 ≤ ini.p ∧ ⌊(n / 2 : ℝ)⌋₊ ≤ ini.X.card ∧ ⌊(n / 2 : ℝ)⌋₊ ≤ ini.y.card :=
   by
   obtain ⟨X, Y, hd, hX, hY, p⟩ :=
-    exists_equibipartition_edge_density (χ.label_graph 0) (by simpa using hn)
-  rw [Fintype.card_fin] at hX hY 
+    exists_equibipartition_edge_density (χ.labelGraph 0) (by simpa using hn)
+  rw [Fintype.card_fin] at hX hY
   refine' ⟨⟨X, Y, ∅, ∅, hd, _, _, _, _, _, _, _, _, _⟩, Rat.cast_le.2 p, hX, hY⟩
   all_goals simp
 
 theorem density_zero_one [Fintype V] (χ : TopEdgeLabelling V (Fin 2))
-    [Fintype (χ.labelGraph 0).edgeSetEmbedding] [Fintype (χ.labelGraph 1).edgeSetEmbedding]
+    [Fintype (χ.labelGraph 0).edgeSet] [Fintype (χ.labelGraph 1).edgeSet]
     (h : 2 ≤ card V) : χ.density 0 = 1 - χ.density 1 := by
   classical
-  rw [top_edge_labelling.density, top_edge_labelling.density, ← Rat.cast_one, ← Rat.cast_sub,
-    Rat.cast_inj, ← density_compl (χ.label_graph 1) h]
+  rw [TopEdgeLabelling.density, TopEdgeLabelling.density, ← Rat.cast_one, ← Rat.cast_sub,
+    Rat.cast_inj, ← density_compl (χ.labelGraph 1) h]
   refine' density_congr _ _ _
-  rw [← to_edge_labelling_label_graph_compl, label_graph_to_edge_labelling]
+  rw [← to_EdgeLabelling_labelGraph_compl, labelGraph_to_EdgeLabelling]
 
 end
 
@@ -1580,12 +1580,12 @@ theorem nine_two_part_five {k t : ℕ} {η γ γ₀ δ fk : ℝ} (hη₀ : 0 ≤
 -- TODO: move
 section
 
-variable {V K : Type _} {n : K → ℕ}
+variable {V K : Type*} {n : K → ℕ}
 
 theorem ramsey_number_le_finset_aux {s : Finset V} (C : TopEdgeLabelling V K)
     (h :
       ∃ (m : Finset s) (c : K),
-        (C.pullback (Function.Embedding.subtype _ : s ↪ V)).MonochromaticOf m c ∧ n c ≤ m.card) :
+        (C.pullback (Function.Embedding.subType* : s ↪ V)).MonochromaticOf m c ∧ n c ≤ m.card) :
     ∃ (m : Finset V) (c : K), m ⊆ s ∧ C.MonochromaticOf m c ∧ n c ≤ m.card :=
   by
   obtain ⟨m, c, hm, hn⟩ := h
@@ -1602,7 +1602,7 @@ theorem ramseyNumber_le_finset [DecidableEq K] [Fintype K] {s : Finset V}
     ∃ (m : Finset V) (c : K), m ⊆ s ∧ C.MonochromaticOf m c ∧ n c ≤ m.card :=
   by
   have : ramsey_number n ≤ Fintype.card s := by rwa [Fintype.card_coe]
-  rw [ramsey_number_le_iff, is_ramsey_valid] at this 
+  rw [ramsey_number_le_iff, is_ramsey_valid] at this
   exact ramsey_number_le_finset_aux _ (this _)
 
 theorem ramseyNumber_le_choose' {i j : ℕ} : ramseyNumber ![i, j] ≤ (i + j).choose i :=
@@ -1656,7 +1656,7 @@ theorem nine_two (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
   specialize h₉₅ k hlk γ δ η hγ hγl hδ₀ hδ.le hη₀ hp₀ n χ hχ ini hini hYc hn
   specialize hfk k hlk
   clear hδ'
-  rw [norm_eq_abs, abs_le', norm_coe_nat] at hfk 
+  rw [norm_eq_abs, abs_le', norm_coe_nat] at hfk
   have :
     1 ≤
       exp (-δ * k + f k) * (1 - γ - η) ^ (γ * ↑(red_steps γ k l ini).card / (1 - γ)) *
@@ -1664,15 +1664,15 @@ theorem nine_two (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
         exp (γ * ↑(red_steps γ k l ini).card ^ 2 / (2 * ↑k)) :=
     nine_two_part_five hη₀ hγu hηγ hγ₀' (hp₀.trans' (by norm_num1)) h₉₃ (hk₀ k hlk) hδ hγl hγ₁ hfk.2
   replace h₉₅ := h₉₅.trans' (mul_le_mul_of_nonneg_right this (Nat.cast_nonneg _))
-  rw [one_mul, Nat.cast_le, ← Nat.choose_symm_add] at h₉₅ 
+  rw [one_mul, Nat.cast_le, ← Nat.choose_symm_add] at h₉₅
   have := ramsey_number_le_finset (ramsey_number_le_choose'.trans h₉₅) χ
   simp only [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, tsub_le_iff_left,
-    Matrix.head_cons] at this hχ 
+    Matrix.head_cons] at this hχ
   obtain ⟨m, ⟨hm₀, hm₁, hm₂⟩ | ⟨hm₀, hm₁, hm₂⟩⟩ := this
   swap
   · exact hχ ⟨m, Or.inr ⟨hm₁, hm₂⟩⟩
   refine' hχ ⟨(end_state γ k l ini).A ∪ m, Or.inl ⟨_, hm₂.trans _⟩⟩
-  · rw [coe_union, top_edge_labelling.monochromatic_of_union]
+  · rw [coe_union, TopEdgeLabelling.MonochromaticOf_union]
     refine' ⟨(end_state γ k l ini).red_a, hm₁, _⟩
     exact (end_state γ k l ini).red_XYA.symm.subset_right (hm₀.trans (subset_union_right _ _))
   rwa [card_union_eq, add_le_add_iff_right]
@@ -1680,37 +1680,37 @@ theorem nine_two (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
   exact (end_state γ k l ini).hYA.symm.mono_right hm₀
 
 /-- A finite set viewed as a finset is equivalent to itself. -/
-def Equiv.toFinset {α : Type _} {s : Set α} [Fintype s] : s.toFinset ≃ s :=
+def Equiv.toFinset {α : Type*} {s : Set α} [Fintype s] : s.toFinset ≃ s :=
   ⟨fun x => ⟨x, by simpa using x.2⟩, fun x => ⟨x, by simp⟩, fun x => Subtype.ext rfl, fun x =>
     Subtype.ext rfl⟩
 
-theorem Finset.card_congr_of_equiv {α β : Type _} {s : Finset α} {t : Finset β} (e : s ≃ t) :
+theorem Finset.card_congr_of_equiv {α β : Type*} {s : Finset α} {t : Finset β} (e : s ≃ t) :
     s.card = t.card :=
   by
   refine'
     Finset.card_congr (fun x hx => e ⟨x, hx⟩) (fun x hx => (e _).2) (fun x y hx hy h => _)
       fun x hx => ⟨e.symm ⟨x, hx⟩, (e.symm _).2, _⟩
-  · rw [← Subtype.ext_iff, Equiv.apply_eq_iff_eq, Subtype.ext_iff] at h 
+  · rw [← Subtype.ext_iff, Equiv.apply_eq_iff_eq, Subtype.ext_iff] at h
     exact h
   rw [Subtype.coe_eta, Equiv.apply_symm_apply, Subtype.coe_mk]
 
-theorem density_graph_iso {V V' : Type _} [Fintype V] [Fintype V'] [DecidableEq V] [DecidableEq V']
+theorem density_graph_iso {V V' : Type*} [Fintype V] [Fintype V'] [DecidableEq V] [DecidableEq V']
     {G : SimpleGraph V} {G' : SimpleGraph V'} [DecidableRel G.Adj] [DecidableRel G'.Adj]
     (e : G ≃g G') : G.density = G'.density :=
   by
   rw [SimpleGraph.density, e.card_eq_of_iso, SimpleGraph.edgeFinset, SimpleGraph.density,
     SimpleGraph.edgeFinset, finset.card_congr_of_equiv]
-  exact equiv.to_finset.trans (e.map_edge_set.trans equiv.to_finset.symm)
+  exact equiv.to_finset.trans (e.map_edgeSet.trans equiv.to_finset.symm)
 
 /-- Pulling back a colouring along an equivalence induces a graph isomorphism -/
-def labelGraphIso {V V' K : Type _} {χ : TopEdgeLabelling V K} (k : K) (f : V' ≃ V) :
+def labelGraphIso {V V' K : Type*} {χ : TopEdgeLabelling V K} (k : K) (f : V' ≃ V) :
     (χ.pullback f.toEmbedding).labelGraph k ≃g χ.labelGraph k
     where
   toEquiv := f
   map_rel_iff' := by
     intro x y
     simp only [Ne.def, EmbeddingLike.apply_eq_iff_eq, Equiv.coe_toEmbedding,
-      top_edge_labelling.label_graph_adj, top_edge_labelling.pullback_get]
+      TopEdgeLabelling.labelGraph_adj, TopEdgeLabelling.pullback_get]
 
 theorem nine_two_variant (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
     ∀ᶠ l : ℕ in atTop,
@@ -1722,24 +1722,24 @@ theorem nine_two_variant (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
                 δ = γ / 20 →
                   0 ≤ η →
                     η ≤ γ / 15 →
-                      ∀ V : Type _,
+                      ∀ V : Type*,
                         DecidableEq V →
                           Fintype V →
                             ∀ χ : TopEdgeLabelling V (Fin 2),
                               1 - γ - η ≤ χ.density 0 →
                                 exp (-δ * k) * (k + l).choose l ≤ Fintype.card V →
                                   ∃ (m : Finset V) (c : Fin 2),
-                                    χ.monochromatic_of m c ∧ ![k, l] c ≤ m.card :=
+                                    χ.MonochromaticOf m c ∧ ![k, l] c ≤ m.card :=
   by
   filter_upwards [nine_two γ₀ hγ₀] with l hl k γ δ η hγ hγl hγu hδ hη hηγ V _ _ χ hχ hn
   skip
   obtain ⟨e⟩ := Fintype.truncEquivFin V
-  let χ' : top_edge_labelling (Fin (Fintype.card V)) (Fin 2) := χ.pullback e.symm.to_embedding
+  let χ' : TopEdgeLabelling (Fin (Fintype.card V)) (Fin 2) := χ.pullback e.symm.to_embedding
   have : 1 - γ - η ≤ χ'.density 0 := by
     refine' hχ.trans_eq _
-    rw [top_edge_labelling.density, top_edge_labelling.density, Rat.cast_inj]
+    rw [TopEdgeLabelling.density, TopEdgeLabelling.density, Rat.cast_inj]
     refine' density_graph_iso _
-    exact (label_graph_iso _ _).symm
+    exact (labelGraph_iso _ _).symm
   obtain ⟨m, c, hm, hmc⟩ := hl k γ δ η hγ hγl hγu hδ hη hηγ (Fintype.card V) χ' this hn
   refine' ⟨m.map e.symm.to_embedding, c, hm.map, hmc.trans _⟩
   rw [card_map]
@@ -1771,7 +1771,7 @@ theorem gamma'_le_gamma_iff {k l m : ℕ} (h : m ≤ l) (h' : 0 < k) :
 theorem gamma_hMul_k_le_m_of {k l m : ℕ} (h : m ≤ l) (h' : 0 < k)
     (hg : (l - m : ℝ) / (k + l - m) < (l / (k + l)) ^ 2) : (l / (k + l) : ℝ) * k ≤ m :=
   by
-  rw [gamma'_le_gamma_iff h h'] at hg 
+  rw [gamma'_le_gamma_iff h h'] at hg
   refine' hg.le.trans' _
   rw [div_mul_eq_mul_div, div_le_div_iff, ← sub_nonneg]
   · ring_nf
@@ -1791,7 +1791,7 @@ theorem uLowerBoundRatio_eq {ξ : ℝ} (k l m : ℕ) :
 
 theorem uLowerBoundRatio_of_l_lt_m {ξ : ℝ} {k l m : ℕ} (h : l < m) : uLowerBoundRatio ξ k l m = 0 :=
   by
-  rw [← mem_range] at h 
+  rw [← mem_range] at h
   rw [U_lower_bound_ratio, prod_eq_zero h, MulZeroClass.mul_zero]
   rw [sub_self, zero_div]
 
@@ -1804,7 +1804,7 @@ theorem uLowerBoundRatio_nonneg {ξ : ℝ} {k l m : ℕ} (hξ : 0 ≤ ξ) : 0 �
   have : (0 : ℝ) ≤ l - i := by
     rw [sub_nonneg, Nat.cast_le]
     exact h.trans' (mem_range.1 hi).le
-  rw [mem_range] at hi 
+  rw [mem_range] at hi
   refine' mul_nonneg (by linarith only [hξ]) (div_nonneg this _)
   rw [add_sub_assoc]
   exact add_nonneg (Nat.cast_nonneg _) this
@@ -1814,7 +1814,7 @@ theorem uLowerBoundRatio_pos {ξ : ℝ} {k l m : ℕ} (hξ : 0 ≤ ξ) (h : m �
   rw [U_lower_bound_ratio_eq]
   refine' prod_pos _
   intro i hi
-  rw [mem_range] at hi 
+  rw [mem_range] at hi
   rw [add_sub_assoc]
   have : (0 : ℝ) < l - i := by
     rw [sub_pos, Nat.cast_lt]
@@ -1890,12 +1890,12 @@ theorem uLowerBoundRatio_lower_bound' {k l m n : ℕ} {γ δ : ℝ} (hml : m < l
   let mst := ⌊(l * (k + l) : ℝ) / (k + 2 * l)⌋₊ + 1
   have hm : m < mst :=
     by
-    rw [← not_lt, gamma'_le_gamma_iff hml.le hk₀, not_lt] at h' 
+    rw [← not_lt, gamma'_le_gamma_iff hml.le hk₀, not_lt] at h'
     rw [← @Nat.cast_lt ℝ]
     refine' h'.trans_lt _
     rw [Nat.cast_add_one]
     exact Nat.lt_floor_add_one _
-  rw [← sub_pos] at h 
+  rw [← sub_pos] at h
   have : mst < l := by
     rw [← @Nat.cast_lt ℝ, Nat.cast_add_one, ← lt_sub_iff_add_lt]
     refine' (Nat.floor_le (by positivity)).trans_lt _
@@ -1914,7 +1914,7 @@ theorem small_k {k l : ℕ} {γ γ₀ : ℝ} (hγ₀ : 0 < γ₀) (hγl : γ₀ 
     (hk₀ : 0 < k) : (k : ℝ) ≤ l * (γ₀⁻¹ - 1) :=
   by
   subst γ
-  rwa [le_div_iff, ← le_div_iff' hγ₀, ← le_sub_iff_add_le, div_eq_mul_inv, ← mul_sub_one] at hγl 
+  rwa [le_div_iff, ← le_div_iff' hγ₀, ← le_sub_iff_add_le, div_eq_mul_inv, ← mul_sub_one] at hγl
   positivity
 
 /-- Cliques which are useful for section 9 and 10 -/
@@ -1936,19 +1936,19 @@ theorem good_clique_bound {n k l ξ} {χ : TopEdgeLabelling (Fin n) (Fin 2)} {x 
   by_contra'
   exact hχ ⟨x, 1, hx.1, by simpa using this⟩
 
-theorem commonBlues_insert {V : Type _} [Fintype V] [DecidableEq V] {x : Finset V} {i : V}
+theorem commonBlues_insert {V : Type*} [Fintype V] [DecidableEq V] {x : Finset V} {i : V}
     {χ : TopEdgeLabelling V (Fin 2)} :
     commonBlues χ (insert i x) = (blue_neighbors χ) i ∩ commonBlues χ x :=
   by
   ext v
   simp [common_blues]
 
-theorem maximally_good_clique_aux {V : Type _} [DecidableEq V] [Fintype V]
+theorem maximally_good_clique_aux {V : Type*} [DecidableEq V] [Fintype V]
     {χ : TopEdgeLabelling V (Fin 2)} {U : Finset V} :
     (χ.pullback (Function.Embedding.subtype (· ∈ U))).density 1 =
       (U.card * (U.card - 1))⁻¹ * ∑ v in U, ((blue_neighbors χ) v ∩ U).card :=
   by
-  rw [top_edge_labelling.density, density_eq_average_neighbors, Fintype.subtype_card,
+  rw [TopEdgeLabelling.density, density_eq_average_neighbors, Fintype.subtype_card,
     filter_mem_eq_inter, univ_inter, Rat.cast_mul, ← Nat.cast_sum, ← Nat.cast_sum, Rat.cast_inv,
     Rat.cast_mul, Rat.cast_sub, Rat.cast_one, Rat.cast_coe_nat, Rat.cast_coe_nat]
   congr 2
@@ -1958,16 +1958,16 @@ theorem maximally_good_clique_aux {V : Type _} [DecidableEq V] [Fintype V]
     refine' ⟨⟨x, hx⟩, mem_univ _, rfl⟩
   rintro ⟨x, hx⟩ -
   refine' card_congr (fun x _ => x) _ (fun _ _ _ _ => Subtype.ext) _
-  · simp only [Subtype.forall, mem_neighbor_finset, top_edge_labelling.label_graph_adj,
-      top_edge_labelling.pullback_get, mem_inter, mem_col_neighbors, forall_exists_index, Ne.def,
+  · simp only [Subtype.forall, mem_neighborFinset, TopEdgeLabelling.labelGraph_adj,
+      TopEdgeLabelling.pullback_get, mem_inter, mem_col_neighbors, forall_exists_index, Ne.def,
       Function.Embedding.coe_subtype, Subtype.coe_mk, coe_mem, and_true_iff]
     intro y hy h hxy
     exact ⟨h, hxy⟩
   · intro y
-    simp only [mem_neighbor_finset, top_edge_labelling.label_graph_adj, mem_col_neighbors,
+    simp only [mem_neighborFinset, TopEdgeLabelling.labelGraph_adj, mem_col_neighbors,
       mem_inter, Subtype.exists, Subtype.coe_mk, and_imp, exists_imp, Ne.def,
       Function.Embedding.coe_subtype, exists_prop, exists_eq_right, exists_and_right,
-      top_edge_labelling.pullback_get]
+      TopEdgeLabelling.pullback_get]
     intro h h' hy
     exact ⟨hy, h, h'⟩
 
@@ -1985,11 +1985,11 @@ theorem maximally_good_clique {n k l : ℕ} {ξ ξ' : ℝ} {χ : TopEdgeLabellin
     (hU' : 2 ≤ (commonBlues χ x).card) (hx : IsGoodClique ξ k l χ x)
     (h : ∀ i : Fin n, i ∉ x → IsGoodClique ξ k l χ (insert i x) → False) :
     1 - (1 + ξ') * ((l - x.card : ℝ) / (k + l - x.card)) ≤
-      (χ.pullback (Function.Embedding.subtype _ : commonBlues χ x ↪ Fin n)).density 0 :=
+      (χ.pullback (Function.Embedding.subType* : commonBlues χ x ↪ Fin n)).density 0 :=
   by
   classical
   have hml := good_clique_bound hχ hx
-  rw [is_good_clique] at hx 
+  rw [is_good_clique] at hx
   have :
     ∀ i ∈ common_blues χ x,
       i ∉ x ∧
@@ -1997,18 +1997,18 @@ theorem maximally_good_clique {n k l : ℕ} {ξ ξ' : ℝ} {χ : TopEdgeLabellin
             (common_blues χ (insert i x)).card :=
     by
     intro i hi
-    rw [common_blues, mem_filter] at hi 
+    rw [common_blues, mem_filter] at hi
     have : i ∉ x := by
       intro h'
       exact not_mem_col_neighbors (hi.2 i h')
     refine' ⟨this, fun hi' => h i this ⟨_, hi'⟩⟩
-    rw [coe_insert, top_edge_labelling.monochromatic_of_insert]
+    rw [coe_insert, TopEdgeLabelling.MonochromaticOf_insert]
     swap
     · exact this
     refine' ⟨hx.1, _⟩
     intro y hy
     have := hi.2 y hy
-    rw [mem_col_neighbors'] at this 
+    rw [mem_col_neighbors'] at this
     obtain ⟨_, z⟩ := this
     exact z
   have hz :
@@ -2019,13 +2019,13 @@ theorem maximally_good_clique {n k l : ℕ} {ξ ξ' : ℝ} {χ : TopEdgeLabellin
     intro i hi
     obtain ⟨hi', hi''⟩ := this i hi
     rw [card_insert_of_not_mem hi', not_le, common_blues_insert, U_lower_bound_ratio_eq,
-      prod_range_succ, ← U_lower_bound_ratio_eq, ← mul_assoc, add_sub_assoc] at hi'' 
+      prod_range_succ, ← U_lower_bound_ratio_eq, ← mul_assoc, add_sub_assoc] at hi''
     have : (0 : ℝ) < (1 + ξ) * ((l - x.card) / (k + (l - x.card))) :=
       by
       have : (0 : ℝ) < l - x.card := by rwa [sub_pos, Nat.cast_lt]
       positivity
     replace hi'' := hi''.trans_le (mul_le_mul_of_nonneg_right hx.2 this.le)
-    rwa [add_sub_assoc'] at hi'' 
+    rwa [add_sub_assoc'] at hi''
   rw [density_zero_one, maximally_good_clique_aux, sub_le_sub_iff_left]
   swap
   · rw [Fintype.subtype_card, filter_mem_eq_inter, univ_inter]
@@ -2054,7 +2054,7 @@ theorem nine_one_end {k l n : ℕ} {ξ : ℝ} {χ : TopEdgeLabelling (Fin n) (Fi
     False :=
   by
   simp only [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-    tsub_le_iff_right] at h 
+    tsub_le_iff_right] at h
   obtain ⟨m, hm | ⟨hm, hm', hm''⟩⟩ := h
   · exact hχ ⟨m, 0, hm.2⟩
   have : Disjoint m x := by
@@ -2064,7 +2064,7 @@ theorem nine_one_end {k l n : ℕ} {ξ : ℝ} {χ : TopEdgeLabelling (Fin n) (Fi
     intro i hi
     exact ⟨i, hi, fun q => (q rfl).elim⟩
   refine' hχ ⟨m ∪ x, 1, _, by simpa [this] using hm''⟩
-  rw [coe_union, top_edge_labelling.monochromatic_of_union]
+  rw [coe_union, TopEdgeLabelling.MonochromaticOf_union]
   exact ⟨hm', hx.1, monochromatic_between_common_blues.symm.subset_left hm⟩
 
 theorem nine_one_part_two {k l n : ℕ} {γ δ : ℝ} {χ : TopEdgeLabelling (Fin n) (Fin 2)}
@@ -2077,7 +2077,7 @@ theorem nine_one_part_two {k l n : ℕ} {γ δ : ℝ} {χ : TopEdgeLabelling (Fi
   have :=
     Nat.cast_le.1
       ((U_lower_bound_ratio_lower_bound_aux_aux hml.le (hl₀.trans_le hlk) hγ hδ hγ' hm).trans hx.2)
-  rw [add_tsub_assoc_of_le hml.le] at this 
+  rw [add_tsub_assoc_of_le hml.le] at this
   have := ramsey_number_le_finset (ramsey_number_le_choose'.trans this) χ
   exact nine_one_end hχ hx this
 
@@ -2088,8 +2088,8 @@ theorem nine_one_part_three {k l m : ℕ} {γ γ' δ : ℝ} (hml : m < l) (hk₀
         exp (-(γ' / 20) * k) * ↑((k + (l - m)).choose (l - m))) :
     False := by
   have : ((l + k - m).choose _ : ℝ) / _ = _ := choose_ratio hml.le
-  rw [← Nat.cast_add, add_comm l, add_tsub_assoc_of_le hml.le, Nat.choose_symm_add] at this 
-  rw [← not_le] at h 
+  rw [← Nat.cast_add, add_comm l, add_tsub_assoc_of_le hml.le, Nat.choose_symm_add] at this
+  rw [← not_le] at h
   refine' h _
   rw [U_lower_bound_ratio, ← Nat.cast_add, ← this, Nat.choose_symm_add, mul_assoc, mul_div_assoc',
     mul_div_cancel', ← mul_assoc]
@@ -2168,8 +2168,8 @@ theorem nine_one_precise (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
     refine' ramsey_number_ge_min _ _
     simp only [Fin.forall_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
     exact ⟨hk₂ _ hlk, hk₂ _ le_rfl⟩
-  rw [← not_le, ramsey_number_le_iff_fin, is_ramsey_valid, Classical.not_forall] at hnr 
-  obtain ⟨χ : top_edge_labelling (Fin n) (Fin 2), hχ⟩ := hnr
+  rw [← not_le, ramsey_number_le_iff_fin, is_ramsey_valid, Classical.not_forall] at hnr
+  obtain ⟨χ : TopEdgeLabelling (Fin n) (Fin 2), hχ⟩ := hnr
   suffices (n : ℝ) ≤ exp (-δ * k) * (k + l).choose l
     by
     rw [add_comm, Real.exp_add, mul_assoc, ← div_le_iff' (exp_pos _)]
@@ -2179,7 +2179,7 @@ theorem nine_one_precise (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
   have : (univ.filter (is_good_clique (1 / 16) k l χ)).Nonempty :=
     ⟨∅, by simp only [mem_filter, empty_is_good, mem_univ, true_and_iff]⟩
   obtain ⟨x, hx, hxy⟩ := exists_maximal _ this
-  simp only [mem_filter, mem_univ, true_and_iff] at hx hxy 
+  simp only [mem_filter, mem_univ, true_and_iff] at hx hxy
   have hml := good_clique_bound hχ hx
   let U := common_blues χ x
   have hkl := small_k hγ₀ hγl hγ (hl₀.trans_le hlk)
@@ -2199,7 +2199,7 @@ theorem nine_one_precise (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
   have hγ'γ : γ' ≤ γ := (gamma'_le_gamma (hl₀.trans_le hlk) hml.le).trans_eq hγ.symm
   have hlm : ⌈(l : ℝ) * (γ₀⁻¹ - 1 + 2)⁻¹⌉₊ ≤ l - m :=
     by
-    rw [← not_lt, gamma'_le_gamma_iff hml.le (hl₀.trans_le hlk), not_lt] at hγ' 
+    rw [← not_lt, gamma'_le_gamma_iff hml.le (hl₀.trans_le hlk), not_lt] at hγ'
     exact l_minus_m_big _ hml.le hl₀ hkl h₁ h₂ hγ'
   have hγ'_eq : γ' = ↑(l - m) / (↑k + ↑(l - m)) := by rw [Nat.cast_sub hml.le, add_sub_assoc']
   have hγ'₀ : 0 ≤ γ' := by
@@ -2210,13 +2210,13 @@ theorem nine_one_precise (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
     intro i hi hi'
     exact hxy (insert i x) hi' (ssubset_insert hi)
   have := maximally_good_clique (by norm_num1) hχ (big_U this) (this.trans' (by norm_num1)) hx hxy'
-  rw [one_add_mul, mul_comm (1 / 15 : ℝ), mul_one_div, ← sub_sub] at this 
+  rw [one_add_mul, mul_comm (1 / 15 : ℝ), mul_one_div, ← sub_sub] at this
   specialize
     hk₉₂ (l - m) hlm k γ' (γ' / 20) (γ' / 15) hγ'_eq
       (hγ'.trans' (pow_le_pow_of_le_left hγ₀.le (hγl.trans_eq hγ) _)) (hγ'γ.trans hγu) rfl
       (div_nonneg hγ'₀ (by norm_num1)) le_rfl _ _ _ _ this
   replace hk₉₂ := fun z => nine_one_end hχ hx (ramsey_number_le_finset_aux _ (hk₉₂ z))
-  rw [imp_false, not_le, Fintype.subtype_card, filter_mem_eq_inter, univ_inter] at hk₉₂ 
+  rw [imp_false, not_le, Fintype.subtype_card, filter_mem_eq_inter, univ_inter] at hk₉₂
   replace hk₉₂ := hx.2.trans hk₉₂.le
   replace hk₉₂ :=
     (mul_lt_mul_of_pos_right hm (U_lower_bound_ratio_pos (by norm_num1) hml.le)).trans_le hk₉₂

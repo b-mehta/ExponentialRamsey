@@ -18,14 +18,14 @@ open scoped BigOperators ExponentialRamsey
 
 open Filter Finset Nat Real Asymptotics
 
-theorem pow_sum {α M : Type _} [CommMonoid M] {s : Finset α} {f : α → ℕ} {b : M} :
+theorem pow_sum {α M : Type*} [CommMonoid M] {s : Finset α} {f : α → ℕ} {b : M} :
     b ^ ∑ a in s, f a = ∏ a in s, b ^ f a :=
   by
   induction' s using Finset.cons_induction_on with a s has ih
   · rw [prod_empty, sum_empty, pow_zero]
   rw [prod_cons, ← ih, sum_cons, pow_add]
 
-variable {V : Type _} [DecidableEq V] [Fintype V] {χ : TopEdgeLabelling V (Fin 2)}
+variable {V : Type*} [DecidableEq V] [Fintype V] {χ : TopEdgeLabelling V (Fin 2)}
 
 variable {k l : ℕ} {ini : BookConfig χ} {i : ℕ}
 
@@ -119,7 +119,7 @@ theorem seven_two_single (μ₁ : ℝ) (hμ₁ : μ₁ < 1) :
   have hi' : i < final_step μ k l ini :=
     by
     have := red_steps_subset_red_or_density_steps hi
-    rw [red_or_density_steps, mem_filter, mem_range] at this 
+    rw [red_or_density_steps, mem_filter, mem_range] at this
     exact this.1
   rw [le_div_iff]
   swap
@@ -207,7 +207,7 @@ theorem seven_three_aux_one {μ : ℝ} {m : ℕ} (hm : m ≤ finalStep μ k l in
   induction' m with m ih
   · simp
   rw [range_succ]
-  rw [Nat.succ_le_iff] at hm 
+  rw [Nat.succ_le_iff] at hm
   rcases cases_of_lt_final_step hm with (hir | hib | his | hid)
   · rw [inter_insert_of_not_mem, inter_insert_of_not_mem, red_applied hir,
       book_config.red_step_basic_B]
@@ -234,7 +234,7 @@ theorem seven_three_aux_one {μ : ℝ} {m : ℕ} (hm : m ≤ finalStep μ k l in
     exact density_steps_subset_red_or_density_steps his
   · have :=
       Finset.disjoint_left.1 degree_steps_disjoint_big_blue_steps_union_red_or_density_steps hid
-    rw [mem_union, not_or] at this 
+    rw [mem_union, not_or] at this
     rw [inter_insert_of_not_mem this.1, inter_insert_of_not_mem, degree_regularisation_applied hid,
       book_config.degree_regularisation_step_B]
     · exact ih hm.le
@@ -302,7 +302,7 @@ theorem seven_three :
     · exact book_config.get_book_relative_card
     rw [Nat.cast_pos, card_pos]
     refine' X_nonempty _
-    rw [big_blue_steps, mem_filter, mem_range] at hi 
+    rw [big_blue_steps, mem_filter, mem_range] at hi
     exact hi.1
   refine' (prod_le_prod _ this).trans' _
   · intro i hi
@@ -368,7 +368,7 @@ theorem sum_range_odd_telescope' {k : ℕ} (f : ℕ → ℝ) {c : ℝ} (hc' : �
     rintro ⟨i, hi, rfl⟩
     refine' ⟨_, i, rfl⟩
     rw [← Nat.add_one_le_iff, bit1, add_assoc, ← bit0, ← bit0_add]
-    rw [← Nat.add_one_le_iff, ← bit0_le_bit0] at hi 
+    rw [← Nat.add_one_le_iff, ← bit0_le_bit0] at hi
     refine' hi.trans _
     rw [bit0_eq_two_mul]
     exact Nat.mul_div_le _ _
@@ -509,7 +509,7 @@ theorem red_or_density_height_diff :
   specialize h₂ k hlk μ hμl n χ hχ ini
   rw [range_filter_odd_eq_union, union_right_comm, red_steps_union_density_steps,
     sum_union big_blue_steps_disjoint_red_or_density_steps.symm, ← red_steps_union_density_steps, ←
-    le_sub_iff_add_le] at h₁ 
+    le_sub_iff_add_le] at h₁
   exact h₁.trans (sub_le_sub_left h₂ _)
 
 theorem red_height_diff :
@@ -526,7 +526,7 @@ theorem red_height_diff :
   filter_upwards [top_adjuster (eventually_gt_at_top 0), six_five_red, six_five_degree] with l hl₀
     hk hk' k hlk μ n χ hχ ini
   have := four_four_red μ hχ ini
-  rw [← @Nat.cast_le ℝ] at this 
+  rw [← @Nat.cast_le ℝ] at this
   refine' (mul_le_mul_of_nonpos_left this (by norm_num1)).trans _
   rw [mul_comm, ← nsmul_eq_mul]
   refine' card_nsmul_le_sum _ _ _ _
@@ -575,7 +575,7 @@ theorem density_height_diff (μ₁ p₀ : ℝ) (hμ₁ : μ₁ < 1) (hp₀ : 0 <
   refine' (le_add_of_nonneg_right this).trans' _
   refine' card_nsmul_le_sum _ _ _ _
   intro x hx
-  rw [moderate_steps, ← filter_not, mem_filter, not_le] at hx 
+  rw [moderate_steps, ← filter_not, mem_filter, not_le] at hx
   refine' hx.2.le.trans (sub_le_sub_left _ _)
   obtain ⟨hi', hid⟩ := density_steps_sub_one_mem_degree hx.1
   rw [Nat.cast_le]
@@ -605,13 +605,13 @@ theorem seven_five (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ₁
   specialize hb k hlk μ hμu n χ hχ ini hini
   specialize hrb k hlk μ hμl n χ hχ ini
   specialize hf'' k hlk
-  rw [one_mul, norm_coe_nat, norm_eq_abs] at hf'' 
+  rw [one_mul, norm_coe_nat, norm_eq_abs] at hf''
   replace hf'' := le_of_abs_le hf''
-  rw [sum_union red_steps_disjoint_density_steps] at hrb 
+  rw [sum_union red_steps_disjoint_density_steps] at hrb
   have := ((add_le_add hr hb).trans hrb).trans hf''
   rw [← le_sub_iff_add_le', neg_mul, sub_neg_eq_add, ← one_add_mul, add_comm, ← bit1, ← le_div_iff,
     mul_div_assoc, div_eq_mul_inv, ← rpow_neg (Nat.cast_nonneg k), mul_comm (k : ℝ), ←
-    rpow_add_one] at this 
+    rpow_add_one] at this
   · refine' this.trans_eq _
     norm_num
   · rw [Nat.cast_ne_zero]
@@ -628,7 +628,7 @@ theorem beta_prop {μ : ℝ} (hS : Finset.Nonempty 𝒮⁺) :
     1 / beta μ k l ini =
       1 / (moderateSteps μ k l ini).card * ∑ i in 𝒮⁺, 1 / blueXRatio μ k l ini i :=
   by
-  rw [nonempty_iff_ne_empty] at hS 
+  rw [nonempty_iff_ne_empty] at hS
   rw [beta, if_neg hS, ← one_div_mul_one_div, one_div, one_div, inv_inv]
 
 theorem beta_nonneg {μ : ℝ} (hμ₀ : 0 < μ) : 0 ≤ beta μ k l ini :=
@@ -686,15 +686,15 @@ theorem beta_le_one (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
   filter_upwards [beta_le_μ μ₀ μ₁ p₀ hμ₀ hμ₁ hp₀] with l hl k hlk μ hμl hμu n χ ini hini
   exact (hl k hlk μ hμl hμu n χ ini hini).trans_lt (hμ₁.trans_le' hμu)
 
-theorem prod_rpow {α : Type _} {y : Finset α} {f : α → ℝ} {r : ℝ} (hf : ∀ i ∈ y, 0 ≤ f i) :
+theorem prod_rpow {α : Type*} {y : Finset α} {f : α → ℝ} {r : ℝ} (hf : ∀ i ∈ y, 0 ≤ f i) :
     (∏ i in y, f i) ^ r = ∏ i in y, f i ^ r :=
   by
   induction' y using Finset.cons_induction_on with a y has ih
   · simp
-  simp only [mem_cons, forall_eq_or_imp] at hf 
+  simp only [mem_cons, forall_eq_or_imp] at hf
   rw [prod_cons, prod_cons, mul_rpow hf.1 (prod_nonneg hf.2), ih hf.2]
 
-theorem my_ineq {α : Type _} {y : Finset α} (hy : y.Nonempty) {f : α → ℝ} (hf : ∀ i ∈ y, 0 < f i) :
+theorem my_ineq {α : Type*} {y : Finset α} (hy : y.Nonempty) {f : α → ℝ} (hf : ∀ i ∈ y, 0 < f i) :
     ((y.card : ℝ) * (∑ i in y, 1 / f i)⁻¹) ^ y.card ≤ ∏ i in y, f i :=
   by
   have hy' : 0 < y.card := by rwa [card_pos]
@@ -828,7 +828,7 @@ theorem seven_four :
   intro i hi
   exact hβ' k hlk μ hμu n χ ini hini i (filter_subset _ _ hi)
 
-theorem seven_seven_aux {α : Type _} [Fintype α] [DecidableEq α] {χ : TopEdgeLabelling α (Fin 2)}
+theorem seven_seven_aux {α : Type*} [Fintype α] [DecidableEq α] {χ : TopEdgeLabelling α (Fin 2)}
     {p q : ℝ} {X0 X1 Y0 Y1 : Finset α} (hY : Y0 = Y1) (hp : p = colDensity χ 0 X0 Y0)
     (hY' : Y0.Nonempty)
     (h : X1 = X0.filterₓ fun x => (p - q) * Y0.card ≤ ((red_neighbors χ) x ∩ Y0).card)
@@ -842,7 +842,7 @@ theorem seven_seven_aux {α : Type _} [Fintype α] [DecidableEq α] {χ : TopEdg
   have : X0.nonempty := by refine' nonempty.mono hX hX1
   cases' Finset.eq_empty_or_nonempty (X0 \ X1) with h_1 hX01
   · have : X0 = X1 := by
-      rw [sdiff_eq_empty_iff_subset] at h_1 
+      rw [sdiff_eq_empty_iff_subset] at h_1
       rw [Finset.Subset.antisymm_iff, and_iff_right h_1]
       exact hX
     rw [h_1, card_empty, Nat.cast_zero, zero_div, MulZeroClass.zero_mul, this, sub_self]
@@ -871,7 +871,7 @@ theorem seven_seven_aux {α : Type _} [Fintype α] [DecidableEq α] {χ : TopEdg
   rw [div_mul_eq_mul_div, div_le_iff, cast_card_sdiff hX, sub_mul, sub_mul, ← hp]
   swap
   · rwa [Nat.cast_pos, card_pos]
-  rw [← hp, cast_card_sdiff hX, sub_mul, mul_sub, mul_sub] at this 
+  rw [← hp, cast_card_sdiff hX, sub_mul, mul_sub, mul_sub] at this
   linarith only [this]
 
 theorem seven_seven' {μ : ℝ} (hi : i ∈ degreeSteps μ k l ini) (h : (X_ (i + 1)).Nonempty)
@@ -942,11 +942,11 @@ theorem x_y_nonempty (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
   constructor
   · refine' nonempty_of_ne_empty _
     intro h
-    rw [h, col_density_empty_left] at hl 
+    rw [h, col_density_empty_left] at hl
     simpa using hl
   · refine' nonempty_of_ne_empty _
     intro h
-    rw [h, col_density_empty_right] at hl 
+    rw [h, col_density_empty_right] at hl
     simpa using hl
 
 theorem seven_seven (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ₁ < 1) (hp₀ : 0 < p₀) :
@@ -1020,14 +1020,14 @@ theorem seven_eight (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
   have : (algorithm μ k l ini (i + 1)).p - (algorithm μ k l ini i).p ≤ 1 :=
     (sub_le_self _ col_density_nonneg).trans col_density_le_one
   have := (mul_le_mul_of_nonneg_left h' (by positivity)).trans (hl.trans this)
-  rw [div_mul_eq_mul_div, div_le_iff, one_mul] at this 
+  rw [div_mul_eq_mul_div, div_le_iff, one_mul] at this
   swap
   · rwa [Nat.cast_pos, card_pos]
     refine' (hX _ _).1
     rw [Nat.add_one_le_iff, ← mem_range]
     exact filter_subset _ _ hi
   rw [cast_card_sdiff (X_subset _), sub_mul, sub_le_iff_le_add, mul_div_assoc', mul_comm,
-    mul_div_assoc] at this 
+    mul_div_assoc] at this
   swap
   · rw [← mem_range]
     exact filter_subset _ _ hi
@@ -1149,7 +1149,7 @@ theorem seven_nine_inner :
     · simp only [le_add_iff_nonneg_right]
       positivity
     rw [Nat.cast_add_one, Nat.cast_sub this]
-    rw [← sub_le_iff_le_add'] at hp₂ 
+    rw [← sub_le_iff_le_add'] at hp₂
     refine' (add_le_add_right hp₂ _).trans _
     suffices 2 ≤ (k : ℝ) ^ (1 / 16 : ℝ) by linarith
     exact hk16 k hlk
@@ -1199,14 +1199,14 @@ theorem seven_nine (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ₁
     by
     refine' five_seven_left.trans_lt' _
     positivity
-  dsimp at this 
-  rw [← mul_assoc] at hl' 
+  dsimp at this
+  rw [← mul_assoc] at hl'
   have := le_of_mul_le_mul_right (hl'.trans hl) this
   have hi' : i < final_step μ k l ini := by
     rw [← mem_range]
     exact filter_subset _ _ hi
   rw [div_mul_eq_mul_div, div_le_iff, ← le_div_iff, ← div_mul_eq_mul_div,
-    cast_card_sdiff (X_subset hi')] at this 
+    cast_card_sdiff (X_subset hi')] at this
   rotate_left
   · positivity
   · rw [Nat.cast_pos, card_pos]
@@ -1223,7 +1223,7 @@ theorem seven_nine (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ₁
     rw [Nat.cast_le]
     exact card_le_of_subset (X_subset hi')
   replace this := this.trans z
-  rw [sub_le_comm, ← one_sub_mul] at this 
+  rw [sub_le_comm, ← one_sub_mul] at this
   exact this
 
 theorem seven_ten (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ₁ < 1) (hp₀ : 0 < p₀) :
@@ -1253,7 +1253,7 @@ theorem seven_ten (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ₁ 
   specialize hr k hlk μ n χ ini
   specialize hd k hlk μ n χ ini
   specialize hs k hlk μ hμu n χ ini hini
-  rw [one_mul, norm_coe_nat, norm_eq_abs] at hf'' 
+  rw [one_mul, norm_coe_nat, norm_eq_abs] at hf''
   replace hf'' := le_of_abs_le hf''
   replace hl := (hl k hlk μ hμl n χ hχ ini).trans hf''
   set q : ℕ → Prop := fun i =>
@@ -1267,7 +1267,7 @@ theorem seven_ten (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ₁ 
           height k ini.p (algorithm μ k l ini i).p) :=
     by
     have := four_four_red μ hχ ini
-    rw [← @Nat.cast_le ℝ] at this 
+    rw [← @Nat.cast_le ℝ] at this
     refine' (mul_le_mul_of_nonpos_left this (by norm_num1)).trans _
     rw [mul_comm, ← nsmul_eq_mul, ← red_steps_union_density_steps,
       sum_union red_steps_disjoint_density_steps]
@@ -1299,16 +1299,16 @@ theorem seven_ten (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ₁ 
       rw [Nat.sub_add_cancel hi']
     refine' card_nsmul_le_sum _ _ _ _
     intro i hi
-    rw [mem_filter] at hi 
+    rw [mem_filter] at hi
     rw [le_sub_iff_add_le']
     exact hi.2
-  rw [red_steps_union_density_steps] at hl 
+  rw [red_steps_union_density_steps] at hl
   have := add_le_add h₁ h₂
-  simp only [← sum_add_distrib, sub_add_sub_cancel] at this 
+  simp only [← sum_add_distrib, sub_add_sub_cancel] at this
   replace this := this.trans hl
   rw [← le_sub_iff_add_le', neg_mul, sub_neg_eq_add, ← one_add_mul, add_comm, ← bit1, nsmul_eq_mul,
     ← le_div_iff, mul_div_assoc, div_eq_mul_inv (k : ℝ), ← rpow_neg (Nat.cast_nonneg k),
-    mul_comm (k : ℝ), ← rpow_add_one] at this 
+    mul_comm (k : ℝ), ← rpow_add_one] at this
   refine' this.trans_eq _
   · norm_num
   · rw [Nat.cast_ne_zero]
@@ -1367,8 +1367,8 @@ theorem height_qStar_le :
     ((tendsto_rpow_neg_atTop hh₂).comp tt).Eventually (eventually_le_nhds hh₃), q_star_le_one] with
     k hk hk₀ hk₂ hk₃ hq inip
   have hk' : (0 : ℝ) < k := by positivity
-  dsimp at hk₂ 
-  rw [← mul_assoc, div_mul_eq_mul_div, ← bit0_eq_two_mul] at hk₂ 
+  dsimp at hk₂
+  rw [← mul_assoc, div_mul_eq_mul_div, ← bit0_eq_two_mul] at hk₂
   rw [← Nat.le_floor_iff]
   swap
   · positivity
@@ -1429,9 +1429,9 @@ theorem seven_eleven_red_termwise :
   cases le_or_lt (height k ini.p (p_ i)) (height k ini.p (q_star k ini.p) + 2)
   · refine' (min_simpler (six_four_red hi) (α_nonneg _ _)).trans' _
     exact neg_le_neg (α_increasing h)
-  dsimp at h 
+  dsimp at h
   have := h₁ k hlk μ n χ ini i hi
-  rw [← lt_tsub_iff_right] at h 
+  rw [← lt_tsub_iff_right] at h
   have h₁ : q_star k ini.p ≤ p_ (i + 1) := by
     by_contra' h'
     exact (h.trans_le this).not_le (height_mono (h₀ k hlk) h'.le)
@@ -1464,7 +1464,7 @@ theorem seven_eleven_red :
     · norm_num1
       refine' tendsto_rpow_neg_atTop _
       norm_num
-  rw [MulZeroClass.mul_zero, add_zero] at h 
+  rw [MulZeroClass.mul_zero, add_zero] at h
   filter_upwards [top_adjuster height_q_star_le, seven_eleven_red_termwise,
     top_adjuster (eventually_gt_at_top 0),
     top_adjuster
@@ -1541,9 +1541,9 @@ theorem seven_eleven_blue_termwise (μ₀ : ℝ) (hμ₀ : 0 < μ₀) :
     · exact mul_nonneg (rpow_nonneg_of_nonneg (Nat.cast_nonneg _) _) (α_nonneg _ _)
     rw [neg_mul, neg_le_neg_iff]
     exact mul_le_mul_of_nonneg_left (α_increasing h) (by positivity)
-  dsimp at h 
+  dsimp at h
   have := h₁ k hlk μ hμl n χ ini i hi
-  rw [add_comm, ← Nat.floor_add_nat, Nat.floor_lt, ← lt_sub_iff_add_lt'] at h 
+  rw [add_comm, ← Nat.floor_add_nat, Nat.floor_lt, ← lt_sub_iff_add_lt'] at h
   rotate_left
   · positivity
   · positivity
@@ -1591,7 +1591,7 @@ theorem seven_eleven_blue (μ₀ : ℝ) (hμ₀ : 0 < μ₀) :
     · norm_num1
       refine' tendsto_rpow_neg_atTop _
       norm_num
-  rw [MulZeroClass.mul_zero, add_zero, sub_zero] at h 
+  rw [MulZeroClass.mul_zero, add_zero, sub_zero] at h
   filter_upwards [top_adjuster height_q_star_le, seven_eleven_blue_termwise μ₀ hμ₀,
     top_adjuster (eventually_gt_at_top 0), top_adjuster (eventually_ge_at_top (2 ^ 8)),
     four_three hμ₀,
@@ -1676,7 +1676,7 @@ theorem seven_eleven_red_or_density_other :
     rw [mul_comm, ← nsmul_eq_mul]
     refine' card_nsmul_le_sum _ _ _ _
     intro i hi
-    simp only [mem_filter] at hi 
+    simp only [mem_filter] at hi
     have : p_ (i - 1) ≤ q_star k ini.p := by
       rw [q_star_eq]
       refine' hi.2.2.trans _
@@ -1721,7 +1721,7 @@ theorem seven_eleven (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
   specialize hb k hlk μ hμl n χ hχ ini
   specialize hr k hlk μ hμu n χ hχ ini hini
   specialize hd k hlk μ n χ hχ ini
-  change _ * (X.card : ℝ) ≤ _ at hd 
+  change _ * (X.card : ℝ) ≤ _ at hd
   change (X.card : ℝ) ≤ _
   have h₁ :
     α_function k 1 * ((k : ℝ) ^ (1 / 16 : ℝ) * X.card - 3 * k) ≤
@@ -1761,7 +1761,7 @@ theorem seven_eleven (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
     · rw [Nat.one_le_cast, Nat.succ_le_iff]
       exact h₀
     norm_num1
-  rw [rpow_one] at h₃ 
+  rw [rpow_one] at h₃
   have := le_of_mul_le_mul_left ((h₁.trans h₂).trans h₃) _
   swap
   · rw [α_one]
@@ -1769,7 +1769,7 @@ theorem seven_eleven (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
   clear h₁ h₂ h₃ hb hr hd
   rw [sub_le_iff_le_add', ← add_one_mul, ← le_div_iff' (rpow_pos_of_pos _ _), mul_div_assoc,
     div_eq_mul_inv (k : ℝ), ← rpow_neg (Nat.cast_nonneg k), mul_comm (k : ℝ), ← rpow_add_one] at
-    this 
+    this
   · refine' this.trans_eq _
     norm_num
   · positivity
@@ -1826,7 +1826,7 @@ theorem seven_twelve (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
     rw [← le_sub_iff_add_le']
     have hi₁' := red_or_density_steps_sub_one_mem_degree hi₁
     have := h7 (i - 1) hi₁'.2
-    rw [Nat.sub_add_cancel hi₁'.1] at this 
+    rw [Nat.sub_add_cancel hi₁'.1] at this
     refine' this.trans' _
     rw [← mul_assoc]
     refine'
@@ -1836,26 +1836,26 @@ theorem seven_twelve (μ₀ μ₁ p₀ : ℝ) (hμ₀ : 0 < μ₀) (hμ₁ : μ�
     rw [← div_le_iff (rpow_pos_of_pos hk₀' _), ← rpow_sub hk₀']
     have hi₄ : i - 1 < final_step μ k l ini :=
       by
-      rw [degree_steps, mem_filter, mem_range] at hi₁' 
+      rw [degree_steps, mem_filter, mem_range] at hi₁'
       exact hi₁'.2.1
     have hi₅ : i < final_step μ k l ini :=
       by
-      rw [red_or_density_steps, mem_filter, mem_range] at hi₁ 
+      rw [red_or_density_steps, mem_filter, mem_range] at hi₁
       exact hi₁.1
     have := X_subset hi₄
-    rw [Nat.sub_add_cancel hi₁'.1] at this 
+    rw [Nat.sub_add_cancel hi₁'.1] at this
     rw [le_div_iff, cast_card_sdiff this]
     swap
     · rw [Nat.cast_pos, card_pos]
       exact X_nonempty hi₅
     norm_num1
-    rw [neg_div] at hi₂ 
+    rw [neg_div] at hi₂
     have h₆ : ((X_ i).card : ℝ) ≤ (X_ (i - 1)).card :=
       by
       rw [Nat.cast_le]
       refine' card_le_of_subset this
     have h₅ : (0 : ℝ) ≤ (X_ i).card := Nat.cast_nonneg _
-    dsimp at h₆ h₅ 
+    dsimp at h₆ h₅
     have h₇ : (0 : ℝ) ≤ (k : ℝ) ^ (-(1 / 16) : ℝ) := rpow_nonneg_of_nonneg hk₀'.le _
     nlinarith only [hi₂, h₆, h₅, h₇]
   · clear h10 h11
@@ -2062,12 +2062,12 @@ theorem seven_six :
           (1 : ℝ) / k ^ 2 ≤ (algorithm μ k l ini (i + 1)).X.card / (algorithm μ k l ini i).X.card :=
       by
       intro i hi
-      rw [mem_filter] at hi 
+      rw [mem_filter] at hi
       rw [le_div_iff', mul_one_div]
       · refine' h78 k hlk μ hμl hμu n χ hχ ini hini i _
         exact hi.1
       rw [Nat.cast_pos, card_pos]
-      rw [degree_steps, mem_filter, mem_range] at hi 
+      rw [degree_steps, mem_filter, mem_range] at hi
       exact X_nonempty hi.1.1
     refine' (Finset.prod_le_prod _ this).trans' _
     · intro i hi
@@ -2097,13 +2097,13 @@ theorem seven_six :
           (algorithm μ k l ini (i + 1)).X.card / (algorithm μ k l ini i).X.card :=
     by
     intro i hi
-    rw [mem_filter, not_lt] at hi 
+    rw [mem_filter, not_lt] at hi
     refine' h₁.trans _
     rw [le_div_iff]
     · exact hi.2
     rw [Nat.cast_pos, card_pos]
     refine' X_nonempty _
-    rw [degree_steps, mem_filter, mem_range] at hi 
+    rw [degree_steps, mem_filter, mem_range] at hi
     exact hi.1.1
   refine' (Finset.prod_le_prod _ this).trans' _
   · intro i hi
@@ -2138,7 +2138,7 @@ theorem telescope_x_card (μ : ℝ)
   · rw [prod_range_zero, algorithm_zero, div_self]
     rw [Nat.cast_ne_zero, ← pos_iff_ne_zero, card_pos]
     exact h
-  rw [Nat.succ_le_iff] at hj 
+  rw [Nat.succ_le_iff] at hj
   rw [prod_range_succ, ← ih hj.le, mul_comm, div_mul_div_cancel]
   rw [Nat.cast_ne_zero, ← pos_iff_ne_zero, card_pos]
   exact X_nonempty hj
@@ -2186,7 +2186,7 @@ theorem seven_one (μ₁ : ℝ) (hμ₁ : μ₁ < 1) :
   have : ini.X.nonempty := by
     rw [nonempty_iff_ne_empty]
     intro h'
-    rw [book_config.p, h', col_density_empty_left] at hini 
+    rw [book_config.p, h', col_density_empty_left] at hini
     exact hp₀.not_le hini
   rw [← le_div_iff]
   swap

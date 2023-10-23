@@ -282,18 +282,18 @@ theorem ten_two :
   specialize h₉₃ k hlk γ hγ hγl (hγu.trans (by norm_num1)) _ hδ n χ hχ ini hini4 hXc hn
   specialize h₉₅ k hlk γ (1 / 200) η hγ hγl (by norm_num1) hγ' hη hp₀ n χ hχ ini hini hYc hn
   specialize hfk k hlk
-  rw [norm_eq_abs, abs_le', norm_coe_nat] at hfk 
+  rw [norm_eq_abs, abs_le', norm_coe_nat] at hfk
   have := ten_two_end hγ₀' h₉₃ (hl₀.trans_le hlk) hγl hγu hη hηγ hfk.2
   replace h₉₅ := h₉₅.trans' (mul_le_mul_of_nonneg_right this (Nat.cast_nonneg _))
-  rw [one_mul, Nat.cast_le, ← Nat.choose_symm_add] at h₉₅ 
+  rw [one_mul, Nat.cast_le, ← Nat.choose_symm_add] at h₉₅
   have := ramsey_number_le_finset (ramsey_number_le_choose'.trans h₉₅) χ
   simp only [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, tsub_le_iff_left,
-    Matrix.head_cons] at this hχ 
+    Matrix.head_cons] at this hχ
   obtain ⟨m, ⟨hm₀, hm₁, hm₂⟩ | ⟨hm₀, hm₁, hm₂⟩⟩ := this
   swap
   · exact hχ ⟨m, Or.inr ⟨hm₁, hm₂⟩⟩
   refine' hχ ⟨(end_state γ k l ini).A ∪ m, Or.inl ⟨_, hm₂.trans _⟩⟩
-  · rw [Finset.coe_union, top_edge_labelling.monochromatic_of_union]
+  · rw [Finset.coe_union, TopEdgeLabelling.MonochromaticOf_union]
     refine' ⟨(end_state γ k l ini).red_a, hm₁, _⟩
     exact
       (end_state γ k l ini).red_XYA.symm.subset_right (hm₀.trans (Finset.subset_union_right _ _))
@@ -310,24 +310,24 @@ theorem ten_two_variant :
               γ ≤ 1 / 5 →
                 0 ≤ η →
                   η ≤ 1 / 800 * γ →
-                    ∀ V : Type _,
+                    ∀ V : Type*,
                       DecidableEq V →
                         Fintype V →
                           ∀ χ : TopEdgeLabelling V (Fin 2),
                             1 - γ - η ≤ χ.density 0 →
                               exp (-(1 / 200 : ℝ) * k) * (k + l).choose l ≤ Fintype.card V →
                                 ∃ (m : Finset V) (c : Fin 2),
-                                  χ.monochromatic_of m c ∧ ![k, l] c ≤ m.card :=
+                                  χ.MonochromaticOf m c ∧ ![k, l] c ≤ m.card :=
   by
   filter_upwards [ten_two] with l hl k γ η hγ hγl hγu hη hηγ V _ _ χ hχ hn
   skip
   obtain ⟨e⟩ := Fintype.truncEquivFin V
-  let χ' : top_edge_labelling (Fin (Fintype.card V)) (Fin 2) := χ.pullback e.symm.to_embedding
+  let χ' : TopEdgeLabelling (Fin (Fintype.card V)) (Fin 2) := χ.pullback e.symm.to_embedding
   have : 1 - γ - η ≤ χ'.density 0 := by
     refine' hχ.trans_eq _
-    rw [top_edge_labelling.density, top_edge_labelling.density, Rat.cast_inj]
+    rw [TopEdgeLabelling.density, TopEdgeLabelling.density, Rat.cast_inj]
     refine' density_graph_iso _
-    exact (label_graph_iso _ _).symm
+    exact (labelGraph_iso _ _).symm
   obtain ⟨m, c, hm, hmc⟩ := hl k γ η hγ hγl hγu hη hηγ (Fintype.card V) χ' this hn
   exact ⟨m.map e.symm.to_embedding, c, hm.map, hmc.trans_eq (Finset.card_map _).symm⟩
 
@@ -376,7 +376,7 @@ theorem small_gap_for_next {k l m : ℕ} (hm : m = ⌊(l - k / 9 : ℝ)⌋₊ + 
     rw [← Nat.cast_one, ← Nat.cast_sub hm1, Nat.cast_one, ← not_lt,
       gamma'_lt_one_tenth_iff' (hml.trans' (Nat.sub_le _ _)) hk hkl, hm, Nat.add_sub_cancel, not_lt]
   rw [add_sub_assoc, ← Nat.cast_sub hml] at h₃ ⊢
-  rw [add_sub_assoc, ← sub_add, ← Nat.cast_sub hml] at habove 
+  rw [add_sub_assoc, ← sub_add, ← Nat.cast_sub hml] at habove
   set b := l - m with hb
   clear_value b
   have h₁ : (0 : ℝ) < k + b := by positivity
@@ -387,7 +387,7 @@ theorem small_gap_for_next {k l m : ℕ} (hm : m = ⌊(l - k / 9 : ℝ)⌋₊ + 
     · ring_nf
       positivity
     positivity
-  rw [← add_assoc] at habove 
+  rw [← add_assoc] at habove
   linarith only [habove, this]
 
 -- lemma gamma_mul_k_le_m_of {k l m : ℕ} (h : m ≤ l) (h' : 0 < k)
@@ -437,9 +437,9 @@ theorem exists_good_clique (n k l : ℕ) (χ : TopEdgeLabelling (Fin n) (Fin 2))
     simp [empty_is_good]
   obtain h := Finset.exists_maximal s this
   simp only [Finset.mem_filter, Finset.mem_univ, true_and_iff, Finset.lt_eq_subset, and_imp,
-    exists_prop] at h 
+    exists_prop] at h
   obtain ⟨x, ⟨hx, hx₁⟩, hx₂⟩ := h
-  rw [le_iff_eq_or_lt, Nat.lt_add_one_iff] at hx₁ 
+  rw [le_iff_eq_or_lt, Nat.lt_add_one_iff] at hx₁
   refine' ⟨x, hx, _⟩
   cases hx₁
   · exact Or.inr hx₁
@@ -448,24 +448,24 @@ theorem exists_good_clique (n k l : ℕ) (χ : TopEdgeLabelling (Fin n) (Fin 2))
   refine' hx₂ _ hi' _ (Finset.ssubset_insert hi)
   rwa [Finset.card_insert_of_not_mem hi, add_le_add_iff_right]
 
--- lemma maximally_good_clique {n k l : ℕ} {ξ ξ' : ℝ} {χ : top_edge_labelling (fin n) (fin 2)}
+-- lemma maximally_good_clique {n k l : ℕ} {ξ ξ' : ℝ} {χ : TopEdgeLabelling (fin n) (fin 2)}
 --   (hξ : 0 ≤ ξ)
---   (hχ : ¬∃ (m : finset (fin n)) (c : fin 2), χ.monochromatic_of ↑m c ∧ ![k, l] c ≤ m.card)
+--   (hχ : ¬∃ (m : finset (fin n)) (c : fin 2), χ.MonochromaticOf ↑m c ∧ ![k, l] c ≤ m.card)
 --   {x : finset (fin n)}
 --   (hU : ((common_blues χ x).card : ℝ) / ((common_blues χ x).card - 1) * (1 + ξ) ≤ 1 + ξ')
 --   (hU' : 2 ≤ (common_blues χ x).card)
 --   (hx : is_good_clique ξ k l χ x)
 --   (h : ∀ y : finset (fin n), is_good_clique ξ k l χ y → ¬ x ⊂ y) :
 --   1 - (1 + ξ') * ((l - x.card : ℝ) / (k + l - x.card)) ≤
---     (χ.pullback (function.embedding.subtype _ : common_blues χ x ↪ fin n)).density 0 :=
--- lemma nine_one_end {k l n : ℕ} {χ : top_edge_labelling (fin n) (fin 2)} {x : finset (fin n)}
---   (hχ : ¬∃ (m : finset (fin n)) (c : fin 2), χ.monochromatic_of ↑m c ∧ ![k, l] c ≤ m.card)
+--     (χ.pullback (function.embedding.subType* : common_blues χ x ↪ fin n)).density 0 :=
+-- lemma nine_one_end {k l n : ℕ} {χ : TopEdgeLabelling (fin n) (fin 2)} {x : finset (fin n)}
+--   (hχ : ¬∃ (m : finset (fin n)) (c : fin 2), χ.MonochromaticOf ↑m c ∧ ![k, l] c ≤ m.card)
 --   (hx : is_good_clique (1 / 16) k l χ x)
---   (h : ∃ (m : finset (fin n)) (c : fin 2), m ⊆ common_blues χ x ∧ χ.monochromatic_of ↑m c ∧
+--   (h : ∃ (m : finset (fin n)) (c : fin 2), m ⊆ common_blues χ x ∧ χ.MonochromaticOf ↑m c ∧
 --     ![k, l - x.card] c ≤ m.card) :
 --   false :=
--- lemma nine_one_part_three {k l m n : ℕ} {γ γ' δ : ℝ} {χ : top_edge_labelling (fin n) (fin 2)}
---   (hχ : ¬∃ (m : finset (fin n)) (c : fin 2), χ.monochromatic_of ↑m c ∧ ![k, l] c ≤ m.card)
+-- lemma nine_one_part_three {k l m n : ℕ} {γ γ' δ : ℝ} {χ : TopEdgeLabelling (fin n) (fin 2)}
+--   (hχ : ¬∃ (m : finset (fin n)) (c : fin 2), χ.MonochromaticOf ↑m c ∧ ![k, l] c ≤ m.card)
 --   (hml : m < l) (hk₀ : 0 < k)
 --   (hγ : γ = l / (k + l)) (hδ : δ = γ / 20) (hγ' : γ' = (l - m) / (k + l - m))
 --   (h : exp (-δ * k) * ((k + l).choose l) * U_lower_bound_ratio (1 / 16) k l m <
@@ -503,15 +503,15 @@ theorem exists_good_clique (n k l : ℕ) (χ : TopEdgeLabelling (Fin n) (Fin 2))
 theorem nine_bound {k l : ℕ} {γ : ℝ} (hk : 0 < k) (hγ : γ = l / (k + l)) (hγl : 1 / 10 ≤ γ) :
     (k : ℝ) ≤ 9 * l := by
   have := small_k (by norm_num1) hγl hγ hk
-  norm_num1 at this 
-  rwa [mul_comm] at this 
+  norm_num1 at this
+  rwa [mul_comm] at this
 
 -- 104 king george road, ware
 theorem four_bound {k l : ℕ} {γ : ℝ} (hk : 0 < k) (hγ : γ = l / (k + l)) (hγu : γ ≤ 1 / 5) :
     (4 : ℝ) * l ≤ k :=
   by
-  rw [hγ, div_le_div_iff, one_mul, ← sub_le_iff_le_add, ← mul_sub_one, mul_comm] at hγu 
-  · norm_num1 at hγu 
+  rw [hγ, div_le_div_iff, one_mul, ← sub_le_iff_le_add, ← mul_sub_one, mul_comm] at hγu
+  · norm_num1 at hγu
     exact hγu
   · positivity
   · norm_num1
@@ -520,7 +520,7 @@ theorem big_l {k l m : ℕ} (hk9l : (k : ℝ) ≤ 9 * l) (h5lk : (4 : ℝ) * l �
     (hm : m ≤ ⌊(l - k / 9 : ℝ)⌋₊) : (4 / 9 : ℝ) * l ≤ (l - m : ℝ) :=
   by
   have : (m : ℝ) ≤ l - k / 9 := by
-    rw [← @Nat.cast_le ℝ] at hm 
+    rw [← @Nat.cast_le ℝ] at hm
     exact hm.trans (Nat.floor_le (by linarith only [hk9l]))
   · linarith only [this, h5lk]
   norm_num1
@@ -622,7 +622,7 @@ theorem ten_one_a_end {k l m n : ℕ} {γ δ : ℝ} (hγ : γ ≤ 1 / 5) (hδ : 
       (n : ℝ) * uLowerBoundRatio 0 k l m ≤ exp (-(1 / 200) * k) * (k + (l - m)).choose (l - m)) :
     False := by
   have : ((l + k - m).choose _ : ℝ) / _ = _ := choose_ratio hml.le
-  rw [← Nat.cast_add, add_comm l, add_tsub_assoc_of_le hml.le, Nat.choose_symm_add] at this 
+  rw [← Nat.cast_add, add_comm l, add_tsub_assoc_of_le hml.le, Nat.choose_symm_add] at this
   replace h₁₀₂ :=
     (mul_lt_mul_of_pos_right hm (U_lower_bound_ratio_pos (by norm_num1) hml.le)).trans_le h₁₀₂
   refine' h₁₀₂.not_le _
@@ -651,7 +651,7 @@ theorem ten_one_a (n k l : ℕ) (γ δ : ℝ) (hl₀ : 0 < l) (hk₈ : 200 ≤ l
                         1 - γ - η ≤ χ.density 0 →
                           Real.exp (-(1 / 200) * k) * (k + l').choose l' ≤ Fintype.card V →
                             ∃ (m : Finset V) (c : Fin 2),
-                              χ.monochromatic_of m c ∧ ![k, l'] c ≤ m.card)
+                              χ.MonochromaticOf m c ∧ ![k, l'] c ≤ m.card)
     (hγ : γ = l / (k + l)) (hγu : γ ≤ 1 / 5) (hδ : δ = γ / 40) (hlk : l ≤ k)
     (hk9l : (k : ℝ) ≤ 9 * l) (h5lk : (4 : ℝ) * l ≤ k) (χ : TopEdgeLabelling (Fin n) (Fin 2))
     (hχ : ¬∃ (m : Finset (Fin n)) (c : Fin 2), χ.MonochromaticOf (↑m) c ∧ ![k, l] c ≤ m.card)
@@ -670,15 +670,15 @@ theorem ten_one_a (n k l : ℕ) (γ δ : ℝ) (hl₀ : 0 < l) (hk₈ : 200 ≤ l
     rw [← @Nat.cast_le ℝ, Nat.cast_two]
     exact h₂.trans' (by norm_num1)
   have := maximally_good_clique le_rfl hχ (big_U' h₂) h₃ hx hxy.2
-  rw [one_add_mul, ← sub_sub] at this 
+  rw [one_add_mul, ← sub_sub] at this
   have h' := big_l' hk9l h5lk hxy.1 hml.le
-  rw [← not_lt, ← gamma'_lt_one_tenth_iff' hml.le (hl₀.trans_le hlk) hk9l, not_lt] at hxy 
+  rw [← not_lt, ← gamma'_lt_one_tenth_iff' hml.le (hl₀.trans_le hlk) hk9l, not_lt] at hxy
   specialize
     h₁₀₂ (l - x.card) h' k ((l - x.card) / (k + l - x.card)) _ hγ' hxy.1
       (hγ'_le_γ.trans (hγu.trans_eq' hγ.symm)) (by linarith only [hxy.1]) le_rfl _ _ this
   replace h₁₀₂ := fun z => nine_one_end hχ hx (ramsey_number_le_finset_aux _ (h₁₀₂ z))
   rw [imp_false, not_le, Fintype.subtype_card, Finset.filter_mem_eq_inter, Finset.univ_inter] at
-    h₁₀₂ 
+    h₁₀₂
   exact ten_one_a_end hγu hδ hml hm (hx.2.trans h₁₀₂.le)
 
 theorem ten_one_b (n k l : ℕ) (γ δ : ℝ) (hl₀ : 0 < l) (hk₈ : 200 ≤ l)
@@ -717,7 +717,7 @@ theorem ten_one_b (n k l : ℕ) (γ δ : ℝ) (hl₀ : 0 < l) (hk₈ : 200 ≤ l
   specialize h₉₁ (l - x.card) h₃ k _ _ hγ' h₄ h₂.le rfl
   suffices (ramsey_number ![k, l - x.card] : ℝ) ≤ (common_blues χ x).card
     by
-    rw [Nat.cast_le] at this 
+    rw [Nat.cast_le] at this
     exact nine_one_end hχ hx (ramsey_number_le_finset this χ)
   have := (U_lower_bound_ratio_lower_bound_ten hml.le hm.le).trans hx.2
   refine' this.trans' _
@@ -778,8 +778,8 @@ theorem ten_one_precise (γ₀ : ℝ) (hγ₀ : 0 < γ₀) :
     refine' ramsey_number_ge_min _ _
     simp only [Fin.forall_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
     exact ⟨hk₂ _ hlk, hk₂ _ le_rfl⟩
-  rw [← not_le, ramsey_number_le_iff_fin, is_ramsey_valid, Classical.not_forall] at hnr 
-  obtain ⟨χ : top_edge_labelling (Fin n) (Fin 2), hχ⟩ := hnr
+  rw [← not_le, ramsey_number_le_iff_fin, is_ramsey_valid, Classical.not_forall] at hnr
+  obtain ⟨χ : TopEdgeLabelling (Fin n) (Fin 2), hχ⟩ := hnr
   suffices (n : ℝ) ≤ exp (-δ * k + 21 / 20) * (k + l).choose l
     by
     have h : (41 / 20 : ℝ) = 21 / 20 + 1 := by norm_num1
@@ -817,13 +817,13 @@ theorem ten_one_true (γ : ℝ) (hγu : γ ≤ 1 / 5) :
   · refine' ⟨fun _ => 1, is_o.comp_tendsto (is_o_const_id_at_top _) tendsto_nat_cast_atTop_atTop, _⟩
     rintro k l rfl
     have : (l : ℝ) / (k + l) = 0 := hγ₀.antisymm (by positivity)
-    rw [div_eq_zero_iff, Nat.cast_eq_zero, ← Nat.cast_add, Nat.cast_eq_zero, add_eq_zero] at this 
+    rw [div_eq_zero_iff, Nat.cast_eq_zero, ← Nat.cast_add, Nat.cast_eq_zero, add_eq_zero] at this
     have : l = 0 := this.elim id And.right
     rw [this, ramsey_number_pair_swap, ramsey_number_cons_zero, Nat.cast_zero,
       Nat.choose_zero_right, Nat.cast_one, mul_one]
     exact (exp_pos _).le
   have := ten_one_precise γ hγ₀
-  rw [eventually_at_top] at this 
+  rw [eventually_at_top] at this
   obtain ⟨L, hL⟩ := this
   replace hL := fun l hl k hγ => hL l hl k γ (γ / 40) hγ le_rfl hγu rfl
   have : ∀ k l : ℕ, γ = l / (k + l) → 0 < k ∧ 0 < l :=
@@ -833,8 +833,8 @@ theorem ten_one_true (γ : ℝ) (hγu : γ ≤ 1 / 5) :
     have : l ≠ 0 := by rintro rfl; simpa using hγ₀
     refine' ⟨_, this⟩
     rintro rfl
-    rw [Nat.cast_zero, zero_add, div_self] at hγu 
-    · norm_num at hγu 
+    rw [Nat.cast_zero, zero_add, div_self] at hγu
+    · norm_num at hγu
     · positivity
   have : ∀ k l : ℕ, γ = l / (k + l) → (⌈(L : ℝ) * ((1 - γ) / γ)⌉₊ ≤ k ↔ L ≤ l) :=
     by
@@ -854,7 +854,7 @@ theorem ten_one_true (γ : ℝ) (hγu : γ ≤ 1 / 5) :
     rw [if_pos hk]
   intro k l hγ
   split_ifs with h
-  · rw [this k l hγ] at h 
+  · rw [this k l hγ] at h
     exact hL l h k hγ
   rw [neg_mul, neg_add_eq_sub, sub_self, Real.exp_zero, one_mul, Nat.cast_le, ← Nat.choose_symm_add]
   exact ramsey_number_le_choose'

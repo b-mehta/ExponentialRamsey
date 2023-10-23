@@ -20,7 +20,7 @@ open scoped Nat
 
 section
 
-variable {α : Type _} [Lattice α]
+variable {α : Type*} [Lattice α]
 
 /-- The unordered open-open interval. -/
 def uIoo (x y : α) : Set α :=
@@ -64,8 +64,8 @@ theorem taylor_mean_remainder_unordered {f : ℝ → ℝ} {g g' : ℝ → ℝ} {
     ⟨y, hy, h⟩
   use y, hy
   -- The rest is simplifications and trivial calculations
-  simp only [taylorWithinEval_self] at h 
-  rw [mul_comm, ← div_left_inj' (g'_ne y hy), mul_div_cancel _ (g'_ne y hy)] at h 
+  simp only [taylorWithinEval_self] at h
+  rw [mul_comm, ← div_left_inj' (g'_ne y hy), mul_div_cancel _ (g'_ne y hy)] at h
   rw [← neg_sub, ← h]
   field_simp [g'_ne y hy, n.factorial_ne_zero]
   ring
@@ -85,9 +85,9 @@ theorem taylor_mean_remainder_lagrange_unordered {f : ℝ → ℝ} {x x₀ : ℝ
     refine' pow_ne_zero _ _
     rw [sub_ne_zero]
     cases le_total x₀ x
-    · rw [uIoo_of_le h] at hy 
+    · rw [uIoo_of_le h] at hy
       exact hy.2.ne'
-    · rw [uIoo_of_ge h] at hy 
+    · rw [uIoo_of_ge h] at hy
       exact hy.1.Ne
   have hg' : ∀ y : ℝ, y ∈ uIoo x₀ x → -(↑n + 1) * (x - y) ^ n ≠ 0 := fun y hy =>
     mul_ne_zero (neg_ne_zero.mpr (Nat.cast_add_one_ne_zero n)) (xy_ne y hy)
@@ -96,7 +96,7 @@ theorem taylor_mean_remainder_lagrange_unordered {f : ℝ → ℝ} {x x₀ : ℝ
       hg' with
     ⟨y, hy, h⟩
   use y, hy
-  simp only [sub_self, zero_pow', Ne.def, Nat.succ_ne_zero, not_false_iff, zero_sub, mul_neg] at h 
+  simp only [sub_self, zero_pow', Ne.def, Nat.succ_ne_zero, not_false_iff, zero_sub, mul_neg] at h
   rw [h, neg_div, ← div_neg, neg_mul, neg_neg]
   field_simp [n.cast_add_one_ne_zero, n.factorial_ne_zero, xy_ne y hy]
   ring
@@ -127,7 +127,7 @@ theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ}
         fun y hy => gdiff y (h₂ hy)
     refine' ⟨y, h₂ hy, hy.2.Ne, _⟩
     -- The rest is simplifications and trivial calculations
-    simp only [taylorWithinEval_self] at h 
+    simp only [taylorWithinEval_self] at h
     field_simp [← h, n.factorial_ne_zero]
     ring
   · have h₁ : Icc x x₀ ⊆ Icc a b := Icc_subset_Icc hx.1 hx₀.2
@@ -140,7 +140,7 @@ theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ}
         fun y hy => gdiff y (h₂ hy)
     refine' ⟨y, h₂ hy, hy.1.ne', _⟩
     -- The rest is simplifications and trivial calculations
-    simp only [taylorWithinEval_self] at h 
+    simp only [taylorWithinEval_self] at h
     rw [← neg_sub, neg_mul, ← h]
     field_simp [n.factorial_ne_zero]
     ring
@@ -156,7 +156,7 @@ theorem taylor_mean_remainder_central {f : ℝ → ℝ} {g g' : ℝ → ℝ} {x�
   by
   obtain ⟨y, hy, hyx, h⟩ := taylor_mean_remainder_central_aux hab hx hx₀ hf hf' gcont gdiff
   refine' ⟨y, hy, _⟩
-  rw [smul_eq_mul] at h 
+  rw [smul_eq_mul] at h
   rw [smul_eq_mul, div_mul_eq_mul_div, ← h, mul_div_cancel]
   exact g'_ne _ hy
 
@@ -174,8 +174,8 @@ theorem taylor_mean_remainder_lagrange_central {f : ℝ → ℝ} {x x₀ a b : �
     ⟨y, hy, hy', h⟩
   have hy_ne : x - y ≠ 0 := sub_ne_zero_of_ne hy'.symm
   use y, hy
-  dsimp at h 
-  rw [← eq_div_iff] at h 
+  dsimp at h
+  rw [← eq_div_iff] at h
   swap
   · exact mul_ne_zero (neg_ne_zero.2 (by positivity)) (by positivity)
   simp only [h, sub_self, zero_pow' _ (Nat.succ_ne_zero n), zero_sub, mul_neg, neg_mul,
@@ -206,7 +206,7 @@ theorem taylor_mean_remainder_bound_central {f : ℝ → ℝ} {a b C x x₀ : �
     ‖f x - taylorWithinEval f n (Icc a b) x₀ x‖ ≤ C * |x - x₀| ^ (n + 1) / (n + 1)! :=
   by
   rcases eq_or_lt_of_le hab with (rfl | hab)
-  · simp only [Icc_self, mem_singleton_iff] at hx hx₀ 
+  · simp only [Icc_self, mem_singleton_iff] at hx hx₀
     substs hx₀ hx
     rw [taylorWithinEval_self, sub_self, sub_self, abs_zero, zero_pow Nat.succ_pos',
       MulZeroClass.mul_zero, zero_div, norm_zero]
@@ -227,7 +227,7 @@ theorem exists_taylor_mean_remainder_bound_central {f : ℝ → ℝ} {a b x₀ :
   by
   rcases eq_or_lt_of_le hab with (rfl | h)
   · refine' ⟨0, fun x hx => _⟩
-    rw [Icc_self, mem_singleton_iff] at hx hx₀ 
+    rw [Icc_self, mem_singleton_iff] at hx hx₀
     rw [hx₀, hx, taylorWithinEval_self, sub_self, MulZeroClass.zero_mul, norm_zero]
   let C := Sup ((fun y => ‖iteratedDerivWithin (n + 1) f (Icc a b) y‖) '' Icc a b)
   refine' ⟨C / (n + 1)!, fun x hx => _⟩

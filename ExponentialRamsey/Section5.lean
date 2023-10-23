@@ -24,7 +24,7 @@ theorem hMul_log_two_le_log_one_add {ε : ℝ} (hε : 0 ≤ ε) (hε' : ε ≤ 1
   have : 0 ≤ 1 - ε := by rwa [sub_nonneg]
   have := convexOn_exp.2 (Set.mem_univ 0) (Set.mem_univ (log 2)) this hε (by simp)
   simp only [smul_eq_mul, MulZeroClass.mul_zero, zero_add, Real.exp_zero, mul_one,
-    exp_log two_pos] at this 
+    exp_log two_pos] at this
   refine' this.trans_eq _
   ring_nf
 
@@ -34,7 +34,7 @@ open scoped ExponentialRamsey
 
 open Filter Finset
 
-theorem top_adjuster {α : Type _} [SemilatticeSup α] [Nonempty α] {p : α → Prop}
+theorem top_adjuster {α : Type*} [SemilatticeSup α] [Nonempty α] {p : α → Prop}
     (h : ∀ᶠ k : α in atTop, p k) : ∀ᶠ l : α in atTop, ∀ k : α, l ≤ k → p k :=
   by
   rw [eventually_at_top] at h ⊢
@@ -58,7 +58,7 @@ theorem ceil_eventually_le (c : ℝ) (hc : 1 < c) : ∀ᶠ k : ℝ in atTop, (�
   filter_upwards [(tendsto_id.const_mul_at_top (sub_pos_of_lt hc)).eventually_ge_atTop 1,
     eventually_ge_at_top (0 : ℝ)] with x hx hx'
   refine' (Nat.ceil_lt_add_one hx').le.trans _
-  rwa [id.def, sub_one_mul, le_sub_iff_add_le'] at hx 
+  rwa [id.def, sub_one_mul, le_sub_iff_add_le'] at hx
 
 theorem isLittleO_rpow_rpow {r s : ℝ} (hrs : r < s) :
     (fun x : ℝ => x ^ r) =o[atTop] fun x => x ^ s :=
@@ -135,7 +135,7 @@ theorem one_lt_qFunction :
     refine' mul_le_mul_of_nonneg_right (hMul_log_two_le_log_one_add hε.le hε₁) _
     norm_num1
   refine' (rpow_le_rpow_of_exponent_le hk₁ this).trans' _
-  rwa [norm_of_nonneg, one_mul, norm_of_nonneg] at hk₂ 
+  rwa [norm_of_nonneg, one_mul, norm_of_nonneg] at hk₂
   · exact rpow_nonneg_of_nonneg (Nat.cast_nonneg _) _
   positivity
 
@@ -170,7 +170,7 @@ theorem height_upper_bound :
 open scoped BigOperators
 
 -- #check weight
-variable {V : Type _} [DecidableEq V] [Fintype V] {χ : TopEdgeLabelling V (Fin 2)}
+variable {V : Type*} [DecidableEq V] [Fintype V] {χ : TopEdgeLabelling V (Fin 2)}
 
 /- ./././Mathport/Syntax/Translate/Expr.lean:107:6: warning: expanding binder group (x y) -/
 theorem five_five_aux_part_one {X Y : Finset V} :
@@ -216,7 +216,7 @@ theorem five_five_aux {X Y : Finset V} :
   rcases Y.eq_empty_or_nonempty with (rfl | hY)
   · simp
   have hY : 0 < (Y.card : ℝ) := by positivity
-  rw [← div_le_iff' hY] at this 
+  rw [← div_le_iff' hY] at this
   simp only [Nat.cast_pow]
   refine' this.trans_eq' _
   rw [col_density_comm]
@@ -233,7 +233,7 @@ theorem five_five (χ : TopEdgeLabelling V (Fin 2)) (X Y : Finset V) :
   refine' mul_nonneg (by positivity) (sub_nonneg_of_le _)
   exact five_five_aux
 
-theorem tendsto_nat_ceil_atTop {α : Type _} [LinearOrderedSemiring α] [FloorSemiring α] :
+theorem tendsto_nat_ceil_atTop {α : Type*} [LinearOrderedSemiring α] [FloorSemiring α] :
     Tendsto (fun x : α => ⌈x⌉₊) atTop atTop :=
   Nat.ceil_mono.tendsto_atTop_atTop fun n => ⟨n, (Nat.ceil_natCast _).ge⟩
 
@@ -272,7 +272,7 @@ theorem five_six_aux_left_term :
     (((tendsto_rpow_atTop h32).atTop_mul_atTop tendsto_log_at_top).comp t).eventually_gt_atTop
       (64 * log 2)] with
     l h₁ h₂ h₃ h₄ k hlk
-  dsimp at h₁ 
+  dsimp at h₁
   specialize h₂ k hlk
   have h₃' : (1 : ℝ) < k := h₃.trans_le (Nat.cast_le.2 hlk)
   have h₃'1 : (0 : ℝ) < k := zero_lt_one.trans h₃'
@@ -326,7 +326,7 @@ theorem five_six_aux_right_term_aux : ∀ᶠ k : ℝ in atTop, 1 ≤ 32 * k ^ (1
   filter_upwards [(isLittleO_log_rpow_atTop h8).def zero_lt_one,
     (tendsto_rpow_atTop h8).eventually_ge_atTop 1, tendsto_log_at_top.eventually_ge_at_top (0 : ℝ),
     eventually_ge_at_top (0 : ℝ)] with x hx hx' hxl hx₀
-  rw [norm_of_nonneg hxl, norm_of_nonneg (rpow_nonneg_of_nonneg hx₀ _), one_mul] at hx 
+  rw [norm_of_nonneg hxl, norm_of_nonneg (rpow_nonneg_of_nonneg hx₀ _), one_mul] at hx
   linarith only [hx, hx']
 
 theorem five_six_aux_right_term :
@@ -506,11 +506,11 @@ theorem five_four_aux (μ : ℝ) (k l : ℕ) (ini : BookConfig χ) (i : ℕ)
   set C := algorithm μ k l ini i
   let m := ramsey_number ![k, ⌈(l : ℝ) ^ (2 / 3 : ℝ)⌉₊]
   have hi' := hi
-  simp only [red_or_density_steps, mem_filter, mem_range] at hi' 
+  simp only [red_or_density_steps, mem_filter, mem_range] at hi'
   change (0 : ℝ) ≤ m * C.X.card + (C.X.card - m) * (weight χ C.X C.Y (get_x hi) + 1)
   refine' (five_five χ C.X C.Y).trans _
   rw [double_sum_pair_weight_eq]
-  rw [book_config.num_big_blues] at hi' 
+  rw [book_config.num_big_blues] at hi'
   have : C.X.card - m ≤ (book_config.central_vertices μ C).card :=
     by
     rw [tsub_le_iff_right, book_config.central_vertices]
@@ -577,7 +577,7 @@ theorem five_four :
   specialize hl₂ k hlk
   specialize hl₃ k hlk
   have hi' := hi
-  rw [red_or_density_steps, mem_filter, mem_range] at hi' 
+  rw [red_or_density_steps, mem_filter, mem_range] at hi'
   set C := algorithm μ k l ini i
   change -(C.X.card : ℝ) / k ^ 5 ≤ weight χ C.X C.Y (get_x hi)
   let m := ramsey_number ![k, ⌈(l : ℝ) ^ (2 / 3 : ℝ)⌉₊]
@@ -662,13 +662,13 @@ theorem q_height_lt_p {k : ℕ} {p₀ p : ℝ} (h : 1 < height k p₀ p) :
   by
   have : k ≠ 0 := by
     replace h := h.ne'
-    rw [height] at h 
-    simp only [Ne.def, dite_eq_right_iff, Classical.not_forall] at h 
+    rw [height] at h
+    simp only [Ne.def, dite_eq_right_iff, Classical.not_forall] at h
     obtain ⟨hh, -⟩ := h
     exact hh
   by_contra' z
   have := height_min this _ z
-  · rw [← not_lt] at this 
+  · rw [← not_lt] at this
     exact this (Nat.sub_lt one_le_height zero_lt_one)
   simpa using h
 
@@ -701,14 +701,14 @@ theorem five_eight {μ : ℝ} {k l : ℕ} {ini : BookConfig χ} (h : 1 / (k : �
   set C := algorithm μ k l ini i
   set ε := (k : ℝ) ^ (-1 / 4 : ℝ)
   rw [degree_regularisation_applied hi, book_config.degree_regularisation_step_Y]
-  rw [degree_regularisation_applied hi, book_config.degree_regularisation_step_X, mem_filter] at hx 
-  rw [degree_steps, mem_filter, mem_range] at hi 
+  rw [degree_regularisation_applied hi, book_config.degree_regularisation_step_X, mem_filter] at hx
+  rw [degree_steps, mem_filter, mem_range] at hi
   change (1 - (k : ℝ) ^ (-1 / 8 : ℝ)) * C.p * C.Y.card ≤ ((red_neighbors χ) x ∩ C.Y).card
   change
     x ∈ C.X ∧
       (C.p - _ * α_function k (height k ini.p C.p)) * (C.Y.card : ℝ) ≤
         ((red_neighbors χ) x ∩ C.Y).card at
-    hx 
+    hx
   have : 1 / (k : ℝ) < C.p := one_div_k_lt_p_of_lt_final_step hi.1
   refine' hx.2.trans' (mul_le_mul_of_nonneg_right _ (Nat.cast_nonneg _))
   rw [one_sub_mul, sub_le_sub_iff_left]
@@ -747,7 +747,7 @@ theorem five_eight_weak {μ : ℝ} {k l : ℕ} {ini : BookConfig χ} (h : 1 / (k
   refine' (five_eight h hi x hx).trans' _
   refine' mul_le_mul_of_nonneg_right _ (Nat.cast_nonneg _)
   refine' mul_le_mul_of_nonneg_left _ _
-  · rw [degree_steps, mem_filter, mem_range] at hi 
+  · rw [degree_steps, mem_filter, mem_range] at hi
     exact (one_div_k_lt_p_of_lt_final_step hi.1).le
   rw [sub_nonneg]
   refine' rpow_le_one_of_one_le_of_nonpos _ (by norm_num)
@@ -803,7 +803,7 @@ theorem five_eight_weaker' (p₀l : ℝ) (hp₀l : 0 < p₀l) :
                               ((red_neighbors χ) x ∩ (algorithm μ k l ini i).y).card :=
   by
   filter_upwards [five_eight_weaker p₀l hp₀l] with l hl k hlk μ n χ ini hini i x hi hx
-  rw [red_or_density_steps, mem_filter, ← Nat.odd_iff_not_even, mem_range] at hi 
+  rw [red_or_density_steps, mem_filter, ← Nat.odd_iff_not_even, mem_range] at hi
   rcases hi.2.1 with ⟨j, rfl⟩
   refine' hl k hlk μ n χ ini hini (2 * j) x _ hx
   rw [degree_steps, mem_filter, mem_range]
@@ -863,7 +863,7 @@ theorem red_neighbors_y_nonempty {μ : ℝ} (h : 1 / (k : ℝ) ≤ ini.p) (hk : 
   rw [← card_pos, ← @Nat.cast_pos ℝ]
   have : i < final_step μ k l ini :=
     by
-    rw [degree_steps, mem_filter, mem_range] at hi 
+    rw [degree_steps, mem_filter, mem_range] at hi
     exact hi.1
   refine' (five_eight h hi x hx).trans_lt' _
   refine' mul_pos (mul_pos _ (p_pos this)) _
@@ -879,7 +879,7 @@ theorem red_neighbors_y_nonempty' {μ : ℝ} (h : 1 / (k : ℝ) ≤ ini.p) (hk :
     (hi : i ∈ redOrDensitySteps μ k l ini) (x : V) (hx : x ∈ (algorithm μ k l ini i).X) :
     ((red_neighbors χ) x ∩ (algorithm μ k l ini i).y).Nonempty :=
   by
-  rw [red_or_density_steps, mem_filter, ← Nat.odd_iff_not_even, mem_range] at hi 
+  rw [red_or_density_steps, mem_filter, ← Nat.odd_iff_not_even, mem_range] at hi
   rcases hi.2.1 with ⟨j, rfl⟩
   refine' red_neighbors_Y_nonempty h hk _ x hx
   rw [degree_steps, mem_filter, mem_range]
@@ -931,7 +931,7 @@ theorem red_neighbors_x_nonempty {μ₁ μ : ℝ} (hμ₁ : μ₁ < 1) (hμu : �
   by
   set X := (algorithm μ k l ini i).X with ← hx
   have hi' := hi
-  rw [red_or_density_steps, mem_filter, mem_range] at hi' 
+  rw [red_or_density_steps, mem_filter, mem_range] at hi'
   rw [← card_pos, ← @Nat.cast_pos ℝ, card_red_neighbors_inter, sub_pos]
   suffices 1 < (1 - μ) * X.card
     by
@@ -957,9 +957,9 @@ theorem five_one_case_a {α : ℝ} (X Y : Finset V) {x : V} (hxX : ((red_neighbo
   by
   intro h
   conv_rhs => rw [col_density_eq_sum]
-  simp only [pair_weight, ← mul_sum] at h 
+  simp only [pair_weight, ← mul_sum] at h
   rw [inv_mul_eq_div, div_le_div_right, sum_sub_distrib, sum_const, nsmul_eq_mul,
-    le_sub_iff_add_le', mul_left_comm, ← add_mul, ← sub_eq_add_neg, ← le_div_iff] at h 
+    le_sub_iff_add_le', mul_left_comm, ← add_mul, ← sub_eq_add_neg, ← le_div_iff] at h
   · refine' h.trans_eq _
     congr with i : 2
     rw [inter_left_comm, inter_assoc]
@@ -991,9 +991,9 @@ theorem five_one_case_b_aux {α : ℝ} (X Y : Finset V) {x : V} (hx : x ∈ X) (
     · rw [subset_erase]
       exact ⟨inter_subset_right _ _, by simp [not_mem_col_neighbors]⟩
     exact disjoint_sdiff_self_left
-  simp only [pair_weight, ← mul_sum] at this 
+  simp only [pair_weight, ← mul_sum] at this
   rw [inv_mul_eq_div, le_div_iff, sum_sub_distrib, sum_const, add_mul, div_mul_cancel, nsmul_eq_mul,
-    le_sub_iff_add_le', mul_left_comm _ (col_density χ 0 X Y), ← add_assoc, add_right_comm] at this 
+    le_sub_iff_add_le', mul_left_comm _ (col_density χ 0 X Y), ← add_assoc, add_right_comm] at this
   · refine' this.trans_eq (sum_congr rfl _)
     intro y hy
     rw [inter_left_comm, inter_assoc]
@@ -1009,7 +1009,7 @@ theorem five_one_case_b_end (m : ℕ) :
   filter_upwards [hf, top_adjuster (t.eventually_ge_at_top 1),
     ((tendsto_rpow_atTop h34).comp t).eventually_ge_atTop (m / c)] with l hl hk₀ hl₁ k hlk
   specialize hk₀ k hlk
-  rw [div_le_iff' hc] at hl₁ 
+  rw [div_le_iff' hc] at hl₁
   rw [← @Nat.cast_le ℝ, Nat.cast_pow, ← rpow_nat_cast]
   refine' (hl k hlk).trans' _
   rw [rpow_def_of_pos, exp_le_exp, mul_comm]
@@ -1054,7 +1054,7 @@ theorem five_one_case_b (p₀l : ℝ) (hp₀l : 0 < p₀l) :
   have hx : x ∈ C.X := book_config.get_central_vertex_mem_X _ _ _
   specialize h₅₈ k hlk μ n χ ini hini i x hi hx
   have hi' := hi
-  rw [red_or_density_steps, mem_filter, mem_range] at hi' 
+  rw [red_or_density_steps, mem_filter, mem_range] at hi'
   have hβ := blue_X_ratio_prop hi
   have hβ' := card_red_neighbors_inter hi
   refine' (five_one_case_b_aux C.X C.Y hx (Y_nonempty hi'.1) h).trans' _
@@ -1207,7 +1207,7 @@ theorem five_one_case_b_condition (μ₁ p₀l : ℝ) (hμ₁ : μ₁ < 1) (hp�
   have hβ : blue_X_ratio μ k l ini i = 0 := by
     rw [blue_X_ratio_eq hi, hXB, card_empty, Nat.cast_zero, zero_div]
   rw [hXB, hβ, sum_empty, MulZeroClass.mul_zero, MulZeroClass.zero_mul, zero_add, sub_zero,
-    mul_one] at hl 
+    mul_one] at hl
   have hp₀ : (1 : ℝ) / k ≤ ini.p := by
     refine' hini.trans' _
     rw [one_div]
@@ -1218,7 +1218,7 @@ theorem five_one_case_b_condition (μ₁ p₀l : ℝ) (hμ₁ : μ₁ < 1) (hp�
   · rw [← Nat.cast_mul, Nat.cast_pos, pos_iff_ne_zero, mul_ne_zero_iff, ← pos_iff_ne_zero, ←
       pos_iff_ne_zero, card_pos, card_pos]
     refine' ⟨X_nonempty _, _⟩
-    · rw [red_or_density_steps, mem_filter, mem_range] at hi 
+    · rw [red_or_density_steps, mem_filter, mem_range] at hi
       exact hi.1
     exact
       red_neighbors_Y_nonempty' hp₀ (hl₁.trans_le hlk) hi _
@@ -1276,7 +1276,7 @@ theorem five_one (μ₁ p₀l : ℝ) (hμ₁ : μ₁ < 1) (hp₀l : 0 < p₀l) :
       (book_config.get_central_vertex_mem_X _ _ _)
   have hX : C.X.nonempty := by
     refine' X_nonempty _
-    rw [red_or_density_steps, mem_filter, mem_range] at hi 
+    rw [red_or_density_steps, mem_filter, mem_range] at hi
     exact hi.1
   cases'
     le_or_lt (-α * (((red_neighbors χ) x ∩ C.X).card * Yr.card) / C.Y.card)
@@ -1326,7 +1326,7 @@ theorem five_two (μ₁ p₀l : ℝ) (hμ₁ : μ₁ < 1) (hp₀l : 0 < p₀l) :
   filter_upwards [five_one μ₁ p₀l hμ₁ hp₀l] with l hl k hlk μ hμu n χ ini hini i hi
   have hi' := hi
   simp only [density_steps, mem_image, Subtype.coe_mk, mem_filter, mem_attach, true_and_iff,
-    exists_prop, Subtype.exists, exists_and_right, exists_eq_right] at hi' 
+    exists_prop, Subtype.exists, exists_and_right, exists_eq_right] at hi'
   obtain ⟨hi'', hhi''⟩ := hi'
   obtain ⟨hβ', h⟩ := (hl k hlk μ hμu n χ ini hini i hi'').resolve_left hhi''.not_le
   refine' ⟨hβ', _⟩
@@ -1402,7 +1402,7 @@ theorem five_three_right (μ₁ p₀l : ℝ) (hμ₁ : μ₁ < 1) (hp₀l : 0 < 
   have : (algorithm μ k l ini (i + 1)).p - (algorithm μ k l ini i).p ≤ 1 :=
     (sub_le_self _ col_density_nonneg).trans col_density_le_one
   replace h := h.trans this
-  rw [mul_right_comm] at h 
+  rw [mul_right_comm] at h
   have : (1 : ℝ) / 2 ≤ 1 - k ^ (-1 / 4 : ℝ) :=
     by
     rw [le_sub_comm, one_div, neg_div]
@@ -1424,7 +1424,7 @@ theorem five_three_right (μ₁ p₀l : ℝ) (hμ₁ : μ₁ < 1) (hp₀l : 0 < 
   swap
   · refine' div_nonneg (sub_nonneg_of_le _) blue_X_ratio_nonneg
     exact blue_X_ratio_le_one
-  rw [mul_comm, mul_one_div, sub_div, div_self hβ.ne', div_le_iff, one_mul, sub_le_iff_le_add] at h 
+  rw [mul_comm, mul_one_div, sub_div, div_self hβ.ne', div_le_iff, one_mul, sub_le_iff_le_add] at h
   swap
   · exact mul_pos two_pos (rpow_pos_of_pos hk₀ _)
   rw [one_div]
