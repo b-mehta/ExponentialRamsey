@@ -842,7 +842,7 @@ theorem four_one (hμ₀ : 0 < μ₀) :
     exact disjoint_sdiff
   · refine' Ublue.subset _
     exact hSU
-  · refine' monochromatic_between_common_blues.subset_right _
+  · refine' MonochromaticBetween_common_blues.subset_right _
     exact inter_subset_left _ _
   · rw [hScard]
     exact Nat.le_ceil _

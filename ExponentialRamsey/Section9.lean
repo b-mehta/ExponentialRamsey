@@ -2065,7 +2065,7 @@ theorem nine_one_end {k l n : ℕ} {ξ : ℝ} {χ : TopEdgeLabelling (Fin n) (Fi
     exact ⟨i, hi, fun q => (q rfl).elim⟩
   refine' hχ ⟨m ∪ x, 1, _, by simpa [this] using hm''⟩
   rw [coe_union, TopEdgeLabelling.MonochromaticOf_union]
-  exact ⟨hm', hx.1, monochromatic_between_common_blues.symm.subset_left hm⟩
+  exact ⟨hm', hx.1, MonochromaticBetween_common_blues.symm.subset_left hm⟩
 
 theorem nine_one_part_two {k l n : ℕ} {γ δ : ℝ} {χ : TopEdgeLabelling (Fin n) (Fin 2)}
     {x : Finset (Fin n)}

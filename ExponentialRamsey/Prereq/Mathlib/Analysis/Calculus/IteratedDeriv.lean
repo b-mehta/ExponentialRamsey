@@ -3,7 +3,7 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
-import Analysis.Calculus.IteratedDeriv
+import Mathlib.Analysis.Calculus.IteratedDeriv
 
 #align_import prereq.mathlib.analysis.calculus.iterated_deriv
 
@@ -37,4 +37,3 @@ theorem iteratedDerivWithin_of_isOpen {s : Set 𝕜} {f : 𝕜 → F} (n : ℕ) 
 theorem iteratedDerivWithin_nhds {u : Set 𝕜} {x : 𝕜} {f : 𝕜 → F} {n : ℕ} (hu : u ∈ 𝓝 x) :
     iteratedDerivWithin n f u x = iteratedDeriv n f x := by
   rw [iteratedDerivWithin, iteratedDeriv, iteratedFDerivWithin_nhds hu]
-

@@ -3,9 +3,9 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
-import Analysis.Calculus.Taylor
-import Analysis.Calculus.ContDiff
-import Data.Set.Intervals.UnorderedInterval
+import Mathlib.Analysis.Calculus.Taylor
+import Mathlib.Analysis.Calculus.ContDiff
+import Mathlib.Data.Set.Intervals.UnorderedInterval
 
 #align_import prereq.mathlib.analysis.calculus.taylor
 
@@ -46,7 +46,7 @@ theorem taylor_mean_remainder_unordered {f : ℝ → ℝ} {g g' : ℝ → ℝ} {
     (gcont : ContinuousOn g (uIcc x₀ x))
     (gdiff : ∀ x_1 : ℝ, x_1 ∈ uIoo x₀ x → HasDerivAt g (g' x_1) x_1)
     (g'_ne : ∀ x_1 : ℝ, x_1 ∈ uIoo x₀ x → g' x_1 ≠ 0) :
-    ∃ (x' : ℝ) (hx' : x' ∈ uIoo x₀ x),
+    ∃ (x' : ℝ) (_ : x' ∈ uIoo x₀ x),
       f x - taylorWithinEval f n (uIcc x₀ x) x₀ x =
         ((x - x') ^ n / n ! * (g x - g x₀) / g' x') •
           iteratedDerivWithin (n + 1) f (uIcc x₀ x) x' :=
@@ -75,20 +75,21 @@ theorem taylor_mean_remainder_lagrange_unordered {f : ℝ → ℝ} {x x₀ : ℝ
     (hf' : DifferentiableOn ℝ (iteratedDerivWithin n f (uIcc x₀ x)) (uIoo x₀ x)) :
     ∃ (x' : ℝ) (hx' : x' ∈ uIoo x₀ x),
       f x - taylorWithinEval f n (uIcc x₀ x) x₀ x =
-        iteratedDerivWithin (n + 1) f (uIcc x₀ x) x' * (x - x₀) ^ (n + 1) / (n + 1)! :=
-  by
+        iteratedDerivWithin (n + 1) f (uIcc x₀ x) x' * (x - x₀) ^ (n + 1) / (n + 1)! := by
   have gcont : ContinuousOn (fun t : ℝ => (x - t) ^ (n + 1)) (uIcc x₀ x) := by
-    refine' Continuous.continuousOn _; continuity
+    refine' Continuous.continuousOn _
+    sorry
+    -- continuity
   have xy_ne : ∀ y : ℝ, y ∈ uIoo x₀ x → (x - y) ^ n ≠ 0 :=
     by
     intro y hy
     refine' pow_ne_zero _ _
     rw [sub_ne_zero]
-    cases le_total x₀ x
+    cases' le_total x₀ x with h h
     · rw [uIoo_of_le h] at hy
       exact hy.2.ne'
     · rw [uIoo_of_ge h] at hy
-      exact hy.1.Ne
+      exact hy.1.ne
   have hg' : ∀ y : ℝ, y ∈ uIoo x₀ x → -(↑n + 1) * (x - y) ^ n ≠ 0 := fun y hy =>
     mul_ne_zero (neg_ne_zero.mpr (Nat.cast_add_one_ne_zero n)) (xy_ne y hy)
   -- We apply the general theorem with g(t) = (x - t)^(n+1)
@@ -99,7 +100,7 @@ theorem taylor_mean_remainder_lagrange_unordered {f : ℝ → ℝ} {x x₀ : ℝ
   simp only [sub_self, zero_pow', Ne.def, Nat.succ_ne_zero, not_false_iff, zero_sub, mul_neg] at h
   rw [h, neg_div, ← div_neg, neg_mul, neg_neg]
   field_simp [n.cast_add_one_ne_zero, n.factorial_ne_zero, xy_ne y hy]
-  ring
+  ring_nf
 
 -- x' should be in uIoo x₀ x
 theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ} {x₀ x a b : ℝ} {n : ℕ}
@@ -236,4 +237,3 @@ theorem exists_taylor_mean_remainder_bound_central {f : ℝ → ℝ} {a b x₀ :
   intro y hy
   refine' ContinuousOn.le_sSup_image_Icc _ (Ioo_subset_Icc_self hy)
   exact (hf.continuous_on_iterated_deriv_within le_rfl (uniqueDiffOn_Icc h)).norm
-

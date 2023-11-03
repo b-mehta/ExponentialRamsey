@@ -269,8 +269,8 @@ def redStepBasic (C : BookConfig χ) (x : V) (hx : x ∈ C.X) : BookConfig χ
     exact C.red_XYA (mem_union_left _ hx) ha _
   red_XYA :=
     by
-    rw [← inter_distrib_left, insert_eq, TopEdgeLabelling.monochromatic_between_union_right,
-      TopEdgeLabelling.monochromatic_between_singleton_right]
+    rw [← inter_distrib_left, insert_eq, TopEdgeLabelling.MonochromaticBetween_union_right,
+      TopEdgeLabelling.MonochromaticBetween_singleton_right]
     constructor
     · simp (config := { contextual := true }) [mem_col_neighbors']
     · exact C.red_XYA.subset_left (inter_subset_right _ _)
@@ -316,7 +316,7 @@ def bigBlueStepBasic (C : BookConfig χ) (S T : Finset V) (hS : S ⊆ C.X) (hT :
     rw [coe_union, TopEdgeLabelling.MonochromaticOf_union]
     exact ⟨C.blue_B, hSS, C.blue_XB.symm.subset_right hS⟩
   blue_XB := by
-    rw [TopEdgeLabelling.monochromatic_between_union_right]
+    rw [TopEdgeLabelling.MonochromaticBetween_union_right]
     exact ⟨C.blue_XB.subset_left hT, hST'.symm⟩
 
 variable [Fintype V]
@@ -348,7 +348,7 @@ def densityBoostStepBasic (C : BookConfig χ) (x : V) (hx : x ∈ C.X) : BookCon
     exact ⟨MonochromaticOf_singleton, C.blue_B, C.blue_XB.subset_left (by simpa using hx)⟩
   blue_XB :=
     by
-    rw [insert_eq, monochromatic_between_union_right, monochromatic_between_singleton_right]
+    rw [insert_eq, MonochromaticBetween_union_right, MonochromaticBetween_singleton_right]
     refine' ⟨_, C.blue_XB.subset_left (inter_subset_right _ _)⟩
     simp (config := { contextual := true }) [mem_col_neighbors']
 
@@ -458,7 +458,7 @@ theorem exists_useful_blue_book (μ : ℝ) (X : Finset V) : (usefulBlueBooks χ 
   use(∅, X)
   rw [mem_useful_blue_books']
   simp only [empty_subset, subset.refl, disjoint_empty_left, coe_empty, MonochromaticOf_empty,
-    TopEdgeLabelling.monochromatic_between_empty_left, card_empty, pow_zero, one_mul,
+    TopEdgeLabelling.MonochromaticBetween_empty_left, card_empty, pow_zero, one_mul,
     true_and_iff]
   exact half_le_self (Nat.cast_nonneg _)
 
@@ -472,7 +472,7 @@ theorem exists_blue_book_one_le_S [Fintype V] (μ : ℝ) (X : Finset V)
     rw [mem_useful_blue_books']
     simp only [singleton_subset_iff, empty_subset, disjoint_singleton_left, not_mem_empty,
       not_false_iff, coe_singleton, MonochromaticOf_singleton, true_and_iff, hx, Nat.cast_zero,
-      TopEdgeLabelling.monochromatic_between_empty_right, card_singleton, pow_one, card_empty]
+      TopEdgeLabelling.MonochromaticBetween_empty_right, card_singleton, pow_one, card_empty]
     refine' div_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonpos_of_nonneg h.le _) (by norm_num1)
     positivity
   refine' ⟨⟨{x}, (blue_neighbors χ) x ∩ X⟩, _, by simp⟩
@@ -480,7 +480,7 @@ theorem exists_blue_book_one_le_S [Fintype V] (μ : ℝ) (X : Finset V)
   simp (config := { contextual := true }) only [hx, singleton_subset_iff, disjoint_singleton_left,
     mem_inter, and_true_iff, coe_singleton, MonochromaticOf_singleton, card_singleton, pow_one,
     true_and_iff, inter_subset_right, not_true, not_mem_col_neighbors,
-    TopEdgeLabelling.monochromatic_between_singleton_left, and_imp, mem_col_neighbors, Ne.def,
+    TopEdgeLabelling.MonochromaticBetween_singleton_left, and_imp, mem_col_neighbors, Ne.def,
     eq_self_iff_true, not_false_iff, IsEmpty.exists_iff, forall_exists_index, imp_true_iff]
   refine' hx'.trans' (half_le_self _)
   positivity

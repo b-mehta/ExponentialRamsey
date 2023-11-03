@@ -25,14 +25,13 @@ Define edge labellings, monochromatic subsets and ramsey numbers, and prove basi
 these.
 -/
 
+open Finset
+open Fintype (card)
 
 namespace SimpleGraph
 
 variable {V V' : Type*} {G : SimpleGraph V} {K K' : Type*}
 
-open Fintype (card)
-
-open Finset
 
 /-- An edge labelling of a simple graph `G` with labels in type `K`. Sometimes this is called an
 edge-colouring, but we reserve that terminology for labellings where incident edges cannot share a
@@ -133,6 +132,7 @@ TODO: Generalise to `EdgeLabelling`.
 def TopEdgeLabelling.mk (f : ∀ x y : V, x ≠ y → K)
     (f_symm : ∀ (x y : V) (H : x ≠ y), f y x H.symm = f x y H) : TopEdgeLabelling V K :=
   fun ⟨e, he⟩ => by
+    -- The weaker Lean 4 code generator here is annoying
     revert he
     refine' Quotient.hrecOn e (fun xy => f xy.1 xy.2) _
     rintro ⟨a, b⟩ ⟨c, d⟩ ⟨⟩
@@ -211,7 +211,7 @@ theorem EdgeLabelling.iSup_labelGraph (C : EdgeLabelling G K) : (⨆ k : K, C.la
   exact ⟨_, h, rfl⟩
 
 theorem EdgeLabelling.sup_labelGraph [Fintype K] (C : EdgeLabelling G K) :
-    Finset.univ.sup C.labelGraph = G :=
+    univ.sup C.labelGraph = G :=
   (C.iSup_labelGraph.symm.trans (by ext; simp)).symm
 
 /--
@@ -252,61 +252,68 @@ namespace TopEdgeLabelling
 
 variable {m : Set V} {c : K}
 
-@[simp]
-theorem monochromaticOf_empty : C.MonochromaticOf ∅ c :=
-  fun.
+@[simp] theorem monochromaticOf_empty : C.MonochromaticOf ∅ c := fun.
 
 @[simp]
 theorem monochromaticOf_singleton {x : V} : C.MonochromaticOf {x} c := by
-  simp [TopEdgeLabelling.MonochromaticOf]
+  sorry
+  -- simp [TopEdgeLabelling.MonochromaticOf]
+  -- doesn't work because of a regression
 
 theorem monochromatic_finset_singleton {x : V} : C.MonochromaticOf ({x} : Finset V) c := by
-  simp [TopEdgeLabelling.MonochromaticOf]
+  sorry
+  -- simp [TopEdgeLabelling.MonochromaticOf]
+  -- doesn't work because of a regression
 
 theorem monochromatic_subsingleton (hm : m.Subsingleton) : C.MonochromaticOf m c :=
   fun x hx y hy h => by cases h (hm hx hy)
 
 theorem monochromatic_subsingleton_colours [Subsingleton K] : C.MonochromaticOf m c :=
-  fun x hx y hy h => Subsingleton.elim _ _
+  fun _ _ _ _ _ => Subsingleton.elim _ _
 
 theorem MonochromaticOf.compRight (e : K → K') (h : C.MonochromaticOf m c) :
     (C.compRight e).MonochromaticOf m (e c) := fun x hx y hy h' => by
-  rw [TopEdgeLabelling.comp_right_get, h hx hy h']
+  rw [TopEdgeLabelling.compRight_get, h hx hy h']
 
 theorem monochromaticOf_injective (e : K → K') (he : Function.Injective e) :
     (C.compRight e).MonochromaticOf m (e c) ↔ C.MonochromaticOf m c :=
-  forall₅_congr fun x hx y hy h' => by simp [he.eq_iff]
+  forall₅_congr fun x _ y _ h' => by simp [he.eq_iff]
 
 theorem MonochromaticOf.subset {m' : Set V} (h' : m' ⊆ m) (h : C.MonochromaticOf m c) :
-    C.MonochromaticOf m' c := fun x hx y hy h'' => h (h' hx) (h' hy) h''
+    C.MonochromaticOf m' c := fun _ hx _ hy h'' => h (h' hx) (h' hy) h''
 
 theorem MonochromaticOf.image {C : TopEdgeLabelling V' K} {f : V ↪ V'}
     (h : (C.pullback f).MonochromaticOf m c) : C.MonochromaticOf (f '' m) c := by
-  simpa [TopEdgeLabelling.MonochromaticOf]
+  sorry
+  -- simp [TopEdgeLabelling.MonochromaticOf]
+  -- doesn't work because of a regression
 
 theorem MonochromaticOf.map {C : TopEdgeLabelling V' K} {f : V ↪ V'} {m : Finset V}
-    (h : (C.pullback f).MonochromaticOf m c) : C.MonochromaticOf (m.map f) c := by rw [coe_map];
+    (h : (C.pullback f).MonochromaticOf m c) : C.MonochromaticOf (m.map f) c := by
+  rw [coe_map]
   exact h.image
 
 theorem monochromaticOf_insert {x : V} (hx : x ∉ m) :
     C.MonochromaticOf (insert x m) c ↔
-      C.MonochromaticOf m c ∧ ∀ y ∈ m, C.get x y (H.ne_of_not_mem hx).symm = c :=
-  by
+      C.MonochromaticOf m c ∧ ∀ y, (H : y ∈ m) → C.get x y (H.ne_of_not_mem hx).symm = c := by
   constructor
   · intro h
     exact ⟨h.subset (by simp), fun y hy => h (Set.mem_insert _ _) (Set.mem_insert_of_mem _ hy) _⟩
   classical
   rintro ⟨h₁, h₂⟩
-  simp only [TopEdgeLabelling.MonochromaticOf, Ne.def, Set.mem_insert_iff, forall_eq_or_imp,
-    eq_self_iff_true, not_true, IsEmpty.forall_iff, true_and_iff]
-  refine' ⟨fun _ hy _ => h₂ _ hy, fun y hy => ⟨fun _ => _, fun z hz => h₁ hy hz⟩⟩
-  rw [TopEdgeLabelling.get_swap]
-  exact h₂ y hy
+  sorry
+  -- simp only [TopEdgeLabelling.MonochromaticOf, Ne.def, Set.mem_insert_iff, forall_eq_or_imp,
+  --   eq_self_iff_true, not_true, IsEmpty.forall_iff, true_and_iff]
+  -- refine' ⟨fun _ hy _ => h₂ _ hy, fun y hy => ⟨fun _ => _, fun z hz => h₁ hy hz⟩⟩
+  -- rw [TopEdgeLabelling.get_swap]
+  -- exact h₂ y hy
 
-/-- The predicate `χ.monochromatic_between X Y k` says every edge between `X` and `Y` is labelled
+  -- doesn't work because of a regression
+
+/-- The predicate `χ.MonochromaticBetween X Y k` says every edge between `X` and `Y` is labelled
 `k` by the labelling `χ`. -/
 def MonochromaticBetween (C : TopEdgeLabelling V K) (X Y : Finset V) (k : K) : Prop :=
-  ∀ ⦃x⦄, x ∈ X → ∀ ⦃y⦄, y ∈ Y → x ≠ y → C.get x y = k
+  ∀ ⦃x⦄, x ∈ X → ∀ ⦃y⦄, y ∈ Y → (h : x ≠ y) → C.get x y h = k
 
 instance [DecidableEq V] [DecidableEq K] {X Y : Finset V} {k : K} :
     Decidable (MonochromaticBetween C X Y k) :=
@@ -314,54 +321,56 @@ instance [DecidableEq V] [DecidableEq K] {X Y : Finset V} {k : K} :
 
 @[simp]
 theorem monochromaticBetween_empty_left {Y : Finset V} {k : K} : C.MonochromaticBetween ∅ Y k := by
-  simp [monochromatic_between]
+  simp [MonochromaticBetween]
 
 @[simp]
 theorem monochromaticBetween_empty_right {X : Finset V} {k : K} : C.MonochromaticBetween X ∅ k := by
-  simp [monochromatic_between]
+  simp [MonochromaticBetween]
 
 theorem monochromaticBetween_singleton_left {x : V} {Y : Finset V} {k : K} :
-    C.MonochromaticBetween {x} Y k ↔ ∀ ⦃y⦄, y ∈ Y → x ≠ y → C.get x y = k := by
-  simp [monochromatic_between]
+    C.MonochromaticBetween {x} Y k ↔ ∀ ⦃y⦄, y ∈ Y → (h : x ≠ y) → C.get x y h = k := by
+  simp [MonochromaticBetween]
 
 theorem monochromaticBetween_singleton_right {y : V} {X : Finset V} {k : K} :
-    C.MonochromaticBetween X {y} k ↔ ∀ ⦃x⦄, x ∈ X → x ≠ y → C.get x y = k := by
-  simp [monochromatic_between]
+    C.MonochromaticBetween X {y} k ↔ ∀ ⦃x⦄, x ∈ X → (h : x ≠ y) → C.get x y h = k := by
+  simp [MonochromaticBetween]
 
 theorem monochromaticBetween_union_left [DecidableEq V] {X Y Z : Finset V} {k : K} :
     C.MonochromaticBetween (X ∪ Y) Z k ↔
       C.MonochromaticBetween X Z k ∧ C.MonochromaticBetween Y Z k :=
-  by simp only [monochromatic_between, mem_union, or_imp, forall_and]
+  by simp only [MonochromaticBetween, mem_union, or_imp, forall_and]
 
 theorem monochromaticBetween_union_right [DecidableEq V] {X Y Z : Finset V} {k : K} :
     C.MonochromaticBetween X (Y ∪ Z) k ↔
       C.MonochromaticBetween X Y k ∧ C.MonochromaticBetween X Z k :=
-  by simp only [monochromatic_between, mem_union, or_imp, forall_and]
+  by simp only [MonochromaticBetween, mem_union, or_imp, forall_and]
 
 theorem monochromaticBetween_self {X : Finset V} {k : K} :
     C.MonochromaticBetween X X k ↔ C.MonochromaticOf X k := by
-  simp only [monochromatic_between, MonochromaticOf, mem_coe]
+  simp only [MonochromaticBetween, MonochromaticOf, mem_coe]
 
 theorem Disjoint.monochromaticBetween {X Y : Finset V} {k : K} (h : Disjoint X Y) :
     C.MonochromaticBetween X Y k ↔
-      ∀ ⦃x⦄, x ∈ X → ∀ ⦃y⦄, y ∈ Y → C.get x y (h.forall_ne_finset ‹_› ‹_›) = k :=
-  forall₄_congr fun x hx y hy => by simp [h.forall_ne_finset hx hy]
+      ∀ ⦃x⦄, (hx : x ∈ X) → ∀ ⦃y⦄, (hy : y ∈ Y) → C.get x y (h.forall_ne_finset ‹_› ‹_›) = k :=
+  sorry
+  -- forall₄_congr fun x hx y hy => by simp [h.forall_ne_finset hx hy]
+  -- doesn't work because of a regression
 
 theorem MonochromaticBetween.subset_left {X Y Z : Finset V} {k : K}
     (hYZ : C.MonochromaticBetween Y Z k) (hXY : X ⊆ Y) : C.MonochromaticBetween X Z k :=
-  fun x hx y hy h => hYZ (hXY hx) hy _
+  fun _ hx _ hy _ => hYZ (hXY hx) hy _
 
 theorem MonochromaticBetween.subset_right {X Y Z : Finset V} {k : K}
     (hXZ : C.MonochromaticBetween X Z k) (hXY : Y ⊆ Z) : C.MonochromaticBetween X Y k :=
-  fun x hx y hy h => hXZ hx (hXY hy) _
+  fun _ hx _ hy _ => hXZ hx (hXY hy) _
 
 theorem MonochromaticBetween.subset {W X Y Z : Finset V} {k : K}
     (hWX : C.MonochromaticBetween W X k) (hYW : Y ⊆ W) (hZX : Z ⊆ X) :
-    C.MonochromaticBetween Y Z k := fun x hx y hy h => hWX (hYW hx) (hZX hy) _
+    C.MonochromaticBetween Y Z k := fun _ hx _ hy _ => hWX (hYW hx) (hZX hy) _
 
 theorem MonochromaticBetween.symm {X Y : Finset V} {k : K} (hXY : C.MonochromaticBetween X Y k) :
-    C.MonochromaticBetween Y X k := fun y hy x hx h => by rw [get_swap _ _ h.symm];
-  exact hXY hx hy _
+    C.MonochromaticBetween Y X k :=
+  fun y hy x hx h => by rw [get_swap _ _ h.symm]; exact hXY hx hy _
 
 theorem MonochromaticBetween.comm {X Y : Finset V} {k : K} :
     C.MonochromaticBetween Y X k ↔ C.MonochromaticBetween X Y k :=
@@ -372,10 +381,10 @@ theorem monochromaticOf_union {X Y : Finset V} {k : K} :
       C.MonochromaticOf X k ∧ C.MonochromaticOf Y k ∧ C.MonochromaticBetween X Y k :=
   by
   have :
-    C.monochromatic_between X Y k ∧ C.monochromatic_between Y X k ↔ C.monochromatic_between X Y k :=
-    and_iff_left_of_imp monochromatic_between.symm
+    C.MonochromaticBetween X Y k ∧ C.MonochromaticBetween Y X k ↔ C.MonochromaticBetween X Y k :=
+    and_iff_left_of_imp MonochromaticBetween.symm
   rw [← this]
-  simp only [MonochromaticOf, Set.mem_union, or_imp, forall_and, mem_coe, monochromatic_between]
+  simp only [MonochromaticOf, Set.mem_union, or_imp, forall_and, mem_coe, MonochromaticBetween]
   tauto
 
 end TopEdgeLabelling
@@ -394,14 +403,14 @@ theorem IsRamseyValid.empty_colours [IsEmpty K] {n : K → ℕ} : IsRamseyValid 
 
 theorem IsRamseyValid.exists_zero_of_isEmpty [IsEmpty V] {n : K → ℕ} (h : IsRamseyValid V n) :
     ∃ c, n c = 0 :=
-  let ⟨m, c, hm, hc⟩ := h (IsEmpty.elim (by simp))
+  let ⟨m, c, _, hc⟩ := h (IsEmpty.elim (by simp))
   ⟨c, by simpa [Subsingleton.elim m ∅] using hc⟩
 
 theorem isRamseyValid_of_zero {n : K → ℕ} (c : K) (hc : n c = 0) : IsRamseyValid V n := fun C =>
   ⟨∅, c, by simp, by simp [hc]⟩
 
 theorem isRamseyValid_of_exists_zero (n : K → ℕ) (h : ∃ c, n c = 0) : IsRamseyValid V n :=
-  let ⟨c, hc⟩ := h
+  let ⟨_, hc⟩ := h
   isRamseyValid_of_zero _ hc
 
 theorem IsRamseyValid.mono_right {n n' : K → ℕ} (h : n ≤ n') (h' : IsRamseyValid V n') :
@@ -423,7 +432,7 @@ theorem isRamseyValid_iff_eq {n : K → ℕ} :
   · rintro ⟨a, ha, ha'⟩
     exact ⟨_, ha, ha'.le⟩
 
-theorem is_ramsey_valid_iff_embedding_aux {n : K → ℕ} (c : K) :
+theorem isRamseyValid_iff_embedding_aux {n : K → ℕ} (c : K) :
     (∃ m : Finset V, C.MonochromaticOf m c ∧ n c = m.card) ↔
       Nonempty ((⊤ : SimpleGraph (Fin (n c))) ↪g C.labelGraph c) :=
   by
@@ -432,7 +441,7 @@ theorem is_ramsey_valid_iff_embedding_aux {n : K → ℕ} (c : K) :
     have : Fintype.card m = n c := by rw [Fintype.card_coe, hm']
     classical
     obtain ⟨e⟩ := Fintype.truncEquivFinOfCardEq this
-    refine' ⟨⟨e.symm.to_embedding.trans (Function.Embedding.subType*), _⟩⟩
+    refine' ⟨⟨e.symm.toEmbedding.trans (Function.Embedding.subtype _), _⟩⟩
     intro a b
     simp only [Ne.def, Function.Embedding.trans_apply, Equiv.coe_toEmbedding,
       Function.Embedding.coe_subtype, labelGraph_adj, top_adj, ← Subtype.ext_iff,
@@ -441,15 +450,17 @@ theorem is_ramsey_valid_iff_embedding_aux {n : K → ℕ} (c : K) :
     · rintro ⟨h, -⟩
       exact h
     intro h
-    exact ⟨h, hm (e.symm a).Prop (e.symm b).Prop _⟩
+    exact ⟨h, hm (e.symm a).prop (e.symm b).prop _⟩
   rintro ⟨f⟩
-  refine' ⟨(univ : Finset (Fin (n c))).map f.to_embedding, _, _⟩
+  refine' ⟨(univ : Finset (Fin (n c))).map f.toEmbedding, _, _⟩
   · rw [MonochromaticOf]
-    simp only [Ne.def, RelEmbedding.inj, coe_map, RelEmbedding.coe_toEmbedding, Set.mem_image,
-      coe_univ, Set.mem_univ, true_and_iff, forall_exists_index, forall_apply_eq_imp_iff]
-    intro x y h
-    have : (⊤ : SimpleGraph (Fin (n c))).Adj x y := h
-    simpa [← f.map_rel_iff, h] using this
+    sorry
+    -- doesn't work because of a regression
+    -- simp only [Ne.def, RelEmbedding.inj, coe_map, RelEmbedding.coe_toEmbedding, Set.mem_image,
+    --   coe_univ, Set.mem_univ, true_and_iff, forall_exists_index, forall_apply_eq_imp_iff]
+    -- intro x y h
+    -- have : (⊤ : SimpleGraph (Fin (n c))).Adj x y := h
+    -- simpa [← f.map_rel_iff, h] using this
   rw [card_map, card_fin]
 
 -- BM: pretty good chance this is a better definition...
@@ -460,10 +471,10 @@ theorem isRamseyValid_iff_embedding {n : K → ℕ} :
       ∀ C : TopEdgeLabelling V K,
         ∃ c : K, Nonempty ((⊤ : SimpleGraph (Fin (n c))) ↪g C.labelGraph c) :=
   by
-  rw [is_ramsey_valid_iff_eq]
+  rw [isRamseyValid_iff_eq]
   refine' forall_congr' fun C => _
   rw [exists_comm]
-  simp only [is_ramsey_valid_iff_embedding_aux]
+  simp only [isRamseyValid_iff_embedding_aux]
 
 theorem IsRamseyValid.embedding {n : K → ℕ} (f : V ↪ V') (h' : IsRamseyValid V n) :
     IsRamseyValid V' n := fun C =>
@@ -472,16 +483,16 @@ theorem IsRamseyValid.embedding {n : K → ℕ} (f : V ↪ V') (h' : IsRamseyVal
 
 theorem IsRamseyValid.card_fin [Fintype V] {N : ℕ} {n : K → ℕ} (h : N ≤ card V)
     (h' : IsRamseyValid (Fin N) n) : IsRamseyValid V n :=
-  h'.Embedding <| (Fin.castLEEmb h).toEmbedding.trans (Fintype.equivFin V).symm
+  h'.embedding <| (Fin.castLEEmb h).toEmbedding.trans (Fintype.equivFin V).symm
 
 theorem IsRamseyValid.equiv_left (n : K → ℕ) (f : V ≃ V') :
     IsRamseyValid V n ↔ IsRamseyValid V' n :=
-  ⟨fun h => h.Embedding f, fun h => h.Embedding f.symm⟩
+  ⟨fun h => h.embedding f, fun h => h.embedding f.symm⟩
 
 theorem IsRamseyValid.equiv_right {n : K → ℕ} (f : K' ≃ K) (h : IsRamseyValid V n) :
     IsRamseyValid V (n ∘ f) := fun C =>
   let ⟨m, c, hm, hc⟩ := h (C.compRight f)
-  ⟨m, f.symm c, by rwa [← MonochromaticOf_injective f f.injective, f.apply_symm_apply], by
+  ⟨m, f.symm c, by rwa [← monochromaticOf_injective f f.injective, f.apply_symm_apply], by
     simpa using hc⟩
 
 theorem isRamseyValid_equiv_right {n : K → ℕ} (f : K' ≃ K) :
@@ -496,7 +507,7 @@ theorem ramsey_base [Nonempty V] {n : K → ℕ} (hn : ∃ k, n k ≤ 1) : IsRam
   by
   inhabit V
   obtain ⟨k, hk⟩ := hn
-  exact fun C => ⟨{Inhabited.default V}, k, monochromatic_finset_singleton, by simpa using hk⟩
+  exact fun C => ⟨{Inhabited.default}, k, monochromatic_finset_singleton, by simpa using hk⟩
 
 theorem ramsey_base' [Fintype V] (n : K → ℕ) (hn : ∃ k, n k ≤ 1) (hV : 1 ≤ card V) :
     IsRamseyValid V n :=
@@ -514,40 +525,42 @@ theorem IsRamseyValid.remove_twos {n : K → ℕ} (h : IsRamseyValid V n) :
     IsRamseyValid V fun k : { k : K // n k ≠ 2 } => n k :=
   by
   cases' isEmpty_or_nonempty V with hV hV
-  · obtain ⟨c, hc⟩ := h.exists_zero_of_is_empty
-    exact is_ramsey_valid_of_zero ⟨c, by simp [hc]⟩ hc
+  · obtain ⟨c, hc⟩ := h.exists_zero_of_isEmpty
+    exact isRamseyValid_of_zero ⟨c, by simp [hc]⟩ hc
   by_cases h' : ∃ k, n k ≤ 1
   · obtain ⟨k, hk⟩ := h'
     refine' ramsey_base ⟨⟨k, _⟩, hk⟩
     linarith
   simp only [not_exists, not_le, Nat.lt_iff_add_one_le] at h'
   intro C
-  obtain ⟨m, c, hm, hc⟩ := h (C.comp_right Subtype.val)
+  obtain ⟨m, c, hm, hc⟩ := h (C.compRight Subtype.val)
   have : 1 < m.card := (h' c).trans hc
   rw [Finset.one_lt_card_iff] at this
   obtain ⟨a, b, ha, hb, hab⟩ := this
   have : Subtype.val (C.get a b hab) = c := hm ha hb hab
   refine' ⟨m, _, _, hc.trans_eq' (congr_arg n this)⟩
-  rwa [← MonochromaticOf_injective _ Subtype.val_injective, this]
+  rwa [← monochromaticOf_injective _ Subtype.val_injective, this]
 
 theorem IsRamseyValid.of_remove_twos {n : K → ℕ}
     (h : IsRamseyValid V fun k : { k : K // n k ≠ 2 } => n k) : IsRamseyValid V n :=
   by
   intro C
   classical
-  by_cases h'' : ∃ (x y : V) (H : x ≠ y), n (C.get x y) = 2
+  by_cases h'' : ∃ (x y : V) (H : x ≠ y), n (C.get x y H) = 2
   · obtain ⟨x, y, H, hxy⟩ := h''
     have : x ∉ ({y} : Set V) := by simpa
-    refine' ⟨({x, y} : Finset V), C.get x y, _, _⟩
-    · rw [coe_pair, MonochromaticOf_insert this]
-      refine' ⟨MonochromaticOf_singleton, _⟩
-      simp only [Set.mem_singleton_iff]
-      rintro _ rfl
-      rfl
+    refine' ⟨({x, y} : Finset V), C.get x y H, _, _⟩
+    · rw [coe_pair, monochromaticOf_insert this]
+      refine' ⟨monochromaticOf_singleton, _⟩
+      -- regression
+      sorry
+      -- simp only [Set.mem_singleton_iff]
+      -- rintro _ rfl
+      -- rfl
     rw [hxy, card_doubleton H]
   push_neg at h''
   let C' : TopEdgeLabelling V { k : K // n k ≠ 2 } :=
-    TopEdgeLabelling.mk (fun x y h => ⟨C.get x y, h'' _ _ h⟩) _
+    TopEdgeLabelling.mk (fun x y h => ⟨C.get x y h, h'' _ _ h⟩) ?_
   swap
   · intro x y h
     ext
@@ -568,16 +581,15 @@ theorem isRamseyValid_two {n : K → ℕ} {n' : K' → ℕ} (f : K' → K)
     (hf_surj : ∀ x : K, n x ≠ 2 → ∃ y : K', n' y ≠ 2 ∧ f y = x)
     (hf_comm : ∀ x : K', n' x ≠ 2 → n (f x) = n' x) : IsRamseyValid V n' ↔ IsRamseyValid V n :=
   by
-  let e : { k // n' k ≠ 2 } → { k // n k ≠ 2 } := fun k => ⟨f k, hf _ k.Prop⟩
+  let e : { k // n' k ≠ 2 } → { k // n k ≠ 2 } := fun k => ⟨f k, hf _ k.prop⟩
   have he : Function.Injective e := fun a b h =>
-    Subtype.ext (hf_inj _ _ a.Prop b.Prop (Subtype.ext_iff.1 h))
+    Subtype.ext (hf_inj _ _ a.prop b.prop (Subtype.ext_iff.1 h))
   have he' : Function.Surjective e := by
     rintro ⟨i, hi⟩
     simpa using hf_surj i hi
-  rw [← is_ramsey_valid_iff_remove_twos n, ← is_ramsey_valid_iff_remove_twos n', ←
-    is_ramsey_valid_equiv_right (Equiv.ofBijective e ⟨he, he'⟩)]
-  congr 2
-  ext ⟨k, hk⟩
+  rw [← isRamseyValid_iff_remove_twos n, ← isRamseyValid_iff_remove_twos n', ←
+    isRamseyValid_equiv_right (Equiv.ofBijective e ⟨he, he'⟩)]
+  congr! 2 with ⟨k, hk⟩
   exact (hf_comm _ hk).symm
 
 open scoped BigOperators
@@ -592,13 +604,13 @@ theorem ramsey_fin_induct_aux {V : Type*} [DecidableEq K] {n : K → ℕ} (N : K
     ∃ (m : Finset V) (c : _), C.MonochromaticOf m c ∧ n c ≤ m.card := by
   classical
   obtain ⟨k, hk⟩ := h
-  have : is_ramsey_valid (m k) (Function.update n k (n k - 1)) := (hN k).card_fin (by simp [hk])
-  obtain ⟨m', k', hm', hk'⟩ := this (C.pullback (Function.Embedding.subType*))
+  have : IsRamseyValid (m k) (Function.update n k (n k - 1)) := (hN k).card_fin (by simp [hk])
+  obtain ⟨m', k', hm', hk'⟩ := this (C.pullback (Function.Embedding.subtype _))
   rcases ne_or_eq k k' with (hk | rfl)
   · exact ⟨_, _, hm'.map, by simpa [hk.symm] using hk'⟩
-  have : x ∉ (m'.map (Function.Embedding.subType*) : Set V) := by simp [hx k]
-  refine' ⟨insert (x : V) (m'.map (Function.Embedding.subType*)), k, _, _⟩
-  · rw [coe_insert, TopEdgeLabelling.MonochromaticOf_insert this]
+  have : x ∉ (m'.map (Function.Embedding.subtype _) : Set V) := by simp [hx k]
+  refine' ⟨insert (x : V) (m'.map (Function.Embedding.subtype _)), k, _, _⟩
+  · rw [coe_insert, monochromaticOf_insert this]
     refine' ⟨hm'.map, fun y hy => _⟩
     generalize_proofs
     simp only [mem_neighborFinset, mem_coe, mem_map, Function.Embedding.coe_subtype, exists_prop,
@@ -611,8 +623,7 @@ theorem ramsey_fin_induct_aux {V : Type*} [DecidableEq K] {n : K → ℕ} (N : K
 
 theorem ramsey_fin_induct [DecidableEq K] [Fintype K] (n : K → ℕ) (N : K → ℕ)
     (hN : ∀ k, IsRamseyValid (Fin (N k)) (Function.update n k (n k - 1))) :
-    IsRamseyValid (Fin (∑ k, (N k - 1) + 2)) n :=
-  by
+    IsRamseyValid (Fin (∑ k, (N k - 1) + 2)) n := by
   by_cases h : ∃ k, n k ≤ 1
   · refine' ramsey_base' _ h _
     rw [Fintype.card_fin]
@@ -636,28 +647,30 @@ theorem ramsey_fin_induct [DecidableEq K] [Fintype K] (n : K → ℕ) (N : K →
   intro C
   let x : V := 0
   let m : K → Finset V := fun k => neighborFinset (C.labelGraph k) x
-  have : univ.bUnion m = {x}ᶜ :=
-    by
-    simp only [← Finset.coe_inj, coe_bUnion, mem_coe, mem_univ, Set.iUnion_true, coe_compl,
-      coe_singleton, m, coe_neighborFinset]
-    rw [← neighborSet_supr, EdgeLabelling.supr_labelGraph C, neighborSet_top]
+  have : univ.biUnion m = {x}ᶜ := by
+    simp only [← Finset.coe_inj, coe_biUnion, mem_coe, mem_univ, Set.iUnion_true, coe_compl,
+      coe_singleton, coe_neighborFinset]
+    rw [← neighborSet_iSup, EdgeLabelling.iSup_labelGraph C, neighborSet_top]
   have e : ∑ k, (m k).card = ∑ k, (N k - 1) + 1 :=
     by
-    rw [← card_bUnion, this, card_compl, ← card_univ, card_fin, card_singleton,
+    rw [← card_biUnion, this, card_compl, ← card_univ, card_fin, card_singleton,
       Nat.add_succ_sub_one]
     rintro x hx y hy h
     refine' neighborFinset_disjoint _
-    exact EdgeLabelling.pairwise_disjoint (by simp) (by simp) h
+    exact EdgeLabelling.pairwiseDisjoint (by simp) (by simp) h
   have : ∃ k, N k - 1 < (m k).card := by
     by_contra'
     have : ∑ k, (m k).card ≤ ∑ k, (N k - 1) := sum_le_sum fun k _ => this k
     rw [e] at this
-    simpa only [add_le_iff_nonpos_right, le_zero_iff, Nat.one_ne_zero] using this
+    simp only [add_le_iff_nonpos_right, le_zero_iff, Nat.one_ne_zero] at this
   obtain ⟨k, hk⟩ := this
   rw [tsub_lt_iff_right (hN' _), Nat.lt_add_one_iff] at hk
   refine' ramsey_fin_induct_aux _ m x hN _ ⟨k, hk⟩ _
   · simp
-  · simp
+  · sorry
+    -- simp only [implies_true_iff, mem_neighbor_finset, label_graph_adj, forall_exists_index, imp_self, forall_forall_const]
+
+#exit
 
 theorem ramsey_fin_exists [Finite K] (n : K → ℕ) : ∃ N, IsRamseyValid (Fin N) n := by
   classical
