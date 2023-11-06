@@ -3,8 +3,8 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
-import Data.Fintype.Parity
-import NumberTheory.LegendreSymbol.QuadraticChar.Basic
+import Mathlib.Data.Fintype.Parity
+import Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.Basic
 
 #align_import prereq.mathlib.number_theory.legendre_symbol.quadratic_char.basic
 
@@ -23,8 +23,8 @@ theorem symmetric_isSquare (hF : card F % 4 ≠ 3) : Symmetric fun x y : F => Is
   fun _ _ h => by simpa using h.mul (FiniteField.isSquare_neg_one_iff.2 hF)
 
 theorem card_non_zero_square_non_square [DecidableEq F] (hF : ringChar F ≠ 2) :
-    (univ.filterₓ fun x : F => x ≠ 0 ∧ IsSquare x).card = card F / 2 ∧
-      (univ.filterₓ fun x : F => ¬IsSquare x).card = card F / 2 :=
+    (univ.filter fun x : F => x ≠ 0 ∧ IsSquare x).card = card F / 2 ∧
+      (univ.filter fun x : F => ¬IsSquare x).card = card F / 2 :=
   by
   have : (univ.filter fun x : F => ¬IsSquare x) = univ.filter fun x : F => x ≠ 0 ∧ ¬IsSquare x :=
     by
@@ -53,10 +53,9 @@ theorem card_non_zero_square_non_square [DecidableEq F] (hF : ringChar F ≠ 2) 
   · simp
 
 theorem card_square (F : Type*) [Fintype F] [Field F] [DecidableEq F] (hF : ringChar F ≠ 2) :
-    ((univ : Finset F).filterₓ IsSquare).card = card F / 2 + 1 :=
+    ((univ : Finset F).filter IsSquare).card = card F / 2 + 1 :=
   by
   rw [← (card_non_zero_square_non_square hF).1]
-  simp only [and_comm', ← filter_filter, filter_ne']
+  simp only [and_comm, ← filter_filter, filter_ne']
   rw [card_erase_add_one]
   simp
-
