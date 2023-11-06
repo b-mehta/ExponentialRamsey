@@ -256,14 +256,10 @@ variable {m : Set V} {c : K}
 
 @[simp]
 theorem monochromaticOf_singleton {x : V} : C.MonochromaticOf {x} c := by
-  sorry
-  -- simp [TopEdgeLabelling.MonochromaticOf]
-  -- doesn't work because of a regression
+  simp [TopEdgeLabelling.MonochromaticOf]
 
 theorem monochromatic_finset_singleton {x : V} : C.MonochromaticOf ({x} : Finset V) c := by
-  sorry
-  -- simp [TopEdgeLabelling.MonochromaticOf]
-  -- doesn't work because of a regression
+  simp [TopEdgeLabelling.MonochromaticOf]
 
 theorem monochromatic_subsingleton (hm : m.Subsingleton) : C.MonochromaticOf m c :=
   fun x hx y hy h => by cases h (hm hx hy)
@@ -284,9 +280,7 @@ theorem MonochromaticOf.subset {m' : Set V} (h' : m' ⊆ m) (h : C.Monochromatic
 
 theorem MonochromaticOf.image {C : TopEdgeLabelling V' K} {f : V ↪ V'}
     (h : (C.pullback f).MonochromaticOf m c) : C.MonochromaticOf (f '' m) c := by
-  sorry
-  -- simp [TopEdgeLabelling.MonochromaticOf]
-  -- doesn't work because of a regression
+  simpa [TopEdgeLabelling.MonochromaticOf]
 
 theorem MonochromaticOf.map {C : TopEdgeLabelling V' K} {f : V ↪ V'} {m : Finset V}
     (h : (C.pullback f).MonochromaticOf m c) : C.MonochromaticOf (m.map f) c := by
@@ -301,14 +295,11 @@ theorem monochromaticOf_insert {x : V} (hx : x ∉ m) :
     exact ⟨h.subset (by simp), fun y hy => h (Set.mem_insert _ _) (Set.mem_insert_of_mem _ hy) _⟩
   classical
   rintro ⟨h₁, h₂⟩
-  sorry
-  -- simp only [TopEdgeLabelling.MonochromaticOf, Ne.def, Set.mem_insert_iff, forall_eq_or_imp,
-  --   eq_self_iff_true, not_true, IsEmpty.forall_iff, true_and_iff]
-  -- refine' ⟨fun _ hy _ => h₂ _ hy, fun y hy => ⟨fun _ => _, fun z hz => h₁ hy hz⟩⟩
-  -- rw [TopEdgeLabelling.get_swap]
-  -- exact h₂ y hy
-
-  -- doesn't work because of a regression
+  simp only [TopEdgeLabelling.MonochromaticOf, Ne.def, Set.mem_insert_iff, forall_eq_or_imp,
+    eq_self_iff_true, not_true, IsEmpty.forall_iff, true_and_iff]
+  refine' ⟨fun _ hy _ => h₂ _ hy, fun y hy => ⟨fun _ => _, fun z hz => h₁ hy hz⟩⟩
+  rw [TopEdgeLabelling.get_swap]
+  exact h₂ y hy
 
 /-- The predicate `χ.MonochromaticBetween X Y k` says every edge between `X` and `Y` is labelled
 `k` by the labelling `χ`. -/
@@ -352,9 +343,7 @@ theorem monochromaticBetween_self {X : Finset V} {k : K} :
 theorem Disjoint.monochromaticBetween {X Y : Finset V} {k : K} (h : Disjoint X Y) :
     C.MonochromaticBetween X Y k ↔
       ∀ ⦃x⦄, (hx : x ∈ X) → ∀ ⦃y⦄, (hy : y ∈ Y) → C.get x y (h.forall_ne_finset ‹_› ‹_›) = k :=
-  sorry
-  -- forall₄_congr fun x hx y hy => by simp [h.forall_ne_finset hx hy]
-  -- doesn't work because of a regression
+  forall₄_congr fun x hx y hy => by simp [h.forall_ne_finset hx hy]
 
 theorem MonochromaticBetween.subset_left {X Y Z : Finset V} {k : K}
     (hYZ : C.MonochromaticBetween Y Z k) (hXY : X ⊆ Y) : C.MonochromaticBetween X Z k :=
@@ -420,8 +409,8 @@ theorem IsRamseyValid.mono_right {n n' : K → ℕ} (h : n ≤ n') (h' : IsRamse
 
 theorem isRamseyValid_iff_eq {n : K → ℕ} :
     IsRamseyValid V n ↔
-      ∀ C : TopEdgeLabelling V K, ∃ (m : Finset V) (c : _), C.MonochromaticOf m c ∧ n c = m.card :=
-  by
+      ∀ C : TopEdgeLabelling V K, ∃ (m : Finset V) (c : K),
+        C.MonochromaticOf m c ∧ n c = m.card := by
   refine' forall_congr' fun C => _
   rw [exists_comm, @exists_comm (Finset V)]
   refine' exists_congr fun c => _
@@ -434,8 +423,7 @@ theorem isRamseyValid_iff_eq {n : K → ℕ} :
 
 theorem isRamseyValid_iff_embedding_aux {n : K → ℕ} (c : K) :
     (∃ m : Finset V, C.MonochromaticOf m c ∧ n c = m.card) ↔
-      Nonempty ((⊤ : SimpleGraph (Fin (n c))) ↪g C.labelGraph c) :=
-  by
+      Nonempty ((⊤ : SimpleGraph (Fin (n c))) ↪g C.labelGraph c) := by
   constructor
   · rintro ⟨m, hm, hm'⟩
     have : Fintype.card m = n c := by rw [Fintype.card_coe, hm']
@@ -454,13 +442,12 @@ theorem isRamseyValid_iff_embedding_aux {n : K → ℕ} (c : K) :
   rintro ⟨f⟩
   refine' ⟨(univ : Finset (Fin (n c))).map f.toEmbedding, _, _⟩
   · rw [MonochromaticOf]
-    sorry
-    -- doesn't work because of a regression
-    -- simp only [Ne.def, RelEmbedding.inj, coe_map, RelEmbedding.coe_toEmbedding, Set.mem_image,
-    --   coe_univ, Set.mem_univ, true_and_iff, forall_exists_index, forall_apply_eq_imp_iff]
-    -- intro x y h
-    -- have : (⊤ : SimpleGraph (Fin (n c))).Adj x y := h
-    -- simpa [← f.map_rel_iff, h] using this
+    simp only [Ne.def, RelEmbedding.inj, coe_map, RelEmbedding.coe_toEmbedding, Set.mem_image,
+      coe_univ, Set.mem_univ, true_and_iff, forall_exists_index, forall_apply_eq_imp_iff]
+    intro x y h
+    have : (⊤ : SimpleGraph (Fin (n c))).Adj x y := h
+    simpa [-top_adj, ←f.map_rel_iff, h, RelEmbedding.inj] using this
+      -- this simpa needs more help than in lean 3
   rw [card_map, card_fin]
 
 -- BM: pretty good chance this is a better definition...
@@ -469,8 +456,7 @@ theorem isRamseyValid_iff_embedding_aux {n : K → ℕ} (c : K) :
 theorem isRamseyValid_iff_embedding {n : K → ℕ} :
     IsRamseyValid V n ↔
       ∀ C : TopEdgeLabelling V K,
-        ∃ c : K, Nonempty ((⊤ : SimpleGraph (Fin (n c))) ↪g C.labelGraph c) :=
-  by
+        ∃ c : K, Nonempty ((⊤ : SimpleGraph (Fin (n c))) ↪g C.labelGraph c) := by
   rw [isRamseyValid_iff_eq]
   refine' forall_congr' fun C => _
   rw [exists_comm]
@@ -515,15 +501,14 @@ theorem ramsey_base' [Fintype V] (n : K → ℕ) (hn : ∃ k, n k ≤ 1) (hV : 1
 
 theorem isRamseyValid_min [Fintype V] [Nonempty K] {n : K → ℕ} {n' : ℕ} (h : IsRamseyValid V n)
     (hn : ∀ k, n' ≤ n k) : n' ≤ card V :=
-  let ⟨m, h, h', hm⟩ := h (Classical.arbitrary (TopEdgeLabelling V K))
+  let ⟨m, _, _, hm⟩ := h (Classical.arbitrary (TopEdgeLabelling V K))
   (hn _).trans (hm.trans (Finset.card_le_univ m))
 
 theorem isRamseyValid_unique [Fintype V] [Unique K] {n : K → ℕ} (hV : n default ≤ card V) :
     IsRamseyValid V n := fun C => ⟨univ, default, monochromatic_subsingleton_colours, by simpa⟩
 
 theorem IsRamseyValid.remove_twos {n : K → ℕ} (h : IsRamseyValid V n) :
-    IsRamseyValid V fun k : { k : K // n k ≠ 2 } => n k :=
-  by
+    IsRamseyValid V fun k : { k : K // n k ≠ 2 } => n k := by
   cases' isEmpty_or_nonempty V with hV hV
   · obtain ⟨c, hc⟩ := h.exists_zero_of_isEmpty
     exact isRamseyValid_of_zero ⟨c, by simp [hc]⟩ hc
@@ -552,11 +537,9 @@ theorem IsRamseyValid.of_remove_twos {n : K → ℕ}
     refine' ⟨({x, y} : Finset V), C.get x y H, _, _⟩
     · rw [coe_pair, monochromaticOf_insert this]
       refine' ⟨monochromaticOf_singleton, _⟩
-      -- regression
-      sorry
-      -- simp only [Set.mem_singleton_iff]
-      -- rintro _ rfl
-      -- rfl
+      simp only [Set.mem_singleton_iff]
+      rintro _ rfl
+      rfl
     rw [hxy, card_doubleton H]
   push_neg at h''
   let C' : TopEdgeLabelling V { k : K // n k ≠ 2 } :=
@@ -621,6 +604,16 @@ theorem ramsey_fin_induct_aux {V : Type*} [DecidableEq K] {n : K → ℕ} (N : K
   rw [card_insert_of_not_mem this, card_map, ← tsub_le_iff_right]
   rwa [Function.update_same] at hk'
 
+example {α : Type*} (a : α) {P : Π (b : α), a ≠ b → Prop} :
+  ∀ (b : α) (h₁ : a ≠ b) (h₂ : a ≠ b) (h₃ : P b h₁), P b h₂ := by simp
+
+example {α : Type*} (a : α) {P : Π (b : α), a ≠ b → Prop} :
+    ∃ x : α, ∀ (b : α) (h₁ : a ≠ b) (h₂ : a ≠ b) (h₃ : P b h₁), P b h₂ := by
+  let x := a
+  use x
+  simp
+
+
 theorem ramsey_fin_induct [DecidableEq K] [Fintype K] (n : K → ℕ) (N : K → ℕ)
     (hN : ∀ k, IsRamseyValid (Fin (N k)) (Function.update n k (n k - 1))) :
     IsRamseyValid (Fin (∑ k, (N k - 1) + 2)) n := by
@@ -667,8 +660,19 @@ theorem ramsey_fin_induct [DecidableEq K] [Fintype K] (n : K → ℕ) (N : K →
   rw [tsub_lt_iff_right (hN' _), Nat.lt_add_one_iff] at hk
   refine' ramsey_fin_induct_aux _ m x hN _ ⟨k, hk⟩ _
   · simp
-  · sorry
-    -- simp only [implies_true_iff, mem_neighbor_finset, label_graph_adj, forall_exists_index, imp_self, forall_forall_const]
+  ·
+    -- simp only [m]
+    simp only [mem_neighborFinset]
+    simp only [labelGraph_adj]
+    simp only [forall_exists_index]
+    simp only [ne_eq]
+    generalize_proofs
+
+
+    -- simp only [implies_true, mem_neighborFinset, labelGraph_adj, forall_exists_index, imp_self]
+    -- simp only [ne_eq]
+    -- simp?
+
 
 #exit
 
@@ -1101,4 +1105,3 @@ theorem ramseyNumber_le_right_pow_left' {i j : ℕ} : ramseyNumber ![i, j] ≤ j
   (ramseyNumber_le_right_pow_left (i + 1) j).trans' <| ramseyNumber.mono_two (by simp) le_rfl
 
 end SimpleGraph
-
