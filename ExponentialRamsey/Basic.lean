@@ -3,9 +3,9 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
-import Prereq.Ramsey
-import Prereq.GraphProbability
-import Combinatorics.SimpleGraph.Density
+import ExponentialRamsey.Prereq.Ramsey
+import ExponentialRamsey.Prereq.GraphProbability
+import Mathlib.Combinatorics.SimpleGraph.Density
 import Data.Seq.Seq
 
 #align_import basic

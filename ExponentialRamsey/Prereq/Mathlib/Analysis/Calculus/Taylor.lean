@@ -3,9 +3,10 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
+import Mathlib.Algebra.GroupWithZero.Basic
 import Mathlib.Analysis.Calculus.Taylor
-import Mathlib.Analysis.Calculus.ContDiff
-import Mathlib.Data.Set.Intervals.UnorderedInterval
+import Mathlib.Analysis.Calculus.ContDiff.Basic
+import Mathlib.Order.Interval.Set.Basic
 
 #align_import prereq.mathlib.analysis.calculus.taylor
 
@@ -46,7 +47,7 @@ theorem taylor_mean_remainder_unordered {f : ℝ → ℝ} {g g' : ℝ → ℝ} {
     (gcont : ContinuousOn g (uIcc x₀ x))
     (gdiff : ∀ x_1 : ℝ, x_1 ∈ uIoo x₀ x → HasDerivAt g (g' x_1) x_1)
     (g'_ne : ∀ x_1 : ℝ, x_1 ∈ uIoo x₀ x → g' x_1 ≠ 0) :
-    ∃ (x' : ℝ) (_ : x' ∈ uIoo x₀ x),
+    ∃ x' ∈ uIoo x₀ x,
       f x - taylorWithinEval f n (uIcc x₀ x) x₀ x =
         ((x - x') ^ n / n ! * (g x - g x₀) / g' x') •
           iteratedDerivWithin (n + 1) f (uIcc x₀ x) x' :=
@@ -65,7 +66,7 @@ theorem taylor_mean_remainder_unordered {f : ℝ → ℝ} {g g' : ℝ → ℝ} {
   use y, hy
   -- The rest is simplifications and trivial calculations
   simp only [taylorWithinEval_self] at h
-  rw [mul_comm, ← div_left_inj' (g'_ne y hy), mul_div_cancel _ (g'_ne y hy)] at h
+  rw [mul_comm, ← div_left_inj' (g'_ne y hy), mul_div_cancel_right₀ _ (g'_ne y hy)] at h
   rw [← neg_sub, ← h]
   field_simp [g'_ne y hy, n.factorial_ne_zero]
   ring
@@ -73,13 +74,12 @@ theorem taylor_mean_remainder_unordered {f : ℝ → ℝ} {g g' : ℝ → ℝ} {
 theorem taylor_mean_remainder_lagrange_unordered {f : ℝ → ℝ} {x x₀ : ℝ} {n : ℕ} (hx : x₀ ≠ x)
     (hf : ContDiffOn ℝ n f (uIcc x₀ x))
     (hf' : DifferentiableOn ℝ (iteratedDerivWithin n f (uIcc x₀ x)) (uIoo x₀ x)) :
-    ∃ (x' : ℝ) (hx' : x' ∈ uIoo x₀ x),
+    ∃ x' ∈ uIoo x₀ x,
       f x - taylorWithinEval f n (uIcc x₀ x) x₀ x =
         iteratedDerivWithin (n + 1) f (uIcc x₀ x) x' * (x - x₀) ^ (n + 1) / (n + 1)! := by
   have gcont : ContinuousOn (fun t : ℝ => (x - t) ^ (n + 1)) (uIcc x₀ x) := by
     refine' Continuous.continuousOn _
-    sorry
-    -- continuity
+    continuity
   have xy_ne : ∀ y : ℝ, y ∈ uIoo x₀ x → (x - y) ^ n ≠ 0 :=
     by
     intro y hy
@@ -97,17 +97,19 @@ theorem taylor_mean_remainder_lagrange_unordered {f : ℝ → ℝ} {x x₀ : ℝ
       hg' with
     ⟨y, hy, h⟩
   use y, hy
-  simp only [sub_self, zero_pow', Ne.def, Nat.succ_ne_zero, not_false_iff, zero_sub, mul_neg] at h
+  simp only [sub_self, zero_pow, Ne.eq_def, Nat.succ_ne_zero, not_false_iff, zero_sub, mul_neg] at h
   rw [h, neg_div, ← div_neg, neg_mul, neg_neg]
   field_simp [n.cast_add_one_ne_zero, n.factorial_ne_zero, xy_ne y hy]
-  ring_nf
+  rw [← mul_assoc (n ! : ℝ), ← Nat.cast_add_one, ← Nat.cast_mul, mul_comm (n !), ← n.factorial_succ]
+  ring
+
 
 -- x' should be in uIoo x₀ x
 theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ} {x₀ x a b : ℝ} {n : ℕ}
     (hab : a < b) (hx : x ∈ Icc a b) (hx₀ : x₀ ∈ Icc a b) (hf : ContDiffOn ℝ n f (Icc a b))
     (hf' : DifferentiableOn ℝ (iteratedDerivWithin n f (Icc a b)) (Ioo a b))
     (gcont : ContinuousOn g (Icc a b)) (gdiff : ∀ y : ℝ, y ∈ Ioo a b → HasDerivAt g (g' y) y) :
-    ∃ (x' : ℝ) (hx' : x' ∈ Ioo a b),
+    ∃ x' ∈ Ioo a b,
       x' ≠ x ∧
         (f x - taylorWithinEval f n (Icc a b) x₀ x) * g' x' =
           ((x - x') ^ n / n ! * (g x - g x₀)) • iteratedDerivWithin (n + 1) f (Icc a b) x' :=
@@ -115,7 +117,7 @@ theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ}
   rcases eq_or_ne x₀ x with (rfl | hx')
   · simp only [sub_self, taylorWithinEval_self, MulZeroClass.mul_zero, zero_div, zero_smul,
       eq_self_iff_true, exists_prop, and_true_iff, MulZeroClass.zero_mul]
-    obtain ⟨x', hx'⟩ := ((Ioo_infinite hab).diffₓ (Set.finite_singleton x₀)).Nonempty
+    obtain ⟨x', hx'⟩ := ((Ioo_infinite hab).diff (Set.finite_singleton x₀)).nonempty
     exact ⟨x', by simpa using hx'⟩
   rcases Ne.lt_or_lt hx' with (hx' | hx')
   · have h₁ : Icc x₀ x ⊆ Icc a b := Icc_subset_Icc hx₀.1 hx.2
@@ -126,7 +128,7 @@ theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ}
         ((continuousOn_taylorWithinEval (uniqueDiffOn_Icc hab) hf).mono h₁)
         (fun _ hy => taylorWithinEval_hasDerivAt_Ioo _ hab (h₂ hy) hf hf') g g' (gcont.mono h₁)
         fun y hy => gdiff y (h₂ hy)
-    refine' ⟨y, h₂ hy, hy.2.Ne, _⟩
+    refine' ⟨y, h₂ hy, hy.2.ne, _⟩
     -- The rest is simplifications and trivial calculations
     simp only [taylorWithinEval_self] at h
     field_simp [← h, n.factorial_ne_zero]
@@ -151,20 +153,20 @@ theorem taylor_mean_remainder_central {f : ℝ → ℝ} {g g' : ℝ → ℝ} {x�
     (hf' : DifferentiableOn ℝ (iteratedDerivWithin n f (Icc a b)) (Ioo a b))
     (gcont : ContinuousOn g (Icc a b)) (gdiff : ∀ y : ℝ, y ∈ Ioo a b → HasDerivAt g (g' y) y)
     (g'_ne : ∀ y : ℝ, y ∈ Ioo a b → g' y ≠ 0) :
-    ∃ (x' : ℝ) (hx' : x' ∈ Ioo a b),
+    ∃ x' ∈ Ioo a b,
       f x - taylorWithinEval f n (Icc a b) x₀ x =
         ((x - x') ^ n / n ! * (g x - g x₀) / g' x') • iteratedDerivWithin (n + 1) f (Icc a b) x' :=
   by
-  obtain ⟨y, hy, hyx, h⟩ := taylor_mean_remainder_central_aux hab hx hx₀ hf hf' gcont gdiff
+  obtain ⟨y, hy, _, h⟩ := taylor_mean_remainder_central_aux hab hx hx₀ hf hf' gcont gdiff
   refine' ⟨y, hy, _⟩
   rw [smul_eq_mul] at h
-  rw [smul_eq_mul, div_mul_eq_mul_div, ← h, mul_div_cancel]
+  rw [smul_eq_mul, div_mul_eq_mul_div, ← h, mul_div_cancel_right₀]
   exact g'_ne _ hy
 
 theorem taylor_mean_remainder_lagrange_central {f : ℝ → ℝ} {x x₀ a b : ℝ} {n : ℕ} (hab : a < b)
     (hx : x ∈ Icc a b) (hx₀ : x₀ ∈ Icc a b) (hf : ContDiffOn ℝ n f (Icc a b))
     (hf' : DifferentiableOn ℝ (iteratedDerivWithin n f (Icc a b)) (Ioo a b)) :
-    ∃ (x' : ℝ) (hx' : x' ∈ Ioo a b),
+    ∃ x' ∈ Ioo a b,
       f x - taylorWithinEval f n (Icc a b) x₀ x =
         iteratedDerivWithin (n + 1) f (Icc a b) x' * (x - x₀) ^ (n + 1) / (n + 1)! :=
   by
@@ -179,7 +181,7 @@ theorem taylor_mean_remainder_lagrange_central {f : ℝ → ℝ} {x x₀ a b : �
   rw [← eq_div_iff] at h
   swap
   · exact mul_ne_zero (neg_ne_zero.2 (by positivity)) (by positivity)
-  simp only [h, sub_self, zero_pow' _ (Nat.succ_ne_zero n), zero_sub, mul_neg, neg_mul,
+  simp only [h, sub_self, zero_pow (Nat.succ_ne_zero n), zero_sub, mul_neg, neg_mul,
     Nat.factorial_succ, Nat.cast_add_one, neg_div_neg_eq, Nat.cast_mul, field_simps]
   rw [mul_left_comm, ← mul_assoc, ← div_div, div_eq_iff (pow_ne_zero _ hy_ne), div_mul_eq_mul_div]
   congr 1
@@ -188,7 +190,7 @@ theorem taylor_mean_remainder_lagrange_central {f : ℝ → ℝ} {x x₀ a b : �
 theorem taylor_mean_remainder_cauchy_central {f : ℝ → ℝ} {x x₀ a b : ℝ} {n : ℕ} (hab : a < b)
     (hx : x ∈ Icc a b) (hx₀ : x₀ ∈ Icc a b) (hf : ContDiffOn ℝ n f (Icc a b))
     (hf' : DifferentiableOn ℝ (iteratedDerivWithin n f (Icc a b)) (Ioo a b)) :
-    ∃ (x' : ℝ) (hx' : x' ∈ Ioo a b),
+    ∃ x' ∈ Ioo a b,
       f x - taylorWithinEval f n (Icc a b) x₀ x =
         iteratedDerivWithin (n + 1) f (Icc a b) x' * (x - x') ^ n / n ! * (x - x₀) :=
   by
@@ -209,17 +211,17 @@ theorem taylor_mean_remainder_bound_central {f : ℝ → ℝ} {a b C x x₀ : �
   rcases eq_or_lt_of_le hab with (rfl | hab)
   · simp only [Icc_self, mem_singleton_iff] at hx hx₀
     substs hx₀ hx
-    rw [taylorWithinEval_self, sub_self, sub_self, abs_zero, zero_pow Nat.succ_pos',
+    rw [taylorWithinEval_self, sub_self, sub_self, abs_zero, zero_pow (Nat.succ_ne_zero _),
       MulZeroClass.mul_zero, zero_div, norm_zero]
   have : DifferentiableOn ℝ (iteratedDerivWithin n f (Icc a b)) (Ioo a b) :=
     by
     refine'
-      (hf.differentiable_on_iterated_deriv_within _ (uniqueDiffOn_Icc hab)).mono Ioo_subset_Icc_self
+      (hf.differentiableOn_iteratedDerivWithin _ (uniqueDiffOn_Icc hab)).mono Ioo_subset_Icc_self
     rw [← Nat.cast_add_one, Nat.cast_lt]
     exact Nat.lt_succ_self _
   obtain ⟨x', hx', h⟩ := taylor_mean_remainder_lagrange_central hab hx hx₀ hf.of_succ this
-  rw [h, norm_div, norm_mul, Real.norm_coe_nat, Real.norm_eq_abs ((x - x₀) ^ _), ← abs_pow]
-  refine' div_le_div_of_le (Nat.cast_nonneg _) _
+  rw [h, norm_div, norm_mul, Real.norm_natCast, Real.norm_eq_abs ((x - x₀) ^ _), ← abs_pow]
+  refine' div_le_div_of_nonneg_right _ (Nat.cast_nonneg _)
   exact mul_le_mul_of_nonneg_right (hC _ hx') (abs_nonneg _)
 
 theorem exists_taylor_mean_remainder_bound_central {f : ℝ → ℝ} {a b x₀ : ℝ} {n : ℕ} (hab : a ≤ b)
@@ -230,10 +232,11 @@ theorem exists_taylor_mean_remainder_bound_central {f : ℝ → ℝ} {a b x₀ :
   · refine' ⟨0, fun x hx => _⟩
     rw [Icc_self, mem_singleton_iff] at hx hx₀
     rw [hx₀, hx, taylorWithinEval_self, sub_self, MulZeroClass.zero_mul, norm_zero]
-  let C := Sup ((fun y => ‖iteratedDerivWithin (n + 1) f (Icc a b) y‖) '' Icc a b)
+  let C := sSup ((fun y => ‖iteratedDerivWithin (n + 1) f (Icc a b) y‖) '' Icc a b)
   refine' ⟨C / (n + 1)!, fun x hx => _⟩
   rw [div_mul_eq_mul_div]
   refine' taylor_mean_remainder_bound_central hab hf hx hx₀ _
   intro y hy
-  refine' ContinuousOn.le_sSup_image_Icc _ (Ioo_subset_Icc_self hy)
-  exact (hf.continuous_on_iterated_deriv_within le_rfl (uniqueDiffOn_Icc h)).norm
+  refine' ContinuousOn.le_sSup_image_Icc (f := (‖iteratedDerivWithin (n + 1) f (Icc a b) ·‖))
+     _ (Ioo_subset_Icc_self hy) -- Porting note: failed to infer the function f properly
+  exact (hf.continuousOn_iteratedDerivWithin le_rfl (uniqueDiffOn_Icc h)).norm

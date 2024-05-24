@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
 import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Clique
+import Mathlib.Combinatorics.SimpleGraph.Finite
 import Mathlib.Data.Sym.Card
 
 #align_import prereq.mathlib.combinatorics.simple_graph.basic
@@ -41,10 +43,6 @@ theorem card_top_edgeSet [DecidableEq V] [Fintype V] :
 
 theorem edgeSet_eq_empty_iff {G : SimpleGraph V} : G.edgeSet = ∅ ↔ G = ⊥ := by
   rw [← edgeSet_bot, edgeSet_inj]
-
-theorem disjoint_edgeSet {G H : SimpleGraph V} :
-    Disjoint G.edgeSet H.edgeSet ↔ Disjoint G H := by
-  rw [Set.disjoint_iff_inter_eq_empty, disjoint_iff, ← edgeSet_inf, edgeSet_eq_empty_iff]
 
 theorem disjoint_left {G H : SimpleGraph V} : Disjoint G H ↔ ∀ x y, G.Adj x y → ¬H.Adj x y := by
   simp only [← disjoint_edgeSet, Set.disjoint_left, Sym2.forall, mem_edgeSet]
@@ -89,7 +87,7 @@ theorem neighborSet_iInf {ι : Type*} [Nonempty ι] {s : ι → SimpleGraph V} {
     (⨅ i, s i).neighborSet x = ⋂ i, (s i).neighborSet x :=
   by
   ext y
-  simp only [mem_neighborSet, iInf_adj, Ne.def, Set.iInf_eq_iInter, Set.mem_iInter,
+  simp only [mem_neighborSet, iInf_adj, Ne.eq_def, Set.iInf_eq_iInter, Set.mem_iInter,
     and_iff_left_iff_imp]
   intro h
   inhabit ι
@@ -104,7 +102,8 @@ section
 instance {V : Type*} {x : V} : IsEmpty ((⊥ : SimpleGraph V).neighborSet x) :=
   Subtype.isEmpty_false
 
-theorem neighborFinset_bot {x : V} : (⊥ : SimpleGraph V).neighborFinset x = ∅ := by ext y; simp
+-- Fintype.ofIsEmpty is no longer an instance (https://github.com/leanprover-community/mathlib4/pull/8816)
+-- theorem neighborFinset_bot {x : V} : (⊥ : SimpleGraph V).neighborFinset x = ∅ := by ext y; simp
 
 theorem neighborFinset_top [Fintype V] [DecidableEq V] {x : V} :
     (⊤ : SimpleGraph V).neighborFinset x = {x}ᶜ := by
@@ -139,11 +138,7 @@ theorem neighborFinset_disjoint {G H : SimpleGraph V} {x : V} [Fintype (G.neighb
 end
 
 theorem degree_eq_zero_iff {v : V} [Fintype (G.neighborSet v)] : G.degree v = 0 ↔ ∀ w, ¬G.Adj v w :=
-  by rw [← not_exists, ← degree_pos_iff_exists_adj, not_lt, le_zero_iff]
-
-theorem comap_comap {V W X : Type*} {G : SimpleGraph V} {f : W → V} {g : X → W} :
-    (G.comap f).comap g = G.comap (f ∘ g) :=
-  rfl
+  by rw [← not_exists, ← degree_pos_iff_exists_adj, not_lt, Nat.le_zero]
 
 end SimpleGraph
 
