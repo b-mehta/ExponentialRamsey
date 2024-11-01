@@ -8,8 +8,6 @@ import Prereq.Mathlib.InformationTheory.BinaryEntropy
 import Prereq.Mathlib.Analysis.Calculus.MeanValue
 import Prereq.Mathlib.Analysis.SpecialFunctions.Log.Base
 
-#align_import section11
-
 /-!
 # Section 11
 -/

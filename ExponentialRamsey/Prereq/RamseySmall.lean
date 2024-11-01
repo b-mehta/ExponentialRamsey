@@ -7,8 +7,6 @@ import ExponentialRamsey.Prereq.Mathlib.NumberTheory.LegendreSymbol.QuadraticCha
 import ExponentialRamsey.Prereq.Ramsey
 import Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.GaussSum
 
-#align_import prereq.ramsey_small
-
 /-!
 # Constructions to prove lower bounds on some small Ramsey numbers
 -/
@@ -34,7 +32,7 @@ def paleyGraph (F : Type*) [Field F] [Fintype F] : SimpleGraph F
   Adj x y := x ≠ y ∧ (IsSquare (x - y) ∨ card F % 4 = 3)
   symm := by
     rintro x y ⟨h₁, h₂⟩
-    refine' ⟨h₁.symm, _⟩
+    refine ⟨h₁.symm, ?_⟩
     rw [or_iff_not_imp_right]
     intro h
     exact symmetric_isSquare h (h₂.resolve_right h)
@@ -74,7 +72,7 @@ def rescale (x : F) (hx : IsSquare x) (hx' : x ≠ 0) : paleyGraph F ≃g paleyG
       forall_true_left]
     intro h
     have : a - b ≠ 0 := by rwa [sub_ne_zero]
-    refine' or_congr_left _
+    refine or_congr_left ?_
     haveI : DecidableEq F := Classical.decEq F
     rw [← quadraticChar_one_iff_isSquare hx'] at hx
     rw [← not_iff_not, ← mul_sub, ← quadraticChar_neg_one_iff_not_isSquare, map_mul, hx, one_mul,
@@ -157,7 +155,7 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
     have hf2 : f 1 ≠ 0 := by
       rw [← hf, Ne.eq_def, RelEmbedding.inj]
       simp only [Fin.one_eq_zero_iff, Nat.succ_succ_ne_one, not_false_iff]
-    refine' ⟨f.trans (rescale (f 1) hf1 hf2).symm.toRelEmbedding, _⟩
+    refine ⟨f.trans (rescale (f 1) hf1 hf2).symm.toRelEmbedding, ?_⟩
     simp only [hf2, hf, RelIso.coe_toRelEmbedding, Embedding.coe_comp, RelIso.coe_fn_mk,
       Function.comp_apply, rescale_symm_apply, Units.val_inv_eq_inv_val, Units.val_mk0,
       MulZeroClass.mul_zero, eq_self_iff_true, inv_mul_cancel, Ne.eq_def, not_false_iff, and_self_iff]
@@ -184,7 +182,7 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
     by
     rw [Finset.insert_subset_iff, Finset.singleton_subset_iff, ← hf₀, ← hf₁]
     exact ⟨Finset.mem_map_of_mem _ (by simp), Finset.mem_map_of_mem _ (by simp)⟩
-  refine' ⟨(Finset.univ : Finset (Fin (k + 2))).map f.toEmbedding \ {0, 1}, _, _, _, _⟩
+  refine ⟨(Finset.univ : Finset (Fin (k + 2))).map f.toEmbedding \ {0, 1}, ?_, ?_, ?_, ?_⟩
   · rw [Finset.card_sdiff, Finset.card_map, Finset.card_pair, Finset.card_fin, Nat.add_sub_cancel]
     · simp only [Ne.eq_def, zero_ne_one, not_false_iff]
     exact this
@@ -262,7 +260,7 @@ end Paley
 
 theorem ramseyNumber_three_three : ramseyNumber ![3, 3] = 6 :=
   by
-  refine' le_antisymm _ _
+  refine le_antisymm ?_ ?_
   · exact (ramseyNumber_two_colour_bound 3 3 (by norm_num)).trans_eq (by simp)
   rw [← not_lt, Nat.lt_succ_iff, ← ZMod.card 5, ramseyNumber_le_iff]
   exact paley_five_bound
@@ -271,7 +269,7 @@ theorem diagonalRamsey_three : diagonalRamsey 3 = 6 :=
   ramseyNumber_three_three
 
 theorem ramseyNumber_three_four_upper : ramseyNumber ![3, 4] ≤ 9 := by
-  refine' (ramseyNumber_two_colour_bound_even 4 6 _ _ _ _ _ _).trans_eq _
+  refine (ramseyNumber_two_colour_bound_even 4 6 ?_ ?_ ?_ ?_ ?_ ?_).trans_eq ?_
   · norm_num
   · norm_num
   · norm_num
@@ -282,8 +280,8 @@ theorem ramseyNumber_three_four_upper : ramseyNumber ![3, 4] ≤ 9 := by
 
 theorem ramseyNumber_four_four : ramseyNumber ![4, 4] = 18 :=
   by
-  refine' le_antisymm _ _
-  · refine' (ramseyNumber_two_colour_bound 4 4 (by norm_num)).trans _
+  refine le_antisymm ?_ ?_
+  · refine (ramseyNumber_two_colour_bound 4 4 (by norm_num)).trans ?_
     simp only [Nat.succ_sub_succ_eq_sub, tsub_zero]
     rw [ramseyNumber_pair_swap 4]
     linarith [ramseyNumber_three_four_upper]
@@ -295,11 +293,11 @@ theorem diagonalRamsey_four : diagonalRamsey 4 = 18 :=
 
 theorem ramseyNumber_three_four : ramseyNumber ![3, 4] = 9 :=
   by
-  refine' eq_of_le_of_not_lt ramseyNumber_three_four_upper _
+  refine eq_of_le_of_not_lt ramseyNumber_three_four_upper ?_
   intro h
   have : diagonalRamsey 4 ≤ 16 :=
     by
-    refine' (ramseyNumber_two_colour_bound 4 4 (by norm_num)).trans _
+    refine (ramseyNumber_two_colour_bound 4 4 (by norm_num)).trans ?_
     simp only [Nat.succ_sub_succ_eq_sub, tsub_zero]
     rw [ramseyNumber_pair_swap 4]
     linarith only [h]
@@ -355,7 +353,7 @@ theorem partsPairGet_symm (i j : Fin 4 → ZMod 2) (hij : i ≠ j) :
     partsPairGet j i hij.symm = partsPairGet i j hij :=
   by
   have : i - j = j - i := by rw [CharTwo.sub_eq_add, CharTwo.sub_eq_add, add_comm]
-  refine' parts_disjoint (j - i) _ (partsPairGet_spec hij.symm) _ _
+  refine parts_disjoint (j - i) _ (partsPairGet_spec hij.symm) _ ?_
   rw [← this]
   exact partsPairGet_spec hij
 
@@ -370,7 +368,7 @@ def clebschColouring : TopEdgeLabelling (Fin 4 → ZMod 2) (Fin 3) :=
 theorem clebsch_bound : ¬IsRamseyValid (Fin 4 → ZMod 2) ![3, 3, 3] := by
   rw [isRamseyValid_iff_eq]
   push_neg
-  refine' ⟨clebschColouring, _⟩
+  refine ⟨clebschColouring, ?_⟩
   rintro m c hm hc
   have : m.card = 3 := by
     clear hm
@@ -399,9 +397,9 @@ end
 
 theorem ramseyNumber_three_three_three : ramseyNumber ![3, 3, 3] = 17 :=
   by
-  refine' le_antisymm _ _
-  · refine'
-      (ramseyNumber_three_colour_bound (Nat.le_succ _) (Nat.le_succ _) (Nat.le_succ _)).trans _
+  refine le_antisymm ?_ ?_
+  · refine
+      (ramseyNumber_three_colour_bound (Nat.le_succ _) (Nat.le_succ _) (Nat.le_succ _)).trans ?_
     rw [Nat.succ_sub_succ_eq_sub, tsub_zero, ramseyNumber_first_swap 3]
     have : ramseyNumber ![3, 3, 2] = ramseyNumber ![2, 3, 3] :=
       by

@@ -8,8 +8,6 @@ import ExponentialRamsey.Prereq.GraphProbability
 import Mathlib.Combinatorics.SimpleGraph.Density
 import Data.Seq.Seq
 
-#align_import basic
-
 /-!
 # Book algorithm
 

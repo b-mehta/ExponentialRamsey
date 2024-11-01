@@ -7,8 +7,6 @@ import ExponentialRamsey.Prereq.Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.SpecialFunctions.Log.Base
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
-#align_import prereq.mathlib.information_theory.binary_entropy
-
 /-!
 # Binary entropy function
 Defines the function `h(p)` which gives the entropy of a Bernoulli random variable with probability
@@ -56,7 +54,7 @@ private theorem bin_ent_deriv_aux (x : ℝ) (hx₀ : x ≠ 0) (hx₁ : x ≠ 1) 
   have h : ∀ x : ℝ, x ≠ 0 → HasDerivAt (fun y => -(y * log y)) (-(log x + 1)) x :=
     by
     rintro x hx₀
-    refine' HasDerivAt.neg _
+    refine HasDerivAt.neg ?_
     have : 1 * log x + x * x⁻¹ = log x + 1 := by rw [one_mul, mul_inv_cancel hx₀]
     rw [← this]
     exact HasDerivAt.mul (hasDerivAt_id' x) (hasDerivAt_log hx₀)
@@ -67,6 +65,6 @@ private theorem bin_ent_deriv_aux (x : ℝ) (hx₀ : x ≠ 0) (hx₁ : x ≠ 1) 
     convert this using 1
     ring_nf
   have : HasDerivAt (fun y : ℝ => 1 - y) (-1 : ℝ) x := (hasDerivAt_id' x).const_sub 1
-  refine' HasDerivAt.add (h _ hx₀) _
+  refine HasDerivAt.add (h _ hx₀) ?_
   exact (h (1 - x) (sub_ne_zero_of_ne hx₁.symm)).comp x ((hasDerivAt_id' x).const_sub 1)
 

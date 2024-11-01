@@ -5,8 +5,6 @@ Authors: Bhavik Mehta
 -/
 import Mathlib.Combinatorics.SimpleGraph.DegreeSum
 
-#align_import prereq.mathlib.combinatorics.simple_graph.degree_sum
-
 /-!
 # Stuff for combinatorics.simple_graph.degree_sum
 -/

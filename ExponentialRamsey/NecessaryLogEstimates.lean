@@ -7,8 +7,6 @@ import Section11
 import Log2Estimates
 import LogSmall
 
-#align_import necessary_log_estimates
-
 /-!
 # Numerical calculations and appendix A
 -/

@@ -5,8 +5,6 @@ Authors: Bhavik Mehta
 -/
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 
-#align_import prereq.mathlib.analysis.calculus.iterated_deriv
-
 /-!
 # Stuff for analysis.calculus.iterated_deriv
 -/

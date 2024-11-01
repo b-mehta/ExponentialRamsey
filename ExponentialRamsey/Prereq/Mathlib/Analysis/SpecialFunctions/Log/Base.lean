@@ -6,8 +6,6 @@ Authors: Bhavik Mehta
 import Mathlib.Analysis.SpecialFunctions.Log.Base
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
-#align_import prereq.mathlib.analysis.special_functions.log.base
-
 /-!
 # Stuff for analysis.special_functions.log.base
 -/
