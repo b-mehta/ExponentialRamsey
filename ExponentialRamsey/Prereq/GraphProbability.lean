@@ -338,7 +338,7 @@ section
 
 variable [Fintype V] [DecidableEq V] [Fintype (SimpleGraph V)] [@DecidableRel (SimpleGraph V) (· < ·)] [@DecidableRel (SimpleGraph V) (· ≤ ·)] [∀ G : SimpleGraph V, DecidableRel G.Adj]
 
-theorem weighted_number_cliques [DecidableEq V] {k : ℕ} :
+theorem weighted_number_cliques {k : ℕ} :
     ∑ G, weighting V p G * G.numberOfCliques k = (card V).choose k * p ^ k.choose 2 :=
   by
   simp_rw [numberOfCliques, Finset.card_eq_sum_ones, Nat.cast_sum, Nat.cast_one, sum_filter, mul_sum,
@@ -363,7 +363,7 @@ theorem weighted_number_cliques [DecidableEq V] {k : ℕ} :
   rw [mem_powersetCard] at hx
   simp only [hx]
 
-theorem weighted_number_indeps [DecidableEq V] {k : ℕ} :
+theorem weighted_number_indeps {k : ℕ} :
     ∑ G, weighting V p G * G.numberOfIndeps k = (card V).choose k * (1 - p) ^ k.choose 2 :=
   by
   simp only [← numberOfCliques_compl]
@@ -384,7 +384,7 @@ theorem weighted_number_indeps [DecidableEq V] {k : ℕ} :
       refine mem_filter.trans ?_
       simp_rw [mem_filter]
 
-theorem weighted_number_things [DecidableEq V] {k l : ℕ} :
+theorem weighted_number_things {k l : ℕ} :
     ∑ G, weighting V p G * G.numberOfThings k l =
       (card V).choose k * p ^ k.choose 2 + (card V).choose l * (1 - p) ^ l.choose 2 :=
   by
@@ -487,7 +487,7 @@ theorem diagonalRamsey_bound_refined_aux {n k : ℕ} (hk : k ≠ 0)
     · positivity
     · positivity
     · positivity
-  rw [← div_le_iff _, ← div_pow, div_div_eq_mul_div, mul_comm] at this
+  rw [← div_le_iff₀ _, ← div_pow, div_div_eq_mul_div, mul_comm] at this
   swap
   · positivity
   rcases eq_or_ne n 0 with (rfl | hn')

@@ -55,7 +55,7 @@ private theorem bin_ent_deriv_aux (x : ℝ) (hx₀ : x ≠ 0) (hx₁ : x ≠ 1) 
     by
     rintro x hx₀
     refine HasDerivAt.neg ?_
-    have : 1 * log x + x * x⁻¹ = log x + 1 := by rw [one_mul, mul_inv_cancel hx₀]
+    have : 1 * log x + x * x⁻¹ = log x + 1 := by rw [one_mul, mul_inv_cancel₀ hx₀]
     rw [← this]
     exact HasDerivAt.mul (hasDerivAt_id' x) (hasDerivAt_log hx₀)
   suffices

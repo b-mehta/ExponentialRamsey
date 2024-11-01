@@ -156,9 +156,9 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
       rw [← hf, Ne.eq_def, RelEmbedding.inj]
       simp only [Fin.one_eq_zero_iff, Nat.succ_succ_ne_one, not_false_iff]
     refine ⟨f.trans (rescale (f 1) hf1 hf2).symm.toRelEmbedding, ?_⟩
-    simp only [hf2, hf, RelIso.coe_toRelEmbedding, Embedding.coe_comp, RelIso.coe_fn_mk,
-      Function.comp_apply, rescale_symm_apply, Units.val_inv_eq_inv_val, Units.val_mk0,
-      MulZeroClass.mul_zero, eq_self_iff_true, inv_mul_cancel, Ne.eq_def, not_false_iff, and_self_iff]
+    simp only [hf, hf2, RelEmbedding.coe_trans, RelIso.coe_toRelEmbedding, Function.comp_apply, 
+      rescale_symm_apply, mul_zero, isUnit_iff_ne_zero, ne_eq, not_false_eq_true,
+      IsUnit.inv_mul_cancel, and_self]
   have hss : Symmetric fun x y : F => IsSquare (y - x) := by
     intro x y h
     exact symmetric_isSquare card_not_three_mod_four h

@@ -26,7 +26,7 @@ theorem exists_even_degree [Fintype V] [DecidableRel G.Adj] (hV : Odd (card V)) 
     rw [←card_lt_iff_ne_univ, (card_le_univ _).lt_iff_ne]
     intro h
     have h' := even_card_odd_degree_vertices G
-    rw [h, Nat.even_iff_not_odd] at h'
+    rw [h, ← Nat.not_odd_iff_even] at h'
     exact h' hV
   rw [Ne.eq_def, filter_eq_self] at this
   simpa using this

@@ -65,7 +65,7 @@ theorem centralBinomialLower_monotone : Monotone centralBinomialLower := by
   intro n
   rw [centralBinomialLower, centralBinomialLower, _root_.pow_succ', ←div_div]
   refine div_le_div_of_nonneg_right ?_ (by positivity)
-  rw [le_div_iff, mul_assoc, mul_comm, ← div_le_div_iff, centralBinom_ratio, mul_comm,
+  rw [le_div_iff₀, mul_assoc, mul_comm, ← div_le_div_iff, centralBinom_ratio, mul_comm,
     mul_div_assoc, Nat.cast_add_one]
   refine mul_le_mul_of_nonneg_left (lower_monotone_aux n) (by positivity)
   · positivity
@@ -86,7 +86,7 @@ theorem centralBinomialUpper_monotone : Antitone centralBinomialUpper :=
   rw [centralBinomialUpper, centralBinomialUpper, _root_.pow_succ', ← div_div]
     -- regression: I needed to qualify pow_succ
   refine div_le_div_of_nonneg_right ?_ (by positivity)
-  rw [div_le_iff, mul_assoc, mul_comm _ (_ * _), ← div_le_div_iff, mul_comm, mul_div_assoc,
+  rw [div_le_iff₀, mul_assoc, mul_comm _ (_ * _), ← div_le_div_iff, mul_comm, mul_div_assoc,
     centralBinom_ratio, Nat.cast_add_one]
   refine mul_le_mul_of_nonneg_left (upper_monotone_aux _) (by positivity)
   · rw [Nat.cast_pos]
@@ -142,7 +142,7 @@ theorem centralBinomialUpper_bound (n : ℕ) :
     (n.centralBinom : ℝ) ≤ (4 : ℝ) ^ n / sqrt (π * (n + 1 / 4)) := by
   have := pi_pos
   have := centralBinomialLower_monotone.ge_of_tendsto centralBinomialLower_limit n
-  rwa [sqrt_mul, ← div_div, le_div_iff, div_eq_mul_one_div ((4 : ℝ) ^ n : ℝ), ← div_le_iff',
+  rwa [sqrt_mul, ← div_div, le_div_iff₀, div_eq_mul_one_div ((4 : ℝ) ^ n : ℝ), ← div_le_iff₀',
     one_div (sqrt π)]
   all_goals positivity
 
@@ -150,7 +150,7 @@ theorem centralBinomialLower_bound (n : ℕ) :
     (4 : ℝ) ^ n / sqrt (π * (n + 1 / 3)) ≤ n.centralBinom := by
   have := pi_pos
   have := centralBinomialUpper_monotone.le_of_tendsto centralBinomialUpper_limit n
-  rwa [sqrt_mul, ← div_div, div_le_iff, div_eq_mul_one_div, ← le_div_iff', one_div (sqrt π)]
+  rwa [sqrt_mul, ← div_div, div_le_iff₀, div_eq_mul_one_div, ← le_div_iff₀', one_div (sqrt π)]
   all_goals positivity
 
 theorem cexp_eq_tsum {x : ℂ} : Complex.exp x = ∑' i, x ^ i / i ! := by
@@ -173,7 +173,7 @@ theorem exp_factorial_bound_of_ne_zero {n : ℕ} {x : ℝ} (hx : 0 ≤ x) (hn : 
   simp
 
 theorem factorial_bound_exp {n : ℕ} : ((n : ℝ) / Real.exp 1) ^ n ≤ n ! := by
-  rw [div_pow, ← rpow_natCast (exp 1), exp_one_rpow, div_le_iff, ← div_le_iff']
+  rw [div_pow, ← rpow_natCast (exp 1), exp_one_rpow, div_le_iff₀, ← div_le_iff₀']
   · exact exp_factorial_bound (Nat.cast_nonneg _)
   · positivity
   · positivity
