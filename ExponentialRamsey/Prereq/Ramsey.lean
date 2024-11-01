@@ -44,14 +44,11 @@ instance [DecidableEq V] [Fintype G.edgeSet] [Fintype K] : Fintype (EdgeLabellin
 instance [Nonempty K] : Nonempty (EdgeLabelling G K) :=
   Pi.instNonempty
 
--- Porting note: this instance was called `Pi.inhabited` in lean3-core, which is much
--- nicer than the name `instInhabitedForall_1` it got in lean4-core...
 instance [Inhabited K] : Inhabited (EdgeLabelling G K) :=
-  instInhabitedForall_1 _
+  Pi.instInhabited
 
--- Porting note: this was `pi.subsingleton` in lean3-core
 instance [Subsingleton K] : Subsingleton (EdgeLabelling G K) :=
-  instSubsingletonForall
+  Pi.instSubsingleton
 
 instance [Unique K] : Unique (EdgeLabelling G K) :=
   Pi.unique
@@ -749,7 +746,6 @@ theorem ramsey_fin_induct_two_evens {i j Ni Nj : ℕ} (hi : 2 ≤ i) (hj : 2 ≤
     have : (m 0).card + 1 ≠ Ni := by
       intro h
       rw [← h] at hNi
-      simp at hx
         -- regression (maybe temporary): this extra simp is a weirdness with Lean 4 simp/zeta
       simp [hx, parity_simps] at hNi
     rw [eq_tsub_iff_add_eq_of_le (add_le_add hNi' hNj'), Fin.sum_univ_two] at e
@@ -1039,14 +1035,14 @@ theorem ramseyNumber_pair_le_two_pow {i j : ℕ} : ramseyNumber ![i, j] ≤ 2 ^ 
   (ramseyNumber_le_choose _ _).trans Nat.choose_le_two_pow
 
 theorem ramseyNumber_pair_le_two_pow' {i j : ℕ} : ramseyNumber ![i, j] ≤ 2 ^ (i + j) :=
-  ramseyNumber_pair_le_two_pow.trans (pow_le_pow_right one_le_two (Nat.sub_le _ _))
+  ramseyNumber_pair_le_two_pow.trans (pow_le_pow_right₀ one_le_two (Nat.sub_le _ _))
 
 theorem diagonalRamsey_le_four_pow_sub_one {i : ℕ} : diagonalRamsey i ≤ 4 ^ (i - 1) :=
   ramseyNumber_pair_le_two_pow.trans_eq
     (by rw [show 4 = 2 ^ 2 from rfl, ← pow_mul, Nat.mul_sub_left_distrib, two_mul, mul_one])
 
 theorem diagonalRamsey_le_four_pow {i : ℕ} : diagonalRamsey i ≤ 4 ^ i :=
-  diagonalRamsey_le_four_pow_sub_one.trans (pow_le_pow_right (by norm_num) (Nat.sub_le _ _))
+  diagonalRamsey_le_four_pow_sub_one.trans (pow_le_pow_right₀ (by norm_num) (Nat.sub_le _ _))
 
 /-- A good bound when i is small and j is large. For `i = 1, 2` this is equality (as long as
 `j ≠ 0`), and for `i = 3` and `i = 4` it is the best possible polynomial upper bound, although

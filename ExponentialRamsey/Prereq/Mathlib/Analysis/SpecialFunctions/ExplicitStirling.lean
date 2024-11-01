@@ -179,7 +179,7 @@ theorem factorial_bound_exp {n : ℕ} : ((n : ℝ) / Real.exp 1) ^ n ≤ n ! := 
   · positivity
 
 theorem factorial_bound_exp_of_ne_zero {n : ℕ} (hn : n ≠ 0) : ((n : ℝ) / Real.exp 1) ^ n < n ! := by
-  rw [div_pow, ← rpow_natCast (exp 1), exp_one_rpow, div_lt_iff, ← div_lt_iff']
+  rw [div_pow, ← rpow_natCast (exp 1), exp_one_rpow, div_lt_iff₀, ← div_lt_iff₀']
   · exact exp_factorial_bound_of_ne_zero (Nat.cast_nonneg _) hn
   · positivity
   · positivity
