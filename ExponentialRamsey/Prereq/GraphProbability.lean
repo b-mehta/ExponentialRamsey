@@ -3,13 +3,13 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
-import Prereq.RamseySmall
-import Order.Partition.Finpartition
-import Data.Finset.LocallyFinite
-import Prereq.Mathlib.Analysis.SpecialFunctions.ExplicitStirling
-import Analysis.Asymptotics.Asymptotics
-import Data.Complex.ExponentialBounds
-import Data.Real.Pi.Bounds
+import ExponentialRamsey.Prereq.RamseySmall
+import Mathlib.Order.Partition.Finpartition
+import Mathlib.Data.Finset.LocallyFinite
+import ExponentialRamsey.Prereq.Mathlib.Analysis.SpecialFunctions.ExplicitStirling
+import Mathlib.Analysis.Asymptotics.Asymptotics
+import Mathlib.Data.Complex.ExponentialBounds
+import Mathlib.Data.Real.Pi.Bounds
 
 #align_import prereq.graph_probability
 
@@ -29,46 +29,44 @@ open Fintype (card)
 variable {V : Type*} {G G₁ G₂ : SimpleGraph V}
 
 theorem card_filter_not_diag {α : Type*} [Fintype α] [DecidableEq α] :
-    (Finset.univ.filterₓ fun a : Sym2 α => ¬Sym2.IsDiag a).card = (card α).choose 2 := by
+    (Finset.univ.filter fun a : Sym2 α => ¬Sym2.IsDiag a).card = (card α).choose 2 := by
   rw [← Sym2.card_subtype_not_diag, Fintype.card_subtype]
 
 theorem edgeSet_top :
-    (⊤ : SimpleGraph V).edgeSet = {a : Sym2 V | ¬Sym2.IsDiag a} :=
-  by
+    (⊤ : SimpleGraph V).edgeSet = {a : Sym2 V | ¬Sym2.IsDiag a} := by
   ext e
   induction' e using Sym2.inductionOn with x y
   simp
 
 theorem edgeFinset_bot' [Fintype (edgeSet (⊥ : SimpleGraph V))] :
-    (⊥ : SimpleGraph V).edgeFinset = ∅ := by simp [edge_finset]
+    (⊥ : SimpleGraph V).edgeFinset = ∅ := by simp [edgeFinset]
 
 theorem edgeFinset_sup' [DecidableEq V] [Fintype (edgeSet G₁)]
     [Fintype (edgeSet G₂)] [Fintype (edgeSet (G₁ ⊔ G₂))] :
-    (G₁ ⊔ G₂).edgeFinset = G₁.edgeFinset ∪ G₂.edgeFinset := by simp [edge_finset]
+    (G₁ ⊔ G₂).edgeFinset = G₁.edgeFinset ∪ G₂.edgeFinset := by simp [edgeFinset]
 
 theorem edgeFinset_inf' [DecidableEq V] [Fintype (edgeSet G₁)]
     [Fintype (edgeSet G₂)] [Fintype (edgeSet (G₁ ⊓ G₂))] :
-    (G₁ ⊓ G₂).edgeFinset = G₁.edgeFinset ∩ G₂.edgeFinset := by simp [edge_finset]
+    (G₁ ⊓ G₂).edgeFinset = G₁.edgeFinset ∩ G₂.edgeFinset := by simp [edgeFinset]
 
 theorem edgeFinset_sdiff' [DecidableEq V] [Fintype (edgeSet G₁)]
     [Fintype (edgeSet G₂)] [Fintype (edgeSet (G₁ \ G₂))] :
-    (G₁ \ G₂).edgeFinset = G₁.edgeFinset \ G₂.edgeFinset := by simp [edge_finset]
+    (G₁ \ G₂).edgeFinset = G₁.edgeFinset \ G₂.edgeFinset := by simp [edgeFinset]
 
 theorem edgeFinset_top [Fintype V] [DecidableEq V] :
-    (⊤ : SimpleGraph V).edgeFinset = univ.filterₓ fun a : Sym2 V => ¬Sym2.IsDiag a :=
-  by
+    (⊤ : SimpleGraph V).edgeFinset = univ.filter fun a : Sym2 V => ¬Sym2.IsDiag a := by
   refine' coe_injective _
-  rw [coe_edge_finset, edgeSet_top, coe_filter_univ]
+  rw [coe_edgeFinset, edgeSet_top, coe_filter_univ]
 
 theorem edgeFinset_top_card [Fintype V] [DecidableEq V] :
     (⊤ : SimpleGraph V).edgeFinset.card = (card V).choose 2 := by
-  rw [edge_finset_card, card_top_edgeSet]
+  rw [edgeFinset_card, card_top_edgeSet]
 
 theorem edgeFinset_card_le [Fintype V] [Fintype G.edgeSet] :
     G.edgeFinset.card ≤ (card V).choose 2 := by
   classical
-  rw [← edge_finset_top_card]
-  exact card_le_of_subset (edge_finset_mono le_top)
+  rw [← edgeFinset_top_card]
+  exact card_le_of_subset (edgeFinset_mono le_top)
 
 theorem compl_edgeSet_eq :
     edgeSet (Gᶜ) = {x : Sym2 V | ¬x.IsDiag} \ edgeSet G := by
@@ -78,33 +76,29 @@ theorem compl_edgeSet_eq' :
     edgeSet G = {x : Sym2 V | ¬x.IsDiag} \ edgeSet (Gᶜ) := by
   rw [← edgeSet_top, ← edgeSet_sdiff, top_sdiff, compl_compl]
 
-theorem compl_edgeFinset_eq [Fintype V] [DecidableEq V] [Fintype G.edgeSet]
-    [Fintype Gᶜ.edgeSet] :
-    Gᶜ.edgeFinset = (univ.filterₓ fun a : Sym2 V => ¬Sym2.IsDiag a) \ G.edgeFinset :=
-  by
+theorem compl_edgeFinset_eq [Fintype V] [DecidableEq V] [Fintype G.edgeSet] [Fintype Gᶜ.edgeSet] :
+    Gᶜ.edgeFinset = (univ.filter fun a : Sym2 V => ¬Sym2.IsDiag a) \ G.edgeFinset := by
   refine' coe_injective _
-  rw [coe_edge_finset, coe_sdiff, coe_edge_finset, coe_filter_univ, compl_edgeSet_eq]
+  rw [coe_edgeFinset, coe_sdiff, coe_edgeFinset, coe_filter_univ, compl_edgeSet_eq]
 
-theorem compl_edgeFinset_eq' [Fintype V] [DecidableEq V] [Fintype G.edgeSet]
-    [Fintype Gᶜ.edgeSet] :
-    G.edgeFinset = (univ.filterₓ fun a : Sym2 V => ¬Sym2.IsDiag a) \ Gᶜ.edgeFinset :=
-  by
+theorem compl_edgeFinset_eq' [Fintype V] [DecidableEq V] [Fintype G.edgeSet] [Fintype Gᶜ.edgeSet] :
+    G.edgeFinset = (univ.filter fun a : Sym2 V => ¬Sym2.IsDiag a) \ Gᶜ.edgeFinset := by
   refine' coe_injective _
-  rw [coe_edge_finset, coe_sdiff, coe_edge_finset, coe_filter_univ, compl_edgeSet_eq']
+  rw [coe_edgeFinset, coe_sdiff, coe_edgeFinset, coe_filter_univ, compl_edgeSet_eq']
 
 theorem card_compl_edgeFinset_eq [Fintype V] [Fintype G.edgeSet]
     [Fintype Gᶜ.edgeSet] : Gᶜ.edgeFinset.card = (card V).choose 2 - G.edgeFinset.card := by
   classical
-  rw [compl_edge_finset_eq, card_sdiff, card_filter_not_diag]
-  simp only [subset_iff, mem_edge_finset, mem_filter, mem_univ, true_and_iff]
-  apply not_is_diag_of_mem_edgeSet
+  rw [compl_edgeFinset_eq, card_sdiff, card_filter_not_diag]
+  simp only [subset_iff, mem_edgeFinset, mem_filter, mem_univ, true_and_iff]
+  apply not_isDiag_of_mem_edgeSet
 
 theorem card_edgeFinset_eq_sub_compl' [Fintype V] [Fintype G.edgeSet]
     [Fintype Gᶜ.edgeSet] : G.edgeFinset.card = (card V).choose 2 - Gᶜ.edgeFinset.card := by
   classical
-  rw [compl_edge_finset_eq', card_sdiff, card_filter_not_diag]
-  simp only [subset_iff, mem_edge_finset, mem_filter, mem_univ, true_and_iff]
-  apply not_is_diag_of_mem_edgeSet
+  rw [compl_edgeFinset_eq', card_sdiff, card_filter_not_diag]
+  simp only [subset_iff, mem_edgeFinset, mem_filter, mem_univ, true_and_iff]
+  apply not_isDiag_of_mem_edgeSet
 
 variable {p : ℝ} {s : Finset (Sym2 V)}
 
@@ -650,4 +644,3 @@ theorem little_o_lower_ramsey_bound :
 end
 
 end SimpleGraph
-
