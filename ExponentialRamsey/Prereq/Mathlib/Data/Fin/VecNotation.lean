@@ -27,8 +27,7 @@ theorem update_head {α : Type*} {i : ℕ} {x y : α} {t : Fin i → α} :
   exact succ_ne_zero j
 
 theorem update_cons_one {α : Type*} {i : ℕ} {x y z : α} {t : Fin i → α} :
-    update (vecCons x (vecCons y t)) 1 z = vecCons x (vecCons z t) :=
-  by
+    update (vecCons x (vecCons y t)) 1 z = vecCons x (vecCons z t) := by
   simp only [funext_iff, forall_fin_succ]
   refine' ⟨rfl, rfl, fun j => _⟩
   rw [update_noteq]
@@ -36,8 +35,7 @@ theorem update_cons_one {α : Type*} {i : ℕ} {x y z : α} {t : Fin i → α} :
   exact (succ_injective _).ne (Fin.succ_ne_zero _)
 
 theorem update_cons_two {α : Type*} {i : ℕ} {w x y z : α} {t : Fin i → α} :
-    update (vecCons w (vecCons x (vecCons y t))) 2 z = vecCons w (vecCons x (vecCons z t)) :=
-  by
+    update (vecCons w (vecCons x (vecCons y t))) 2 z = vecCons w (vecCons x (vecCons z t)) := by
   simp only [funext_iff, forall_fin_succ]
   refine' ⟨rfl, rfl, rfl, fun j => _⟩
   rw [update_noteq]
@@ -45,8 +43,7 @@ theorem update_cons_two {α : Type*} {i : ℕ} {w x y z : α} {t : Fin i → α}
   exact (succ_injective _).ne ((succ_injective _).ne (succ_ne_zero _))
 
 theorem swap_cons {α : Type*} {i : ℕ} {x y : α} {t : Fin i → α} :
-    vecCons x (vecCons y t) ∘ Equiv.swap 0 1 = vecCons y (vecCons x t) :=
-  by
+    vecCons x (vecCons y t) ∘ Equiv.swap 0 1 = vecCons y (vecCons x t) := by
   rw [funext_iff]
   simp only [forall_fin_succ]
   refine' ⟨rfl, rfl, fun j => _⟩
@@ -56,4 +53,3 @@ theorem swap_cons {α : Type*} {i : ℕ} {x y : α} {t : Fin i → α} :
   exact (succ_injective _).ne (succ_ne_zero _)
 
 end Function
-

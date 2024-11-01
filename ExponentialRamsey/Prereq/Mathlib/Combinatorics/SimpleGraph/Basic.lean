@@ -3,9 +3,11 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
+
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Clique
 import Mathlib.Combinatorics.SimpleGraph.Finite
+import Mathlib.Combinatorics.SimpleGraph.Maps
 import Mathlib.Data.Sym.Card
 
 #align_import prereq.mathlib.combinatorics.simple_graph.basic
@@ -44,19 +46,23 @@ theorem card_top_edgeSet [DecidableEq V] [Fintype V] :
 theorem edgeSet_eq_empty_iff {G : SimpleGraph V} : G.edgeSet = ∅ ↔ G = ⊥ := by
   rw [← edgeSet_bot, edgeSet_inj]
 
+-- now in mathlib
+-- theorem disjoint_edgeSet {G H : SimpleGraph V} :
+--     Disjoint G.edgeSet H.edgeSet ↔ Disjoint G H := by
+--   rw [Set.disjoint_iff_inter_eq_empty, disjoint_iff, ← edgeSet_inf, edgeSet_eq_empty_iff]
+
 theorem disjoint_left {G H : SimpleGraph V} : Disjoint G H ↔ ∀ x y, G.Adj x y → ¬H.Adj x y := by
   simp only [← disjoint_edgeSet, Set.disjoint_left, Sym2.forall, mem_edgeSet]
 
 @[simp]
 theorem adj_sup_iff {ι V : Type*} {s : Finset ι} {f : ι → SimpleGraph V} {x y : V} :
-    (s.sup f).Adj x y ↔ ∃ i ∈ s, (f i).Adj x y :=
-  by
+    (s.sup f).Adj x y ↔ ∃ i ∈ s, (f i).Adj x y := by
   induction' s using Finset.cons_induction_on with a s has ih
   · simp
   · simp [or_and_right, exists_or, ih]
 
-theorem top_hom_injective (f : (⊤ : SimpleGraph V') →g G) : Function.Injective f := fun _ _ h =>
-  by_contra fun z => (f.map_rel z).ne h
+theorem top_hom_injective (f : (⊤ : SimpleGraph V') →g G) : Function.Injective f :=
+  fun _ _ h => by_contra fun z => (f.map_rel z).ne h
 
 /-- graph embeddings from a complete graph are in bijection with graph homomorphisms from it -/
 def topHomGraphEquiv : (⊤ : SimpleGraph V') ↪g G ≃ (⊤ : SimpleGraph V') →g G
@@ -102,9 +108,9 @@ section
 instance {V : Type*} {x : V} : IsEmpty ((⊥ : SimpleGraph V).neighborSet x) :=
   Subtype.isEmpty_false
 
--- Fintype.ofIsEmpty is no longer an instance (https://github.com/leanprover-community/mathlib4/pull/8816)
--- theorem neighborFinset_bot {x : V} : (⊥ : SimpleGraph V).neighborFinset x = ∅ := by ext y; simp
-
+theorem neighborFinset_bot {x : V} [Fintype (neighborSet ⊥ x)] :
+  (⊥ : SimpleGraph V).neighborFinset x = ∅ := by ext y; simp
+  
 theorem neighborFinset_top [Fintype V] [DecidableEq V] {x : V} :
     (⊤ : SimpleGraph V).neighborFinset x = {x}ᶜ := by
   ext y
@@ -138,7 +144,11 @@ theorem neighborFinset_disjoint {G H : SimpleGraph V} {x : V} [Fintype (G.neighb
 end
 
 theorem degree_eq_zero_iff {v : V} [Fintype (G.neighborSet v)] : G.degree v = 0 ↔ ∀ w, ¬G.Adj v w :=
-  by rw [← not_exists, ← degree_pos_iff_exists_adj, not_lt, Nat.le_zero]
+  by rw [← not_exists, ← degree_pos_iff_exists_adj, not_lt, le_zero_iff]
+
+-- already in mathlib now
+-- theorem comap_comap {V W X : Type*} {G : SimpleGraph V} {f : W → V} {g : X → W} :
+--     (G.comap f).comap g = G.comap (f ∘ g) :=
+--   rfl
 
 end SimpleGraph
-

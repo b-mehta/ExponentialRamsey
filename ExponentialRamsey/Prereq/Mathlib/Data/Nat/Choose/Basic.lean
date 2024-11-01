@@ -29,4 +29,3 @@ theorem choose_le_pow_left (s t : ℕ) : s.choose t ≤ (s + 1 - t) ^ t := by
   exact zero_le'
 
 end Nat
-

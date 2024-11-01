@@ -13,12 +13,12 @@ import Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.GaussSum
 # Constructions to prove lower bounds on some small Ramsey numbers
 -/
 
+open Finset
 
 namespace SimpleGraph
 
 open Fintype (card)
 
-open Finset
 
 section Paley
 
@@ -114,14 +114,14 @@ For small `k` and `|F|`, this reduction is enough to brute-force check that such
 can be avoided.
 -/
 theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
-    (h : ∃ (m : Finset F) (c : _), (paleyLabelling F).MonochromaticOf m c ∧ k + 2 = m.card) :
+    (h : ∃ (m : Finset F) (c : Fin 2), (paleyLabelling F).MonochromaticOf m c ∧ k + 2 = m.card) :
     ∃ m : Finset F,
       m.card = k ∧
         (0 : F) ∉ m ∧
           (1 : F) ∉ m ∧
             (∀ x ∈ m, IsSquare x) ∧
-              (∀ x ∈ m, IsSquare (x - 1 : F)) ∧ (m : Set F).Pairwise fun x y => IsSquare (y - x) :=
-  by
+              (∀ x ∈ m, IsSquare (x - 1 : F)) ∧
+                (m : Set F).Pairwise fun x y => IsSquare (y - x) := by
   have card_not_three_mod_four : card F % 4 ≠ 3 := by
     rw [hF]
     decide
@@ -131,7 +131,7 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
     apply FiniteField.exists_nonsquare
     rwa [Ne.eq_def, FiniteField.even_card_iff_char_two, Nat.mod_two_ne_zero]
   rw [exists_comm] at h
-  simp only [@isRamseyValid_iff_embedding_aux _ _ _ (fun _ => k+2)] at h
+  simp only [isRamseyValid_iff_embedding_aux] at h
   rw [Fin.exists_fin_two, paleyLabelling, toEdgeLabelling_labelGraph,
     toEdgeLabelling_labelGraph_compl] at h
   have : Nonempty ((⊤ : SimpleGraph (Fin (k + 2))) ↪g paleyGraph F) :=
@@ -144,8 +144,7 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
     by
     obtain ⟨f⟩ := this
     exact ⟨f.trans (rotate (-f 0)).toRelEmbedding, by simp⟩
-  have : ∃ f : (⊤ : SimpleGraph (Fin (k + 2))) ↪g paleyGraph F, f 0 = 0 ∧ f 1 = 1 :=
-    by
+  have : ∃ f : (⊤ : SimpleGraph (Fin (k + 2))) ↪g paleyGraph F, f 0 = 0 ∧ f 1 = 1 := by
     obtain ⟨f, hf⟩ := this
     have hf1 : IsSquare (f 1) :=
       by
@@ -162,8 +161,7 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
     simp only [hf2, hf, RelIso.coe_toRelEmbedding, Embedding.coe_comp, RelIso.coe_fn_mk,
       Function.comp_apply, rescale_symm_apply, Units.val_inv_eq_inv_val, Units.val_mk0,
       MulZeroClass.mul_zero, eq_self_iff_true, inv_mul_cancel, Ne.eq_def, not_false_iff, and_self_iff]
-  have hss : Symmetric fun x y : F => IsSquare (y - x) :=
-    by
+  have hss : Symmetric fun x y : F => IsSquare (y - x) := by
     intro x y h
     exact symmetric_isSquare card_not_three_mod_four h
   suffices
@@ -220,8 +218,7 @@ theorem paley_five_bound : ¬IsRamseyValid (ZMod 5) ![3, 3] := by
     Finset.mem_singleton, forall_eq, Finset.coe_singleton, Set.pairwise_singleton,
     and_true_iff] at this
   revert this
-  clear! F h this
-  exact paley_five_bound_aux -- Regression: this didn't need to be separate in Lean 3
+  exact paley_five_bound_aux -- regression: this didn't need to be separate in Lean 3
 
 theorem paley_seventeen_helper :
     ∀ a : ZMod 17, a ≠ 0 → a ≠ 1 → IsSquare a → IsSquare (a - 1) → a = 2 ∨ a = 9 ∨ a = 16 := by
@@ -232,8 +229,7 @@ theorem paley_seventeen_helper' : ∀ (a b : ZMod 17), a = 2 ∨ a = 9 ∨ a = 1
   decide
 
 -- No pair from {2, 9, 16} has difference a square.
-theorem paley_seventeen_bound : ¬IsRamseyValid (ZMod 17) ![4, 4] :=
-  by
+theorem paley_seventeen_bound : ¬IsRamseyValid (ZMod 17) ![4, 4] := by
   haveI : Fact (Nat.Prime 17) := ⟨by decide⟩
   classical
   rw [isRamseyValid_iff_eq]
@@ -274,8 +270,7 @@ theorem ramseyNumber_three_three : ramseyNumber ![3, 3] = 6 :=
 theorem diagonalRamsey_three : diagonalRamsey 3 = 6 :=
   ramseyNumber_three_three
 
-theorem ramseyNumber_three_four_upper : ramseyNumber ![3, 4] ≤ 9 :=
-  by
+theorem ramseyNumber_three_four_upper : ramseyNumber ![3, 4] ≤ 9 := by
   refine' (ramseyNumber_two_colour_bound_even 4 6 _ _ _ _ _ _).trans_eq _
   · norm_num
   · norm_num

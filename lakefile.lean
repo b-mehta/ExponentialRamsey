@@ -1,14 +1,14 @@
 import Lake
 open Lake DSL
 
-package «exponentialRamsey» {
+package ExponentialRamsey where
+  leanOptions := #[
+    ⟨`autoImplicit, false⟩, -- prevents typos to be interpreted as new free variables
+    ⟨`relaxedAutoImplicit, false⟩] -- prevents typos to be interpreted as new free variables
   -- add any package configuration options here
-}
 
 require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git"
 
 @[default_target]
-lean_lib «ExponentialRamsey» {
-  -- add any library configuration options here
-}
+lean_lib ExponentialRamsey

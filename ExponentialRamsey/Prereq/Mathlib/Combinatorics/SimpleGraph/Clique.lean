@@ -3,6 +3,7 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
+
 import ExponentialRamsey.Prereq.Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Clique
@@ -12,7 +13,6 @@ import Mathlib.Combinatorics.SimpleGraph.Clique
 /-!
 # Stuff for combinatorics.simple_graph.clique
 -/
-
 
 namespace SimpleGraph
 
@@ -28,4 +28,3 @@ theorem CliqueFree.hom (f : G →g H) : H.CliqueFree n → G.CliqueFree n := fun
   cliqueFree_iff'.2 ⟨fun x => (cliqueFree_iff'.1 h).elim' (f.comp x)⟩
 
 end SimpleGraph
-
