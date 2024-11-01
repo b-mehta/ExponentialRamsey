@@ -42,7 +42,7 @@ theorem isRamseyValid_myLabelling {k l : ℕ} : ¬IsRamseyValid (Fin k × Fin l)
     obtain ⟨a, b, c, d, habm, rfl, hcdm, rfl, hi⟩ := hi
     have := hm habm hcdm hi
     simp only [myLabelling, TopEdgeLabelling.mk_get] at this
-    simp only [Ne.eq_def, Prod.mk.inj_iff, eq_self_iff_true, true_and_iff] at hi
+    simp only [Ne.eq_def, Prod.mk.inj_iff, eq_self_iff_true, true_and] at hi
     simp [if_neg hi] at this
   · have h₁ : ∀ i ∈ m, Prod.snd i ∈ (Finset.univ : Finset (Fin l)) := by simp
     have h₂ : (Finset.univ : Finset (Fin l)).card * 1 < m.card :=
@@ -54,7 +54,7 @@ theorem isRamseyValid_myLabelling {k l : ℕ} : ¬IsRamseyValid (Fin k × Fin l)
     obtain ⟨a, b, c, d, habm, rfl, hcdm, rfl, hi⟩ := hi
     have := hm habm hcdm hi
     simp only [myLabelling, TopEdgeLabelling.mk_get] at this
-    simp only [Ne.eq_def, Prod.mk.inj_iff, eq_self_iff_true, true_and_iff] at hi
+    simp only [Ne.eq_def, Prod.mk.inj_iff, eq_self_iff_true, true_and] at hi
     simp [if_neg hi] at this
 
 theorem ramsey_product_bound (k l : ℕ) : k * l < ramseyNumber ![k + 1, l + 1] :=
@@ -106,7 +106,7 @@ theorem isRamseyValid_myOtherLabelling'_zero {α : Type*} [Fintype α] [Decidabl
     by_contra!
     have := hm hab hab' this
     rw [myOtherLabelling', TopEdgeLabelling.mk_get] at this
-    simp only[eq_self_iff_true, true_or_iff, if_true, Fin.one_eq_zero_iff,
+    simp only[eq_self_iff_true, true_or, if_true, Fin.one_eq_zero_iff,
       Nat.succ_succ_ne_one] at this
   have : ∀ i ∈ (Finset.univ : Finset α), (Finset.filter (fun x : _ × Fin l => x.fst = i) m).card = 1 :=
     by
@@ -148,7 +148,7 @@ theorem isRamseyValid_myOtherLabelling'_zero {α : Type*} [Fintype α] [Decidabl
   have h₄ : f x ≠ f y := by
     intro h'
     have : (x, f x) ≠ (y, f y) := by
-      simp only [hxy, Ne.eq_def, Prod.mk.inj_iff, false_and_iff, not_false_iff]
+      simp only [hxy, Ne.eq_def, Prod.mk.inj_iff, false_and, not_false_iff]
     have := hm (hf _) (hf _) this
     rw [myOtherLabelling', TopEdgeLabelling.mk_get, if_pos] at this
     · simp only [Fin.one_eq_zero_iff, Nat.succ_succ_ne_one] at this
@@ -183,7 +183,7 @@ theorem isRamseyValid_myOtherLabelling_one {α : Type*} [DecidableEq α] [Finite
     by_contra!
     have h := hm hab hab' this
     rw [myOtherLabelling', TopEdgeLabelling.mk_get] at h
-    simp only [Ne.eq_def, Prod.mk.inj_iff, eq_self_iff_true, and_true_iff] at this
+    simp only [Ne.eq_def, Prod.mk.inj_iff, eq_self_iff_true, and_true] at this
     simp [this, ha, ha'] at h
   have hx : ((({x}ᶜ : Finset α).biUnion f').image Prod.snd).card ≤ l := h₀ _
   have hy : ((({y}ᶜ : Finset α).biUnion f').image Prod.snd).card ≤ l := h₀ _
@@ -212,19 +212,19 @@ theorem isRamseyValid_myOtherLabelling_one {α : Type*} [DecidableEq α] [Finite
     rintro y b'' hab'' rfl
     apply h'
     have : (x, b) ≠ (y, b'') := by
-      simp only [Ne.eq_def, Prod.mk.inj_iff, h, false_and_iff, not_false_iff]
+      simp only [Ne.eq_def, Prod.mk.inj_iff, h, false_and, not_false_iff]
     have := hm hxb hab'' this
     rw [myOtherLabelling', TopEdgeLabelling.mk_get] at this
-    simp only [eq_self_iff_true, true_and_iff, Ne.eq_def, not_true, false_and_iff, or_false_iff,
-      ite_eq_left_iff, Fin.zero_eq_one_iff, Nat.succ_succ_ne_one, h, false_or_iff, imp_false,
+    simp only [eq_self_iff_true, true_and, Ne.eq_def, not_true, false_and, or_false,
+      ite_eq_left_iff, Fin.zero_eq_one_iff, Nat.succ_succ_ne_one, h, false_or, imp_false,
       Classical.not_not] at this
     cases this
     have : (x, b') ≠ (y, b) := by
-      simp only [Ne.eq_def, Prod.mk.inj_iff, h, false_and_iff, not_false_iff]
+      simp only [Ne.eq_def, Prod.mk.inj_iff, h, false_and, not_false_iff]
     have := hm hxb' hab'' this
     rw [myOtherLabelling', TopEdgeLabelling.mk_get] at this
-    simp only [eq_self_iff_true, true_and_iff, Ne.eq_def, not_true, false_and_iff, or_false_iff,
-      ite_eq_left_iff, Fin.zero_eq_one_iff, Nat.succ_succ_ne_one, h, false_or_iff, imp_false,
+    simp only [eq_self_iff_true, true_and, Ne.eq_def, not_true, false_and, or_false,
+      ite_eq_left_iff, Fin.zero_eq_one_iff, Nat.succ_succ_ne_one, h, false_or, imp_false,
       Classical.not_not] at this
     rw [this]
   rw [← this y, f'y, Finset.empty_union]

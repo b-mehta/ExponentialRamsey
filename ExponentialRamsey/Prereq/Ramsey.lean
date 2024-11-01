@@ -290,7 +290,7 @@ theorem monochromaticOf_insert {x : V} (hx : x ∉ m) :
   classical
   rintro ⟨h₁, h₂⟩
   simp only [TopEdgeLabelling.MonochromaticOf, Ne.eq_def, Set.mem_insert_iff, forall_eq_or_imp,
-    eq_self_iff_true, not_true, IsEmpty.forall_iff, true_and_iff]
+    eq_self_iff_true, not_true, IsEmpty.forall_iff, true_and]
   refine ⟨fun _ hy _ => h₂ _ hy, fun y hy => ⟨fun _ => ?_, fun z hz => h₁ hy hz⟩⟩
   rw [TopEdgeLabelling.get_swap]
   exact h₂ y hy
@@ -437,7 +437,7 @@ theorem isRamseyValid_iff_embedding_aux {n : ℕ} (c : K) :
   refine ⟨(univ : Finset (Fin n)).map f.toEmbedding, ?_, ?_⟩
   · rw [MonochromaticOf]
     simp only [Ne.eq_def, RelEmbedding.inj, coe_map, RelEmbedding.coe_toEmbedding, Set.mem_image,
-      coe_univ, Set.mem_univ, true_and_iff, forall_exists_index, forall_apply_eq_imp_iff]
+      coe_univ, Set.mem_univ, true_and, forall_exists_index, forall_apply_eq_imp_iff]
     intro x y h
     have : (⊤ : SimpleGraph (Fin n)).Adj x y := h
     simpa [-top_adj, ←f.map_rel_iff, h, RelEmbedding.inj] using this
@@ -681,7 +681,7 @@ theorem ramsey_fin_induct' [DecidableEq K] [Fintype K] (n : K → ℕ) (N : K �
     · simp only [Function.update_same, tsub_eq_zero_iff_le] at hk'
       exact hk'.not_lt (hn _)
     rw [Function.update_noteq hk.symm] at hk'
-    simpa only [le_zero_iff] using (hn k').trans_eq hk'
+    simpa only [nonpos_iff_eq_zero, OfNat.ofNat_ne_zero] using (hn k').trans_eq hk'
   have h : ∀ x : K, x ∈ (univ : Finset K) → 1 ≤ N x := by simpa using hN'
   have := ramsey_fin_induct n N hN
   rwa [sum_tsub _ h, tsub_add_eq_add_tsub, ← Fintype.card_eq_sum_ones] at this

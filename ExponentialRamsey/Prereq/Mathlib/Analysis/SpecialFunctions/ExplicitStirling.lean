@@ -187,7 +187,7 @@ theorem factorial_bound_exp_of_ne_zero {n : ℕ} (hn : n ≠ 0) : ((n : ℝ) / R
 theorem choose_upper_bound {n t : ℕ} : (n.choose t : ℝ) ≤ (exp 1 * n / t) ^ t := by
   cases' Nat.eq_zero_or_pos t with h h
   · simp [h]
-  refine (Nat.choose_le_pow t n).trans ?_
+  refine (Nat.choose_le_pow_div t n).trans ?_
   refine (div_le_div_of_nonneg_left ?_ ?_ factorial_bound_exp).trans ?_
   · positivity
   · positivity
@@ -195,7 +195,7 @@ theorem choose_upper_bound {n t : ℕ} : (n.choose t : ℝ) ≤ (exp 1 * n / t) 
 
 theorem choose_upper_bound_of_pos {n t : ℕ} (hn : n ≠ 0) (ht : t ≠ 0) :
     (n.choose t : ℝ) < (exp 1 * n / t) ^ t := by
-  refine (Nat.choose_le_pow t n).trans_lt ?_
+  refine (Nat.choose_le_pow_div t n).trans_lt ?_
   refine (div_lt_div_of_pos_left ?_ ?_ (factorial_bound_exp_of_ne_zero ht)).trans_eq ?_
   · positivity
   · positivity

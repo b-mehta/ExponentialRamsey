@@ -39,7 +39,7 @@ theorem card_non_zero_square_non_square [DecidableEq F] (hF : ringChar F ≠ 2) 
         {0} =
       univ :=
     by
-    simp only [← filter_or, ← and_or_left, em, and_true_iff, filter_ne']
+    simp only [← filter_or, ← and_or_left, em, and_true, filter_ne']
     rw [union_comm, ← insert_eq, insert_erase]
     exact mem_univ _
   have h' := congr_arg Finset.card this

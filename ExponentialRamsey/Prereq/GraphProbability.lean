@@ -80,14 +80,14 @@ theorem card_compl_edgeFinset_eq [Fintype V] [Fintype G.edgeSet]
     [Fintype Gᶜ.edgeSet] : Gᶜ.edgeFinset.card = (card V).choose 2 - G.edgeFinset.card := by
   classical
   rw [compl_edgeFinset_eq, card_sdiff, card_filter_not_diag]
-  simp only [subset_iff, mem_edgeFinset, mem_filter, mem_univ, true_and_iff]
+  simp only [subset_iff, mem_edgeFinset, mem_filter, mem_univ, true_and]
   apply not_isDiag_of_mem_edgeSet
 
 theorem card_edgeFinset_eq_sub_compl' [Fintype V] [Fintype G.edgeSet]
     [Fintype Gᶜ.edgeSet] : G.edgeFinset.card = (card V).choose 2 - Gᶜ.edgeFinset.card := by
   classical
   rw [compl_edgeFinset_eq', card_sdiff, card_filter_not_diag]
-  simp only [subset_iff, mem_edgeFinset, mem_filter, mem_univ, true_and_iff]
+  simp only [subset_iff, mem_edgeFinset, mem_filter, mem_univ, true_and]
   apply not_isDiag_of_mem_edgeSet
 
 variable {p : ℝ} {s : Finset (Sym2 V)}
@@ -123,11 +123,11 @@ theorem disjUnion_inj_left {α : Type*} {s t₁ t₂ : Finset α} {hst₁ : Disj
   intro h
   ext i
   wlog h' : i ∈ t₁ generalizing i t₁ t₂ -- bare "wlog" generalizes too much here
-  · simp only [h', false_iff_iff]
+  · simp only [h', false_iff]
     intro h''
     apply h'
     exact (this h.symm i h'').1 h''
-  simp only [h', true_iff_iff]
+  simp only [h', true_iff]
   have : i ∈ s.disjUnion t₁ hst₁ := by
     rw [mem_disjUnion]
     exact Or.inr h'
@@ -351,7 +351,7 @@ theorem weighted_number_cliques {k : ℕ} :
       Icc (spanningCoe (⊤ : SimpleGraph x)) ⊤ :=
     by
     ext G
-    simp only [mem_filter, mem_univ, true_and_iff, mem_Icc, le_top, and_true_iff, CliqueOn]
+    simp only [mem_filter, mem_univ, true_and, mem_Icc, le_top, and_true, CliqueOn]
     rfl
   rw [this]
   have : ∑ G : SimpleGraph V in _, weighting V p G = _ :=
@@ -446,14 +446,14 @@ theorem basic_off_diagonal_ramsey_bound {k l n : ℕ} {p : ℝ} (hp : 0 < p) (hp
   by
   refine basic_ramsey_bound hp hp' (hV.trans_le' (add_le_add ?_ ?_))
   · refine mul_le_mul ?_ ?_ (by positivity) (by positivity)
-    · refine (Nat.choose_le_pow _ _).trans ?_
+    · refine (Nat.choose_le_pow_div _ _).trans ?_
       refine div_le_self (by positivity) ?_
       rw [Nat.one_le_cast, Nat.succ_le_iff]
       exact Nat.factorial_pos _
     · rw [← rpow_natCast]
       exact rpow_le_rpow_of_exponent_ge hp hp'.le (sq_div_four_le_choose_two hk)
   · refine mul_le_mul ?_ ?_ ?_ (by positivity)
-    · refine (Nat.choose_le_pow _ _).trans ?_
+    · refine (Nat.choose_le_pow_div _ _).trans ?_
       refine div_le_self (by positivity) ?_
       rw [Nat.one_le_cast, Nat.succ_le_iff]
       exact Nat.factorial_pos _
@@ -592,9 +592,9 @@ theorem diagonalRamsey_upper_bound_simpler {k : ℕ} : (diagonalRamsey k : ℝ) 
   swap; · norm_num1
   refine' sqrt_le_sqrt _
   suffices 12 * Real.pi ≤ k * (16 * Real.pi - 1) by linarith
-  have : 49 ≤ 16 * Real.pi - 1 := by linarith only [pi_gt_3141592]
+  have : 49 ≤ 16 * Real.pi - 1 := by linarith only [pi_gt_d6]
   refine' (mul_le_mul_of_nonneg_left this (Nat.cast_nonneg _)).trans' _
-  have : 12 * Real.pi ≤ 38 := by linarith only [pi_lt_315]
+  have : 12 * Real.pi ≤ 38 := by linarith only [pi_lt_d2]
   have : (1 : ℝ) ≤ k := Nat.one_le_cast.2 hk
   linarith
 

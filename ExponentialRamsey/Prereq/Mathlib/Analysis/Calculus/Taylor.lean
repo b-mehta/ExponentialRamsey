@@ -114,7 +114,7 @@ theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ}
   by
   rcases eq_or_ne x₀ x with (rfl | hx')
   · simp only [sub_self, taylorWithinEval_self, MulZeroClass.mul_zero, zero_div, zero_smul,
-      eq_self_iff_true, exists_prop, and_true_iff, MulZeroClass.zero_mul]
+      eq_self_iff_true, exists_prop, and_true, MulZeroClass.zero_mul]
     obtain ⟨x', hx'⟩ := ((Ioo_infinite hab).diff (Set.finite_singleton x₀)).nonempty
     exact ⟨x', by simpa using hx'⟩
   rcases Ne.lt_or_lt hx' with (hx' | hx')
