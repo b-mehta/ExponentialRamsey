@@ -22,8 +22,6 @@ open Finset
 
 section
 
-#check LE.le.lt_iff_ne
-
 theorem exists_even_degree [Fintype V] [DecidableRel G.Adj] (hV : Odd (card V)) :
     ∃ v : V, Even (G.degree v) := by
   have : (univ.filter (Odd <| G.degree ·)) ≠ univ := by
@@ -32,7 +30,7 @@ theorem exists_even_degree [Fintype V] [DecidableRel G.Adj] (hV : Odd (card V)) 
     have h' := even_card_odd_degree_vertices G
     rw [h, Nat.even_iff_not_odd] at h'
     exact h' hV
-  rw [Ne.def, filter_eq_self] at this
+  rw [Ne.eq_def, filter_eq_self] at this
   simpa using this
 
 end

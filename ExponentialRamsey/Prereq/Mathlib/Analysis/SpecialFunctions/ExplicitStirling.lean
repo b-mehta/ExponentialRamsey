@@ -9,6 +9,7 @@ import Mathlib.Data.Nat.Choose.Cast
 import Mathlib.Analysis.SpecialFunctions.Stirling
 import Mathlib.Analysis.SpecialFunctions.Exponential
 import Mathlib.Topology.MetricSpace.CauSeqFilter
+import Mathlib.Tactic
 
 #align_import prereq.mathlib.analysis.special_functions.explicit_stirling
 
@@ -23,13 +24,11 @@ open scoped Topology Real Nat
 
 open Finset Filter Nat Real
 
-local macro_rules | `($x ^ $y) => `(HPow.hPow $x $y) -- Porting note: See issue lean4#2220
-
 theorem centralBinom_ratio {α : Type*} [Field α] [CharZero α] (n : ℕ) :
     (centralBinom (n + 1) : α) / centralBinom n = 4 * ((n + 1 / 2) / (n + 1)) :=
   by
   rw [mul_div_assoc', mul_add, eq_div_iff, ← cast_add_one, div_mul_eq_mul_div, mul_comm, ← cast_mul,
-    succ_mul_centralBinom_succ, cast_mul, mul_div_cancel]
+    succ_mul_centralBinom_succ, cast_mul, mul_div_cancel_right₀]
   · rw [mul_add_one, ← mul_assoc, cast_add, cast_mul]
     norm_num1
     rfl
@@ -66,8 +65,8 @@ def centralBinomialLower (n : ℕ) : ℝ :=
 theorem centralBinomialLower_monotone : Monotone centralBinomialLower := by
   refine' monotone_nat_of_le_succ _
   intro n
-  rw [centralBinomialLower, centralBinomialLower, _root_.pow_succ, ←div_div]
-  refine' div_le_div_of_le (by positivity) _
+  rw [centralBinomialLower, centralBinomialLower, _root_.pow_succ', ←div_div]
+  refine' div_le_div_of_nonneg_right _ (by positivity)
   rw [le_div_iff, mul_assoc, mul_comm, ← div_le_div_iff, centralBinom_ratio, mul_comm,
     mul_div_assoc, Nat.cast_add_one]
   refine' mul_le_mul_of_nonneg_left (lower_monotone_aux n) (by positivity)
@@ -86,9 +85,9 @@ theorem centralBinomialUpper_monotone : Antitone centralBinomialUpper :=
   by
   refine' antitone_nat_of_succ_le _
   intro n
-  rw [centralBinomialUpper, centralBinomialUpper, _root_.pow_succ, ← div_div]
+  rw [centralBinomialUpper, centralBinomialUpper, _root_.pow_succ', ← div_div]
     -- regression: I needed to qualify pow_succ
-  refine' div_le_div_of_le (by positivity) _
+  refine' div_le_div_of_nonneg_right _ (by positivity)
   rw [div_le_iff, mul_assoc, mul_comm _ (_ * _), ← div_le_div_iff, mul_comm, mul_div_assoc,
     centralBinom_ratio, Nat.cast_add_one]
   refine' mul_le_mul_of_nonneg_left (upper_monotone_aux _) (by positivity)
@@ -114,16 +113,16 @@ theorem centralBinom_limit :
     ←two_mul]
   field_simp
   ring_nf
-  rw [mul_comm n 2, pow_mul (2 : ℝ)]
-  norm_num1
-  rfl -- this was a 7 line rw proof in Lean 3, this one is more principled but hmmm
+  rw [exp_mul, mul_comm n 2, pow_mul (2 : ℝ)]
+  norm_cast
+  ring_nf -- this was a 7 line rw proof in Lean 3, this one is more principled but hmmm
 
 theorem centralBinomialUpper_limit : Tendsto centralBinomialUpper atTop (𝓝 (sqrt π)⁻¹) :=
   by
   have : (sqrt π)⁻¹ = (sqrt π)⁻¹ / Real.sqrt 1 := by rw [Real.sqrt_one, div_one]
   have h : Real.sqrt 1 ≠ 0 := sqrt_ne_zero'.2 zero_lt_one
   rw [this]
-  refine' (centralBinom_limit.div (tendsto_coe_nat_div_add_atTop (1 / 3 : ℝ)).sqrt h).congr' _
+  refine' (centralBinom_limit.div (tendsto_natCast_div_add_atTop (1 / 3 : ℝ)).sqrt h).congr' _
   filter_upwards [eventually_gt_atTop 0] with n hn
   dsimp
   rw [sqrt_div (Nat.cast_nonneg _), centralBinomialUpper, div_div, mul_div_assoc',
@@ -134,7 +133,7 @@ theorem centralBinomialLower_limit : Tendsto centralBinomialLower atTop (𝓝 (s
   have : (sqrt π)⁻¹ = (sqrt π)⁻¹ / Real.sqrt 1 := by rw [Real.sqrt_one, div_one]
   have h : Real.sqrt 1 ≠ 0 := sqrt_ne_zero'.2 zero_lt_one
   rw [this]
-  refine' (centralBinom_limit.div (tendsto_coe_nat_div_add_atTop (1 / 4 : ℝ)).sqrt h).congr' _
+  refine' (centralBinom_limit.div (tendsto_natCast_div_add_atTop (1 / 4 : ℝ)).sqrt h).congr' _
   filter_upwards [eventually_gt_atTop 0] with n hn
   dsimp
   rw [sqrt_div (Nat.cast_nonneg _), centralBinomialLower, div_div, mul_div_assoc',
@@ -157,58 +156,53 @@ theorem centralBinomialLower_bound (n : ℕ) :
   all_goals positivity
 
 theorem cexp_eq_tsum {x : ℂ} : Complex.exp x = ∑' i, x ^ i / i ! := by
-  rw [Complex.exp_eq_exp_ℂ, exp_eq_tsum_div]
+  rw [Complex.exp_eq_exp_ℂ, NormedSpace.exp_eq_tsum_div]
 
 theorem rexp_eq_tsum {x : ℝ} : Real.exp x = ∑' i, x ^ i / i ! := by
-  rw [exp_eq_exp_ℝ, exp_eq_tsum_div]
+  rw [exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum_div]
 
 lemma exp_factorial_bound {x : ℝ} (hx : 0 ≤ x) {n : ℕ} : (x : ℝ) ^ n / n ! ≤ exp x := by
   rw [exp_eq_exp_ℝ]
-  exact le_hasSum (expSeries_div_hasSum_exp ℝ x) n (fun _ _ => by positivity)
+  exact le_hasSum (NormedSpace.expSeries_div_hasSum_exp ℝ x) n (fun _ _ => by positivity)
 
 theorem exp_factorial_bound_of_ne_zero {x : ℝ} (hx : 0 ≤ x) (hn : n ≠ 0) :
     (x : ℝ) ^ n / n ! < exp x := by
   rw [exp_eq_exp_ℝ]
-  refine (sum_le_hasSum {n, 0} ?_ (expSeries_div_hasSum_exp ℝ x)).trans_lt' ?_
+  refine (sum_le_hasSum {n, 0} ?_ (NormedSpace.expSeries_div_hasSum_exp ℝ x)).trans_lt' ?_
   · intro x _
     positivity
   rw [sum_pair hn]
   simp
 
 theorem factorial_bound_exp {n : ℕ} : ((n : ℝ) / Real.exp 1) ^ n ≤ n ! := by
-  rw [div_pow, ← rpow_nat_cast (exp 1), exp_one_rpow, div_le_iff, ← div_le_iff']
+  rw [div_pow, ← rpow_natCast (exp 1), exp_one_rpow, div_le_iff, ← div_le_iff']
   · exact exp_factorial_bound (Nat.cast_nonneg _)
   · positivity
   · positivity
 
 theorem factorial_bound_exp_of_ne_zero {n : ℕ} (hn : n ≠ 0) : ((n : ℝ) / Real.exp 1) ^ n < n ! := by
-  rw [div_pow, ← rpow_nat_cast (exp 1), exp_one_rpow, div_lt_iff, ← div_lt_iff']
+  rw [div_pow, ← rpow_natCast (exp 1), exp_one_rpow, div_lt_iff, ← div_lt_iff']
   · exact exp_factorial_bound_of_ne_zero (Nat.cast_nonneg _) hn
   · positivity
   · positivity
 
--- NOTE: this is literally choose_le_pow once mathlib4#8366 and v4.3.0-rc2 land
-theorem Nat.choose_le_pow' {α : Type*} [LinearOrderedSemifield α] (r n : ℕ) :
-    (n.choose r : α) ≤ (n : α) ^ r / r ! := by
-  simpa using Nat.choose_le_pow (α := α) r n
-
 theorem choose_upper_bound {n t : ℕ} : (n.choose t : ℝ) ≤ (exp 1 * n / t) ^ t := by
   cases' Nat.eq_zero_or_pos t with h h
   · simp [h]
-  refine' (Nat.choose_le_pow' t n).trans _
-  refine' (div_le_div_of_le_left _ _ factorial_bound_exp).trans _
+  refine' (Nat.choose_le_pow t n).trans _
+  refine' (div_le_div_of_nonneg_left _ _ factorial_bound_exp).trans _
   · positivity
   · positivity
   rw [← div_pow, div_div_eq_mul_div, mul_comm]
 
 theorem choose_upper_bound_of_pos {n t : ℕ} (hn : n ≠ 0) (ht : t ≠ 0) :
     (n.choose t : ℝ) < (exp 1 * n / t) ^ t := by
-  refine' (Nat.choose_le_pow' t n).trans_lt _
-  refine' (div_lt_div_of_lt_left _ _ (factorial_bound_exp_of_ne_zero ht)).trans_eq _
+  refine' (Nat.choose_le_pow t n).trans_lt _
+  refine' (div_lt_div_of_pos_left _ _ (factorial_bound_exp_of_ne_zero ht)).trans_eq _
   · positivity
   · positivity
   rw [← div_pow, div_div_eq_mul_div, mul_comm]
 
 -- check if the coercion on the rhs goes away after #8366
 theorem choose_upper_bound' {n t : ℕ} : (n.choose t : ℝ) ≤ exp t * (n / t : ℝ) ^ t :=
-  choose_upper_bound.trans_eq <| by rw [mul_div_assoc, mul_pow, ← exp_one_rpow t, rpow_nat_cast]
+  choose_upper_bound.trans_eq <| by rw [mul_div_assoc, mul_pow, ← exp_one_rpow t, rpow_natCast]

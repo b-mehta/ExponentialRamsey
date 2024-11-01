@@ -3,6 +3,10 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
+
+import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Clique
+import Mathlib.Combinatorics.SimpleGraph.Finite
 import Mathlib.Combinatorics.SimpleGraph.Maps
 import Mathlib.Data.Sym.Card
 
@@ -89,7 +93,7 @@ theorem neighborSet_iInf {ι : Type*} [Nonempty ι] {s : ι → SimpleGraph V} {
     (⨅ i, s i).neighborSet x = ⋂ i, (s i).neighborSet x :=
   by
   ext y
-  simp only [mem_neighborSet, iInf_adj, Ne.def, Set.iInf_eq_iInter, Set.mem_iInter,
+  simp only [mem_neighborSet, iInf_adj, Ne.eq_def, Set.iInf_eq_iInter, Set.mem_iInter,
     and_iff_left_iff_imp]
   intro h
   inhabit ι
@@ -106,7 +110,7 @@ instance {V : Type*} {x : V} : IsEmpty ((⊥ : SimpleGraph V).neighborSet x) :=
 
 theorem neighborFinset_bot {x : V} [Fintype (neighborSet ⊥ x)] :
   (⊥ : SimpleGraph V).neighborFinset x = ∅ := by ext y; simp
-
+  
 theorem neighborFinset_top [Fintype V] [DecidableEq V] {x : V} :
     (⊤ : SimpleGraph V).neighborFinset x = {x}ᶜ := by
   ext y

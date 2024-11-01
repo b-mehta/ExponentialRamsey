@@ -45,7 +45,7 @@ theorem card_non_zero_square_non_square [DecidableEq F] (hF : ringChar F ≠ 2) 
     rw [union_comm, ← insert_eq, insert_erase]
     exact mem_univ _
   have h' := congr_arg Finset.card this
-  rw [card_disjoint_union, card_disjoint_union, card_singleton, card_univ, ← cf, ← two_mul, ←
+  rw [card_union_of_disjoint, card_union_of_disjoint, card_singleton, card_univ, ← cf, ← two_mul, ←
     bit0_eq_two_mul, ← bit1] at h'
   · rw [← h', Nat.bit1_div_two]
   · rw [Finset.disjoint_left]

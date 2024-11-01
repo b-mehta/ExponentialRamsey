@@ -3,9 +3,9 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
-import Analysis.SpecialFunctions.Log.Base
-import Analysis.SpecialFunctions.Log.Deriv
-import Prereq.Mathlib.Analysis.Calculus.MeanValue
+import ExponentialRamsey.Prereq.Mathlib.Analysis.Calculus.MeanValue
+import Mathlib.Analysis.SpecialFunctions.Log.Base
+import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 #align_import prereq.mathlib.information_theory.binary_entropy
 
@@ -59,7 +59,7 @@ private theorem bin_ent_deriv_aux (x : ℝ) (hx₀ : x ≠ 0) (hx₁ : x ≠ 1) 
     refine' HasDerivAt.neg _
     have : 1 * log x + x * x⁻¹ = log x + 1 := by rw [one_mul, mul_inv_cancel hx₀]
     rw [← this]
-    exact HasDerivAt.mul (hasDerivAt_id' x) (has_deriv_at_log hx₀)
+    exact HasDerivAt.mul (hasDerivAt_id' x) (hasDerivAt_log hx₀)
   suffices
     HasDerivAt (fun y => -(y * log y) + -((1 - y) * log (1 - y)))
       (-(log x + 1) + -(log (1 - x) + 1) * -1) x

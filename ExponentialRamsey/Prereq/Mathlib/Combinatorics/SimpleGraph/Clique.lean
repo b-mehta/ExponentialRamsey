@@ -3,9 +3,10 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
+
+import ExponentialRamsey.Prereq.Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Clique
-import ExponentialRamsey.Prereq.Mathlib.Combinatorics.SimpleGraph.Basic
 
 #align_import prereq.mathlib.combinatorics.simple_graph.clique
 

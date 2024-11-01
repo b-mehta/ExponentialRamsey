@@ -3,9 +3,9 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
+import ExponentialRamsey.Prereq.Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.Basic
 import ExponentialRamsey.Prereq.Ramsey
 import Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.GaussSum
-import ExponentialRamsey.Prereq.Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.Basic
 
 #align_import prereq.ramsey_small
 
@@ -69,7 +69,7 @@ def rescale (x : F) (hx : IsSquare x) (hx' : x ≠ 0) : paleyGraph F ≃g paleyG
   map_rel_iff' := by
     intro a b
     simp only [paleyGraph]
-    simp (config := { contextual := true }) only [hx', Units.mulLeft_apply, Units.val_mk0, Ne.def,
+    simp (config := { contextual := true }) only [hx', Units.mulLeft_apply, Units.val_mk0, Ne.eq_def,
       mul_eq_mul_left_iff, or_false_iff, not_and, and_congr_right_iff, not_false_iff,
       forall_true_left]
     intro h
@@ -85,12 +85,12 @@ non-square.
 -/
 @[simps!]
 def selfCompl (hF : card F % 4 ≠ 3) (x : F) (hx : ¬IsSquare x) : (paleyGraph F)ᶜ ≃g paleyGraph F :=
-  have hx' : x ≠ 0 := fun h => hx (h.symm ▸ isSquare_zero F)
+  have hx' : x ≠ 0 := fun h => hx (h.symm ▸ isSquare_zero)
   { toEquiv := (Units.mk0 x hx').mulLeft
     map_rel_iff' := by
       intro a b
       rw [paleyGraph_adj hF, compl_adj, paleyGraph_adj hF]
-      simp (config := { contextual := true }) only [hx', Units.mulLeft_apply, Units.val_mk0, Ne.def,
+      simp (config := { contextual := true }) only [hx', Units.mulLeft_apply, Units.val_mk0, Ne.eq_def,
         mul_eq_mul_left_iff, or_false_iff, not_and, and_congr_right_iff, not_false_iff,
         forall_true_left]
       intro h
@@ -124,12 +124,12 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
                 (m : Set F).Pairwise fun x y => IsSquare (y - x) := by
   have card_not_three_mod_four : card F % 4 ≠ 3 := by
     rw [hF]
-    simp only [Ne.def, Nat.one_eq_bit1, Nat.one_ne_zero, not_false_iff]
+    decide
   have card_one_mod_two : card F % 2 = 1 := by
     rw [← Nat.mod_mod_of_dvd (card F) (show 2 ∣ 4 by norm_num), hF, Nat.one_mod]
   have : ∃ x : F, ¬IsSquare x := by
     apply FiniteField.exists_nonsquare
-    rwa [Ne.def, FiniteField.even_card_iff_char_two, Nat.mod_two_ne_zero]
+    rwa [Ne.eq_def, FiniteField.even_card_iff_char_two, Nat.mod_two_ne_zero]
   rw [exists_comm] at h
   simp only [isRamseyValid_iff_embedding_aux] at h
   rw [Fin.exists_fin_two, paleyLabelling, toEdgeLabelling_labelGraph,
@@ -153,13 +153,14 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
         rw [paleyGraph_adj card_not_three_mod_four, hf, sub_zero] at this
         exact this.2
       rw [f.map_rel_iff]
-      simp only [top_adj, Ne.def, Fin.one_eq_zero_iff, Nat.succ_succ_ne_one, not_false_iff]
+      simp only [top_adj, Ne.eq_def, Fin.one_eq_zero_iff, Nat.succ_succ_ne_one, not_false_iff]
     have hf2 : f 1 ≠ 0 := by
-      rw [← hf, Ne.def, RelEmbedding.inj]
+      rw [← hf, Ne.eq_def, RelEmbedding.inj]
       simp only [Fin.one_eq_zero_iff, Nat.succ_succ_ne_one, not_false_iff]
     refine' ⟨f.trans (rescale (f 1) hf1 hf2).symm.toRelEmbedding, _⟩
-    simp only [RelEmbedding.coe_trans, RelIso.coe_toRelEmbedding, Function.comp_apply, hf,
-      rescale_symm_apply, mul_zero, ne_eq, hf2, not_false_eq_true, inv_mul_cancel, and_self]
+    simp only [hf2, hf, RelIso.coe_toRelEmbedding, Embedding.coe_comp, RelIso.coe_fn_mk,
+      Function.comp_apply, rescale_symm_apply, Units.val_inv_eq_inv_val, Units.val_mk0,
+      MulZeroClass.mul_zero, eq_self_iff_true, inv_mul_cancel, Ne.eq_def, not_false_iff, and_self_iff]
   have hss : Symmetric fun x y : F => IsSquare (y - x) := by
     intro x y h
     exact symmetric_isSquare card_not_three_mod_four h
@@ -176,23 +177,25 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
       true_and_iff] at hm₂
     · exact ⟨m, hm_card.symm, hm₀, hm₁, hm₂.2, hm₂.1.2, hm₂.1.1⟩
     · exact hm₁
-    simp only [hm₀, Set.mem_insert_iff, zero_ne_one, Finset.mem_coe, or_self_iff, not_false_iff]
+    simp only [Set.mem_insert_iff, zero_ne_one, Finset.mem_coe, hm₀, or_self, not_false_eq_true]
   simp only [← Finset.coe_insert]
   obtain ⟨f, hf₀, hf₁⟩ := this
-  have : ({0, 1} : Finset F) ⊆ Finset.map f.toEmbedding Finset.univ := by
+  have : ({0, 1} : Finset F) ⊆ Finset.map f.toEmbedding Finset.univ :=
+    by
     rw [Finset.insert_subset_iff, Finset.singleton_subset_iff, ← hf₀, ← hf₁]
-    exact ⟨mem_map_of_mem _ (by simp), mem_map_of_mem _ (by simp)⟩
-  refine' ⟨(univ : Finset (Fin (k + 2))).map f.toEmbedding \ {0, 1}, _, _, _, _⟩
-  · rw [card_sdiff, card_map, card_doubleton, card_fin, Nat.add_sub_cancel]
-    · simp only [Ne.def, zero_ne_one, not_false_iff]
+    exact ⟨Finset.mem_map_of_mem _ (by simp), Finset.mem_map_of_mem _ (by simp)⟩
+  refine' ⟨(Finset.univ : Finset (Fin (k + 2))).map f.toEmbedding \ {0, 1}, _, _, _, _⟩
+  · rw [Finset.card_sdiff, Finset.card_map, Finset.card_pair, Finset.card_fin, Nat.add_sub_cancel]
+    · simp only [Ne.eq_def, zero_ne_one, not_false_iff]
     exact this
-  · simp only [mem_sdiff, mem_insert, eq_self_iff_true, mem_singleton, zero_ne_one,
+  · simp only [Finset.mem_sdiff, Finset.mem_insert, eq_self_iff_true, Finset.mem_singleton, zero_ne_one,
       or_false_iff, not_true, and_false_iff, not_false_iff]
-  · simp only [mem_sdiff, mem_insert, one_ne_zero, mem_singleton, eq_self_iff_true,
+  · simp only [Finset.mem_sdiff, Finset.mem_insert, one_ne_zero, Finset.mem_singleton, eq_self_iff_true,
       false_or_iff, not_true, and_false_iff, not_false_iff]
-  rw [insert_eq, insert_eq, ← union_assoc, ← insert_eq, union_comm, sdiff_union_of_subset this]
-  simp only [Set.Pairwise, mem_coe, mem_map, exists_prop, mem_univ, true_and_iff,
-    forall_exists_index, Ne.def, RelEmbedding.coe_toEmbedding, forall_apply_eq_imp_iff,
+  rw [Finset.insert_eq, Finset.insert_eq, ← Finset.union_assoc, ← Finset.insert_eq, Finset.union_comm,
+      Finset.sdiff_union_of_subset this]
+  simp only [Set.Pairwise, Finset.mem_coe, Finset.mem_map, exists_prop, Finset.mem_univ, true_and_iff,
+    forall_exists_index, Ne.eq_def, RelEmbedding.coe_toEmbedding, forall_apply_eq_imp_iff,
     RelEmbedding.inj]
   intro x y h
   exact isSquare_sub_of_paleyGraph_adj card_not_three_mod_four (f.map_rel_iff.2 (Ne.symm h))
@@ -202,7 +205,7 @@ theorem paley_five_bound_aux :
   decide
 
 theorem paley_five_bound : ¬IsRamseyValid (ZMod 5) ![3, 3] := by
-  haveI : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+  haveI : Fact (Nat.Prime 5) := ⟨by decide⟩
   classical
   rw [isRamseyValid_iff_eq]
   intro h
@@ -221,16 +224,13 @@ theorem paley_seventeen_helper :
     ∀ a : ZMod 17, a ≠ 0 → a ≠ 1 → IsSquare a → IsSquare (a - 1) → a = 2 ∨ a = 9 ∨ a = 16 := by
   decide
 
-theorem paley_seventeen_aux :
-    (∀ (a b : ZMod 17),
-        a = 2 ∨ a = 9 ∨ a = 16 →
-        b = 2 ∨ b = 9 ∨ b = 16 →
-        ¬a = b → IsSquare (b - a) → False) :=
-  by decide
+theorem paley_seventeen_helper' : ∀ (a b : ZMod 17), a = 2 ∨ a = 9 ∨ a = 16 → b = 2 ∨ b = 9 ∨ b = 16
+    → ¬a = b → IsSquare (b - a) → False := by
+  decide
 
 -- No pair from {2, 9, 16} has difference a square.
 theorem paley_seventeen_bound : ¬IsRamseyValid (ZMod 17) ![4, 4] := by
-  haveI : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+  haveI : Fact (Nat.Prime 17) := ⟨by decide⟩
   classical
   rw [isRamseyValid_iff_eq]
   intro h
@@ -240,7 +240,7 @@ theorem paley_seventeen_bound : ¬IsRamseyValid (ZMod 17) ![4, 4] := by
       (paleyLabelling (ZMod 17)).MonochromaticOf m c ∧ 4 = m.card :=
     by simpa only [Fin.exists_fin_two] using h
   have := no_paley_mono_set (by norm_num) this
-  simp only [Finset.card_eq_two, ← exists_and_right, and_assoc, Ne.def, exists_eq_left,
+  simp only [Finset.card_eq_two, ← exists_and_right, and_assoc, Ne.eq_def, exists_eq_left,
     Finset.mem_insert, @exists_comm (Finset (ZMod 17)), exists_and_left, Finset.mem_singleton,
     forall_eq_or_imp, forall_eq, Finset.coe_pair, not_or, @eq_comm (ZMod 17) 0,
     @eq_comm (ZMod 17) 1] at this
@@ -256,7 +256,7 @@ theorem paley_seventeen_bound : ¬IsRamseyValid (ZMod 17) ![4, 4] := by
   clear ha₀ ha₁ ha ha₁' hb₀ hb₁ hb hb₁'
   revert h hab
   revert a b
-  exact paley_seventeen_aux -- regression: this didn't need to be separate in Lean 3
+  exact paley_seventeen_helper'
 
 end Paley
 
@@ -276,8 +276,8 @@ theorem ramseyNumber_three_four_upper : ramseyNumber ![3, 4] ≤ 9 := by
   · norm_num
   · norm_num
   · rw [Nat.succ_sub_succ_eq_sub, tsub_zero, ← diagonalRamsey, diagonalRamsey_three]
-  · norm_num
-  · norm_num
+  · decide
+  · decide
   · norm_num
 
 theorem ramseyNumber_four_four : ramseyNumber ![4, 4] = 18 :=
