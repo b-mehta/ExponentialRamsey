@@ -13,8 +13,6 @@ import ExponentialRamsey.Prereq.Mathlib.Data.Nat.Choose.Sum
 import ExponentialRamsey.Prereq.Mathlib.Data.Nat.Factorial.Basic
 import ExponentialRamsey.Prereq.Mathlib.Data.Fin.VecNotation
 
-#align_import prereq.ramsey_prereq
-
 /-!
 # Misc prereqs and collect imports
 -/

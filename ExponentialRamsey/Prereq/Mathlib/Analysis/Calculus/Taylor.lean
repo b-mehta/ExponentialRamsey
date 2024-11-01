@@ -8,8 +8,6 @@ import Mathlib.Analysis.Calculus.Taylor
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Order.Interval.Set.Basic
 
-#align_import prereq.mathlib.analysis.calculus.taylor
-
 /-!
 # Stuff for analysis.calculus.taylor
 -/
@@ -78,12 +76,12 @@ theorem taylor_mean_remainder_lagrange_unordered {f : ℝ → ℝ} {x x₀ : ℝ
       f x - taylorWithinEval f n (uIcc x₀ x) x₀ x =
         iteratedDerivWithin (n + 1) f (uIcc x₀ x) x' * (x - x₀) ^ (n + 1) / (n + 1)! := by
   have gcont : ContinuousOn (fun t : ℝ => (x - t) ^ (n + 1)) (uIcc x₀ x) := by
-    refine' Continuous.continuousOn _
+    refine Continuous.continuousOn ?_
     continuity
   have xy_ne : ∀ y : ℝ, y ∈ uIoo x₀ x → (x - y) ^ n ≠ 0 :=
     by
     intro y hy
-    refine' pow_ne_zero _ _
+    refine pow_ne_zero _ ?_
     rw [sub_ne_zero]
     cases' le_total x₀ x with h h
     · rw [uIoo_of_le h] at hy
@@ -116,7 +114,7 @@ theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ}
   by
   rcases eq_or_ne x₀ x with (rfl | hx')
   · simp only [sub_self, taylorWithinEval_self, MulZeroClass.mul_zero, zero_div, zero_smul,
-      eq_self_iff_true, exists_prop, and_true_iff, MulZeroClass.zero_mul]
+      eq_self_iff_true, exists_prop, and_true, MulZeroClass.zero_mul]
     obtain ⟨x', hx'⟩ := ((Ioo_infinite hab).diff (Set.finite_singleton x₀)).nonempty
     exact ⟨x', by simpa using hx'⟩
   rcases Ne.lt_or_lt hx' with (hx' | hx')
@@ -128,7 +126,7 @@ theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ}
         ((continuousOn_taylorWithinEval (uniqueDiffOn_Icc hab) hf).mono h₁)
         (fun _ hy => taylorWithinEval_hasDerivAt_Ioo _ hab (h₂ hy) hf hf') g g' (gcont.mono h₁)
         fun y hy => gdiff y (h₂ hy)
-    refine' ⟨y, h₂ hy, hy.2.ne, _⟩
+    refine ⟨y, h₂ hy, hy.2.ne, ?_⟩
     -- The rest is simplifications and trivial calculations
     simp only [taylorWithinEval_self] at h
     field_simp [← h, n.factorial_ne_zero]
@@ -141,7 +139,7 @@ theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ}
         ((continuousOn_taylorWithinEval (uniqueDiffOn_Icc hab) hf).mono h₁)
         (fun _ hy => taylorWithinEval_hasDerivAt_Ioo _ hab (h₂ hy) hf hf') g g' (gcont.mono h₁)
         fun y hy => gdiff y (h₂ hy)
-    refine' ⟨y, h₂ hy, hy.1.ne', _⟩
+    refine ⟨y, h₂ hy, hy.1.ne', ?_⟩
     -- The rest is simplifications and trivial calculations
     simp only [taylorWithinEval_self] at h
     rw [← neg_sub, neg_mul, ← h]
@@ -158,7 +156,7 @@ theorem taylor_mean_remainder_central {f : ℝ → ℝ} {g g' : ℝ → ℝ} {x�
         ((x - x') ^ n / n ! * (g x - g x₀) / g' x') • iteratedDerivWithin (n + 1) f (Icc a b) x' :=
   by
   obtain ⟨y, hy, _, h⟩ := taylor_mean_remainder_central_aux hab hx hx₀ hf hf' gcont gdiff
-  refine' ⟨y, hy, _⟩
+  refine ⟨y, hy, ?_⟩
   rw [smul_eq_mul] at h
   rw [smul_eq_mul, div_mul_eq_mul_div, ← h, mul_div_cancel_right₀]
   exact g'_ne _ hy
@@ -171,7 +169,7 @@ theorem taylor_mean_remainder_lagrange_central {f : ℝ → ℝ} {x x₀ a b : �
         iteratedDerivWithin (n + 1) f (Icc a b) x' * (x - x₀) ^ (n + 1) / (n + 1)! :=
   by
   have gcont : ContinuousOn (fun t : ℝ => (x - t) ^ (n + 1)) (Icc a b) := by
-    refine' Continuous.continuousOn _; continuity
+    refine Continuous.continuousOn ?_; continuity
   rcases taylor_mean_remainder_central_aux hab hx hx₀ hf hf' gcont fun y _ =>
       monomial_has_deriv_aux y x _ with
     ⟨y, hy, hy', h⟩
@@ -198,7 +196,7 @@ theorem taylor_mean_remainder_cauchy_central {f : ℝ → ℝ} {x x₀ a b : ℝ
   rcases taylor_mean_remainder_central hab hx hx₀ hf hf' continuousOn_id
       (fun _ _ => hasDerivAt_id _) fun _ _ => by simp with
     ⟨y, hy, h⟩
-  refine' ⟨y, hy, _⟩
+  refine ⟨y, hy, ?_⟩
   rw [h]
   field_simp [n.factorial_ne_zero]
   ring
@@ -215,13 +213,13 @@ theorem taylor_mean_remainder_bound_central {f : ℝ → ℝ} {a b C x x₀ : �
       MulZeroClass.mul_zero, zero_div, norm_zero]
   have : DifferentiableOn ℝ (iteratedDerivWithin n f (Icc a b)) (Ioo a b) :=
     by
-    refine'
-      (hf.differentiableOn_iteratedDerivWithin _ (uniqueDiffOn_Icc hab)).mono Ioo_subset_Icc_self
+    refine
+      (hf.differentiableOn_iteratedDerivWithin ?_ (uniqueDiffOn_Icc hab)).mono Ioo_subset_Icc_self
     rw [← Nat.cast_add_one, Nat.cast_lt]
     exact Nat.lt_succ_self _
   obtain ⟨x', hx', h⟩ := taylor_mean_remainder_lagrange_central hab hx hx₀ hf.of_succ this
   rw [h, norm_div, norm_mul, Real.norm_natCast, Real.norm_eq_abs ((x - x₀) ^ _), ← abs_pow]
-  refine' div_le_div_of_nonneg_right _ (Nat.cast_nonneg _)
+  refine div_le_div_of_nonneg_right ?_ (Nat.cast_nonneg _)
   exact mul_le_mul_of_nonneg_right (hC _ hx') (abs_nonneg _)
 
 theorem exists_taylor_mean_remainder_bound_central {f : ℝ → ℝ} {a b x₀ : ℝ} {n : ℕ} (hab : a ≤ b)
@@ -229,14 +227,14 @@ theorem exists_taylor_mean_remainder_bound_central {f : ℝ → ℝ} {a b x₀ :
     ∃ C, ∀ x ∈ Icc a b, ‖f x - taylorWithinEval f n (Icc a b) x₀ x‖ ≤ C * |x - x₀| ^ (n + 1) :=
   by
   rcases eq_or_lt_of_le hab with (rfl | h)
-  · refine' ⟨0, fun x hx => _⟩
+  · refine ⟨0, fun x hx => ?_⟩
     rw [Icc_self, mem_singleton_iff] at hx hx₀
     rw [hx₀, hx, taylorWithinEval_self, sub_self, MulZeroClass.zero_mul, norm_zero]
   let C := sSup ((fun y => ‖iteratedDerivWithin (n + 1) f (Icc a b) y‖) '' Icc a b)
-  refine' ⟨C / (n + 1)!, fun x hx => _⟩
+  refine ⟨C / (n + 1)!, fun x hx => ?_⟩
   rw [div_mul_eq_mul_div]
-  refine' taylor_mean_remainder_bound_central hab hf hx hx₀ _
+  refine taylor_mean_remainder_bound_central hab hf hx hx₀ ?_
   intro y hy
-  refine' ContinuousOn.le_sSup_image_Icc (f := (‖iteratedDerivWithin (n + 1) f (Icc a b) ·‖))
-     _ (Ioo_subset_Icc_self hy) -- Porting note: failed to infer the function f properly
+  refine ContinuousOn.le_sSup_image_Icc (f := (‖iteratedDerivWithin (n + 1) f (Icc a b) ·‖))
+     ?_ (Ioo_subset_Icc_self hy) -- Porting note: failed to infer the function f properly
   exact (hf.continuousOn_iteratedDerivWithin le_rfl (uniqueDiffOn_Icc h)).norm

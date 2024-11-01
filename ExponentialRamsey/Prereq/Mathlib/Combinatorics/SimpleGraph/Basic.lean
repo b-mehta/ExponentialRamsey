@@ -10,8 +10,6 @@ import Mathlib.Combinatorics.SimpleGraph.Finite
 import Mathlib.Combinatorics.SimpleGraph.Maps
 import Mathlib.Data.Sym.Card
 
-#align_import prereq.mathlib.combinatorics.simple_graph.basic
-
 /-!
 # Stuff for combinatorics.simple_graph.basic
 -/
@@ -144,7 +142,7 @@ theorem neighborFinset_disjoint {G H : SimpleGraph V} {x : V} [Fintype (G.neighb
 end
 
 theorem degree_eq_zero_iff {v : V} [Fintype (G.neighborSet v)] : G.degree v = 0 ↔ ∀ w, ¬G.Adj v w :=
-  by rw [← not_exists, ← degree_pos_iff_exists_adj, not_lt, le_zero_iff]
+  by rw [← not_exists, ← degree_pos_iff_exists_adj, not_lt, Nat.le_zero]
 
 -- already in mathlib now
 -- theorem comap_comap {V W X : Type*} {G : SimpleGraph V} {f : W → V} {g : X → W} :

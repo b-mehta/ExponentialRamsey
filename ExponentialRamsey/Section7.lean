@@ -5,8 +5,6 @@ Authors: Bhavik Mehta
 -/
 import Section6
 
-#align_import section7
-
 /-!
 # Section 7
 -/

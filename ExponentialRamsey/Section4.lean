@@ -6,8 +6,6 @@ Authors: Bhavik Mehta
 import Basic
 import Prereq.Constructive
 
-#align_import section4
-
 /-!
 # Section 4
 -/

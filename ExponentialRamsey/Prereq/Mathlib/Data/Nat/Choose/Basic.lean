@@ -7,8 +7,6 @@ import Mathlib.Algebra.Order.Ring.Nat
 import Mathlib.Data.Nat.Choose.Basic
 import ExponentialRamsey.Prereq.Mathlib.Data.Nat.Factorial.Basic
 
-#align_import prereq.mathlib.data.nat.choose.basic
-
 /-!
 # Stuff for data.nat.choose.basic
 -/

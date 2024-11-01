@@ -5,8 +5,6 @@ Authors: Bhavik Mehta
 -/
 import Mathlib.Data.Nat.Choose.Central
 
-#align_import prereq.mathlib.data.nat.choose.central
-
 /-!
 # Stuff for data.nat.choose.central
 -/

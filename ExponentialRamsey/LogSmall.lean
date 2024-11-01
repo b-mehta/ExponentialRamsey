@@ -5,8 +5,6 @@ Authors: Bhavik Mehta
 -/
 import Analysis.SpecialFunctions.Log.Deriv
 
-#align_import log_small
-
 /-!
 # Estimates on natural log of rationals close to 1
 -/

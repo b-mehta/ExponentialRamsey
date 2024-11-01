@@ -6,8 +6,6 @@ Authors: Bhavik Mehta
 import Mathlib.Data.Fintype.Parity
 import Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.Basic
 
-#align_import prereq.mathlib.number_theory.legendre_symbol.quadratic_char.basic
-
 /-!
 # Stuff for number_theory.legendre_symbol.quadratic_char.basic
 -/
@@ -28,7 +26,7 @@ theorem card_non_zero_square_non_square [DecidableEq F] (hF : ringChar F ≠ 2) 
   by
   have : (univ.filter fun x : F => ¬IsSquare x) = univ.filter fun x : F => x ≠ 0 ∧ ¬IsSquare x :=
     by
-    refine' filter_congr _
+    refine filter_congr ?_
     simp (config := { contextual := true }) [not_imp_not]
   rw [this]
   have cf := quadraticChar_sum_zero hF
@@ -41,13 +39,13 @@ theorem card_non_zero_square_non_square [DecidableEq F] (hF : ringChar F ≠ 2) 
         {0} =
       univ :=
     by
-    simp only [← filter_or, ← and_or_left, em, and_true_iff, filter_ne']
+    simp only [← filter_or, ← and_or_left, em, and_true, filter_ne']
     rw [union_comm, ← insert_eq, insert_erase]
     exact mem_univ _
   have h' := congr_arg Finset.card this
-  rw [card_union_of_disjoint, card_union_of_disjoint, card_singleton, card_univ, ← cf, ← two_mul, ←
-    bit0_eq_two_mul, ← bit1] at h'
-  · rw [← h', Nat.bit1_div_two]
+  rw [card_union_of_disjoint, card_union_of_disjoint, card_singleton, card_univ, ← cf, ← two_mul] at h'
+  · rw [← h']
+    omega
   · rw [Finset.disjoint_left]
     simp (config := { contextual := true })
   · simp

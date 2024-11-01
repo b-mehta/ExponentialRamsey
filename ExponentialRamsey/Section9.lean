@@ -6,8 +6,6 @@ Authors: Bhavik Mehta
 import Section8
 import Prereq.Mathlib.Analysis.SpecialFunctions.Log.Base
 
-#align_import section9
-
 /-!
 # Section 9
 -/
