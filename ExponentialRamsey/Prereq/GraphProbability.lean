@@ -34,12 +34,6 @@ theorem card_filter_not_diag {α : Type*} [Fintype α] [DecidableEq α] :
     (Finset.univ.filter fun a : Sym2 α => ¬Sym2.IsDiag a).card = (card α).choose 2 := by
   rw [← Sym2.card_subtype_not_diag, Fintype.card_subtype]
 
-theorem edgeSet_top :
-    (⊤ : SimpleGraph V).edgeSet = {a : Sym2 V | ¬Sym2.IsDiag a} := by
-  ext e
-  induction' e using Sym2.inductionOn with x y
-  simp
-
 theorem edgeFinset_bot' [Fintype (edgeSet (⊥ : SimpleGraph V))] :
     (⊥ : SimpleGraph V).edgeFinset = ∅ := by simp [edgeFinset]
 
@@ -54,11 +48,6 @@ theorem edgeFinset_inf' [DecidableEq V] [Fintype (edgeSet G₁)]
 theorem edgeFinset_sdiff' [DecidableEq V] [Fintype (edgeSet G₁)]
     [Fintype (edgeSet G₂)] [Fintype (edgeSet (G₁ \ G₂))] :
     (G₁ \ G₂).edgeFinset = G₁.edgeFinset \ G₂.edgeFinset := by simp [edgeFinset]
-
-theorem edgeFinset_top [Fintype V] [DecidableEq V] :
-    (⊤ : SimpleGraph V).edgeFinset = univ.filter fun a : Sym2 V => ¬Sym2.IsDiag a := by
-  refine' coe_injective _
-  rw [coe_edgeFinset, edgeSet_top, coe_filter_univ]
 
 theorem edgeFinset_top_card [Fintype V] [DecidableEq V] :
     (⊤ : SimpleGraph V).edgeFinset.card = (card V).choose 2 := by
@@ -238,7 +227,7 @@ theorem sum_weighting : ∑ G, weighting V p G = 1 :=
   have : Icc (⊥ : SimpleGraph V) ⊤ = Finset.univ := by
     rw [← coe_inj, coe_Icc, Set.Icc_bot_top, coe_univ]
 
-  rw [← this, weightingAux_sum_between ⊥ ⊤ bot_le, edgeFinset_bot', edgeFinset_card]
+  simp_rw [← this, weightingAux_sum_between ⊥ ⊤ bot_le, edgeFinset_bot', edgeFinset_card]
   simp only [compl_top, edgeSet_bot, Set.empty_card, card_empty, pow_zero, pow_zero, mul_one]
 
 end

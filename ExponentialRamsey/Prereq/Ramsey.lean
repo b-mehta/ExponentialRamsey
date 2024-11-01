@@ -412,7 +412,7 @@ theorem isRamseyValid_iff_eq {n : K → ℕ} :
   refine' exists_congr fun c => _
   constructor
   · rintro ⟨a, ha, ha'⟩
-    obtain ⟨b, hb, hb'⟩ := exists_smaller_set a _ ha'
+    obtain ⟨b, hb, hb'⟩ := exists_subset_card_eq ha'
     exact ⟨b, ha.subset hb, hb'.symm⟩
   · rintro ⟨a, ha, ha'⟩
     exact ⟨_, ha, ha'.le⟩
