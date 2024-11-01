@@ -39,10 +39,10 @@ theorem asc_le_pow_mul_factorial'' (t : ℕ) : (s : ℕ) → t.ascFactorial s �
   | 1 => by simp [ascFactorial_succ]
   | (s + 2) => by
       rw [ascFactorial_succ, factorial_succ, pow_succ', mul_mul_mul_comm]
-      cases' t
+      cases t
       · simp [zero_ascFactorial]
       · refine Nat.mul_le_mul ?_ (asc_le_pow_mul_factorial'' _ (s + 1))
-        rw [add_comm, add_one_mul (s + 1), add_le_add_iff_right]
-        exact le_mul_of_pos_right (succ_pos _)
+        rw [add_comm, add_one_mul (s + 1), Nat.add_le_add_iff_right]
+        exact Nat.le_mul_of_pos_right _ (succ_pos _)
 
 end Nat
