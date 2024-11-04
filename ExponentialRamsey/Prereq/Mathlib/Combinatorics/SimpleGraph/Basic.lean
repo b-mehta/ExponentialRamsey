@@ -108,7 +108,7 @@ instance {V : Type*} {x : V} : IsEmpty ((⊥ : SimpleGraph V).neighborSet x) :=
 
 theorem neighborFinset_bot {x : V} [Fintype (neighborSet ⊥ x)] :
   (⊥ : SimpleGraph V).neighborFinset x = ∅ := by ext y; simp
-  
+
 theorem neighborFinset_top [Fintype V] [DecidableEq V] {x : V} :
     (⊤ : SimpleGraph V).neighborFinset x = {x}ᶜ := by
   ext y
