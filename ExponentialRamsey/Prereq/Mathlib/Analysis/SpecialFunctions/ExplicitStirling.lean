@@ -97,7 +97,7 @@ theorem centralBinomialUpper_monotone : Antitone centralBinomialUpper :=
   · positivity
 
 theorem centralBinom_limit :
-    Tendsto (fun n => (centralBinom n : ℝ) * Real.sqrt n / (4 : ℝ) ^ n) atTop (𝓝 (sqrt π)⁻¹) := by
+    Tendsto (fun n => (centralBinom n : ℝ) * Real.sqrt n / (4 : ℝ) ^ n) atTop (𝓝 (√π)⁻¹) := by
   have := Real.pi_pos
   have : (sqrt π)⁻¹ = sqrt π / sqrt π ^ 2 := by
     rw [inv_eq_one_div, sq, ← div_div, div_self]
@@ -117,7 +117,7 @@ theorem centralBinom_limit :
   norm_cast
   ring_nf -- this was a 7 line rw proof in Lean 3, this one is more principled but hmmm
 
-theorem centralBinomialUpper_limit : Tendsto centralBinomialUpper atTop (𝓝 (sqrt π)⁻¹) :=
+theorem centralBinomialUpper_limit : Tendsto centralBinomialUpper atTop (𝓝 (√π)⁻¹) :=
   by
   have : (sqrt π)⁻¹ = (sqrt π)⁻¹ / Real.sqrt 1 := by rw [Real.sqrt_one, div_one]
   have h : Real.sqrt 1 ≠ 0 := sqrt_ne_zero'.2 zero_lt_one
@@ -129,8 +129,8 @@ theorem centralBinomialUpper_limit : Tendsto centralBinomialUpper atTop (𝓝 (s
     div_div_eq_mul_div, mul_right_comm, mul_div_mul_right]
   · positivity
 
-theorem centralBinomialLower_limit : Tendsto centralBinomialLower atTop (𝓝 (sqrt π)⁻¹) := by
-  have : (sqrt π)⁻¹ = (sqrt π)⁻¹ / Real.sqrt 1 := by rw [Real.sqrt_one, div_one]
+theorem centralBinomialLower_limit : Tendsto centralBinomialLower atTop (𝓝 (√π)⁻¹) := by
+  have : (√π)⁻¹ = (√π)⁻¹ / Real.sqrt 1 := by rw [Real.sqrt_one, div_one]
   have h : Real.sqrt 1 ≠ 0 := sqrt_ne_zero'.2 zero_lt_one
   rw [this]
   refine' (centralBinom_limit.div (tendsto_natCast_div_add_atTop (1 / 4 : ℝ)).sqrt h).congr' _
@@ -141,7 +141,7 @@ theorem centralBinomialLower_limit : Tendsto centralBinomialLower atTop (𝓝 (s
   · positivity
 
 theorem centralBinomialUpper_bound (n : ℕ) :
-    (n.centralBinom : ℝ) ≤ (4 : ℝ) ^ n / sqrt (π * (n + 1 / 4)) := by
+    n.centralBinom ≤ 4 ^ n / √(π * (n + 1 / 4)) := by
   have := pi_pos
   have := centralBinomialLower_monotone.ge_of_tendsto centralBinomialLower_limit n
   rwa [sqrt_mul, ← div_div, le_div_iff, div_eq_mul_one_div ((4 : ℝ) ^ n : ℝ), ← div_le_iff',
@@ -149,7 +149,7 @@ theorem centralBinomialUpper_bound (n : ℕ) :
   all_goals positivity
 
 theorem centralBinomialLower_bound (n : ℕ) :
-    (4 : ℝ) ^ n / sqrt (π * (n + 1 / 3)) ≤ n.centralBinom := by
+    4 ^ n / √(π * (n + 1 / 3)) ≤ n.centralBinom := by
   have := pi_pos
   have := centralBinomialUpper_monotone.le_of_tendsto centralBinomialUpper_limit n
   rwa [sqrt_mul, ← div_div, div_le_iff, div_eq_mul_one_div, ← le_div_iff', one_div (sqrt π)]
@@ -161,12 +161,12 @@ theorem cexp_eq_tsum {x : ℂ} : Complex.exp x = ∑' i, x ^ i / i ! := by
 theorem rexp_eq_tsum {x : ℝ} : Real.exp x = ∑' i, x ^ i / i ! := by
   rw [exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum_div]
 
-lemma exp_factorial_bound {x : ℝ} (hx : 0 ≤ x) {n : ℕ} : (x : ℝ) ^ n / n ! ≤ exp x := by
+lemma exp_factorial_bound {x : ℝ} (hx : 0 ≤ x) {n : ℕ} : x ^ n / n ! ≤ exp x := by
   rw [exp_eq_exp_ℝ]
   exact le_hasSum (NormedSpace.expSeries_div_hasSum_exp ℝ x) n (fun _ _ => by positivity)
 
-theorem exp_factorial_bound_of_ne_zero {x : ℝ} (hx : 0 ≤ x) (hn : n ≠ 0) :
-    (x : ℝ) ^ n / n ! < exp x := by
+theorem exp_factorial_bound_of_ne_zero {n : ℕ} {x : ℝ} (hx : 0 ≤ x) (hn : n ≠ 0) :
+    x ^ n / n ! < exp x := by
   rw [exp_eq_exp_ℝ]
   refine (sum_le_hasSum {n, 0} ?_ (NormedSpace.expSeries_div_hasSum_exp ℝ x)).trans_lt' ?_
   · intro x _
@@ -174,19 +174,19 @@ theorem exp_factorial_bound_of_ne_zero {x : ℝ} (hx : 0 ≤ x) (hn : n ≠ 0) :
   rw [sum_pair hn]
   simp
 
-theorem factorial_bound_exp {n : ℕ} : ((n : ℝ) / Real.exp 1) ^ n ≤ n ! := by
+theorem factorial_bound_exp {n : ℕ} : (n / Real.exp 1) ^ n ≤ n ! := by
   rw [div_pow, ← rpow_natCast (exp 1), exp_one_rpow, div_le_iff, ← div_le_iff']
   · exact exp_factorial_bound (Nat.cast_nonneg _)
   · positivity
   · positivity
 
-theorem factorial_bound_exp_of_ne_zero {n : ℕ} (hn : n ≠ 0) : ((n : ℝ) / Real.exp 1) ^ n < n ! := by
+theorem factorial_bound_exp_of_ne_zero {n : ℕ} (hn : n ≠ 0) : (n / Real.exp 1) ^ n < n ! := by
   rw [div_pow, ← rpow_natCast (exp 1), exp_one_rpow, div_lt_iff, ← div_lt_iff']
   · exact exp_factorial_bound_of_ne_zero (Nat.cast_nonneg _) hn
   · positivity
   · positivity
 
-theorem choose_upper_bound {n t : ℕ} : (n.choose t : ℝ) ≤ (exp 1 * n / t) ^ t := by
+theorem choose_upper_bound {n t : ℕ} : n.choose t ≤ (exp 1 * n / t) ^ t := by
   cases' Nat.eq_zero_or_pos t with h h
   · simp [h]
   refine' (Nat.choose_le_pow t n).trans _
@@ -196,13 +196,12 @@ theorem choose_upper_bound {n t : ℕ} : (n.choose t : ℝ) ≤ (exp 1 * n / t) 
   rw [← div_pow, div_div_eq_mul_div, mul_comm]
 
 theorem choose_upper_bound_of_pos {n t : ℕ} (hn : n ≠ 0) (ht : t ≠ 0) :
-    (n.choose t : ℝ) < (exp 1 * n / t) ^ t := by
+    n.choose t < (exp 1 * n / t) ^ t := by
   refine' (Nat.choose_le_pow t n).trans_lt _
   refine' (div_lt_div_of_pos_left _ _ (factorial_bound_exp_of_ne_zero ht)).trans_eq _
   · positivity
   · positivity
   rw [← div_pow, div_div_eq_mul_div, mul_comm]
 
--- check if the coercion on the rhs goes away after #8366
-theorem choose_upper_bound' {n t : ℕ} : (n.choose t : ℝ) ≤ exp t * (n / t : ℝ) ^ t :=
+theorem choose_upper_bound' {n t : ℕ} : n.choose t ≤ exp t * (n / t) ^ t :=
   choose_upper_bound.trans_eq <| by rw [mul_div_assoc, mul_pow, ← exp_one_rpow t, rpow_natCast]

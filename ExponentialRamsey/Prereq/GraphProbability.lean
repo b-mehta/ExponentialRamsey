@@ -34,12 +34,6 @@ theorem card_filter_not_diag {α : Type*} [Fintype α] [DecidableEq α] :
     (Finset.univ.filter fun a : Sym2 α => ¬Sym2.IsDiag a).card = (card α).choose 2 := by
   rw [← Sym2.card_subtype_not_diag, Fintype.card_subtype]
 
-theorem edgeSet_top :
-    (⊤ : SimpleGraph V).edgeSet = {a : Sym2 V | ¬Sym2.IsDiag a} := by
-  ext e
-  induction' e using Sym2.inductionOn with x y
-  simp
-
 theorem edgeFinset_bot' [Fintype (edgeSet (⊥ : SimpleGraph V))] :
     (⊥ : SimpleGraph V).edgeFinset = ∅ := by simp [edgeFinset]
 
@@ -54,11 +48,6 @@ theorem edgeFinset_inf' [DecidableEq V] [Fintype (edgeSet G₁)]
 theorem edgeFinset_sdiff' [DecidableEq V] [Fintype (edgeSet G₁)]
     [Fintype (edgeSet G₂)] [Fintype (edgeSet (G₁ \ G₂))] :
     (G₁ \ G₂).edgeFinset = G₁.edgeFinset \ G₂.edgeFinset := by simp [edgeFinset]
-
-theorem edgeFinset_top [Fintype V] [DecidableEq V] :
-    (⊤ : SimpleGraph V).edgeFinset = univ.filter fun a : Sym2 V => ¬Sym2.IsDiag a := by
-  refine' coe_injective _
-  rw [coe_edgeFinset, edgeSet_top, coe_filter_univ]
 
 theorem edgeFinset_top_card [Fintype V] [DecidableEq V] :
     (⊤ : SimpleGraph V).edgeFinset.card = (card V).choose 2 := by
@@ -233,13 +222,12 @@ theorem weightingAux_sum_between (H₁ H₂ : SimpleGraph V)
   rw [mem_powerset, edgeFinset_inf, subset_inter_iff] at hx
   exact union_subset hx.2 (edgeFinset_subset_edgeFinset.2 h)
 
-theorem sum_weighting : ∑ G, weighting V p G = 1 :=
-  by
+theorem sum_weighting : ∑ G, weighting V p G = 1 := by
   have : Icc (⊥ : SimpleGraph V) ⊤ = Finset.univ := by
     rw [← coe_inj, coe_Icc, Set.Icc_bot_top, coe_univ]
-
-  rw [← this, weightingAux_sum_between ⊥ ⊤ bot_le, edgeFinset_bot', edgeFinset_card]
-  simp only [compl_top, edgeSet_bot, Set.empty_card, card_empty, pow_zero, pow_zero, mul_one]
+  rw [← this, weightingAux_sum_between ⊥ ⊤ bot_le]
+  simp_rw [edgeFinset_bot', edgeFinset_card, compl_top, edgeSet_bot, Set.empty_card, card_empty,
+    pow_zero, mul_one]
 
 end
 
@@ -538,12 +526,15 @@ theorem diagonalRamsey_bound_refined_again {k : ℕ} (hk : k ≠ 0) :
 
 theorem e_times_sqrt_two_plus_log_two_gt_four : 4 < exp 1 * sqrt 2 + log 2 := by
   have : 1.4 < sqrt 2 := by rw [lt_sqrt] <;> norm_num
-  nlinarith [log_two_gt_d9, exp_one_gt_d9]
+  -- linarith broke: https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/linarith.20regression.20on.20real.20numbers
+  sorry
+  -- nlinarith [log_two_gt_d9, exp_one_gt_d9]
 
-theorem e_times_sqrt_two_plus_log_two_lt_five : exp 1 * sqrt 2 + log 2 < 5 :=
-  by
+theorem e_times_sqrt_two_plus_log_two_lt_five : exp 1 * sqrt 2 + log 2 < 5 := by
   have : sqrt 2 < 1.5 := by rw [sqrt_lt] <;> norm_num
-  nlinarith [log_two_lt_d9, exp_one_lt_d9, exp_one_gt_d9]
+  -- linarith broke: https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/linarith.20regression.20on.20real.20numbers
+  sorry
+  -- nlinarith [log_two_lt_d9, exp_one_lt_d9, exp_one_gt_d9]
 
 theorem diagonalRamsey_bound_simpler_aux {k : ℕ} (hk' : exp 1 * sqrt 2 + log 2 ≤ k) :
     sqrt 2 ^ k < diagonalRamsey k :=
@@ -605,9 +596,10 @@ theorem diagonalRamsey_upper_bound_simpler {k : ℕ} : (diagonalRamsey k : ℝ) 
   swap; · norm_num1
   refine' sqrt_le_sqrt _
   suffices 12 * Real.pi ≤ k * (16 * Real.pi - 1) by linarith
-  have : 49 ≤ 16 * Real.pi - 1 := by linarith only [pi_gt_3141592]
+  have : 49 ≤ 16 * Real.pi - 1 := by sorry -- linarith only [pi_gt_3141592]
+  -- linarith broke: https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/linarith.20regression.20on.20real.20numbers
   refine' (mul_le_mul_of_nonneg_left this (Nat.cast_nonneg _)).trans' _
-  have : 12 * Real.pi ≤ 38 := by linarith only [pi_lt_315]
+  have : 12 * Real.pi ≤ 38 := by sorry -- linarith only [pi_lt_315]
   have : (1 : ℝ) ≤ k := Nat.one_le_cast.2 hk
   linarith
 
