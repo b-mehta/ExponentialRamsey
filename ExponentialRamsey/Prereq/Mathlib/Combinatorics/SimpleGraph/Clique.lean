@@ -8,8 +8,6 @@ import ExponentialRamsey.Prereq.Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Clique
 
-#align_import prereq.mathlib.combinatorics.simple_graph.clique
-
 /-!
 # Stuff for combinatorics.simple_graph.clique
 -/

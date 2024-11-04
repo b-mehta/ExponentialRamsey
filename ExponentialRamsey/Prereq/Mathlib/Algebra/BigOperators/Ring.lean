@@ -5,8 +5,6 @@ Authors: Bhavik Mehta
 -/
 import Mathlib.Algebra.BigOperators.Ring
 
-#align_import prereq.mathlib.algebra.big_operators.ring
-
 /-!
 # Stuff for algebra.big_operators.ring
 -/

@@ -34,5 +34,3 @@ import ExponentialRamsey.Prereq.RamseySmall
 -- import ExponentialRamsey.Section10
 -- import ExponentialRamsey.Section11
 -- import ExponentialRamsey.Section12
-
-#align_import all

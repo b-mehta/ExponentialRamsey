@@ -10,8 +10,6 @@ import Mathlib.Combinatorics.SimpleGraph.Finite
 import Mathlib.Combinatorics.SimpleGraph.Maps
 import Mathlib.Data.Sym.Card
 
-#align_import prereq.mathlib.combinatorics.simple_graph.basic
-
 /-!
 # Stuff for combinatorics.simple_graph.basic
 -/

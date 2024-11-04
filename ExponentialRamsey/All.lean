@@ -35,5 +35,3 @@ import ExponentialRamsey.Prereq.Ramsey
 import ExponentialRamsey.Prereq.RamseyPrereq
 import ExponentialRamsey.Prereq.RamseySmall
 
-#align_import all
-

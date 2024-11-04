@@ -16,8 +16,6 @@ import Mathlib.Data.Sym.Card
 import Mathlib.Tactic.FinCases
 import ExponentialRamsey.Prereq.RamseyPrereq
 
-#align_import prereq.ramsey
-
 /-!
 # Ramsey numbers
 
@@ -46,14 +44,11 @@ instance [DecidableEq V] [Fintype G.edgeSet] [Fintype K] : Fintype (EdgeLabellin
 instance [Nonempty K] : Nonempty (EdgeLabelling G K) :=
   Pi.instNonempty
 
--- Porting note: this instance was called `Pi.inhabited` in lean3-core, which is much
--- nicer than the name `instInhabitedForall_1` it got in lean4-core...
 instance [Inhabited K] : Inhabited (EdgeLabelling G K) :=
-  instInhabitedForall_1 _
+  Pi.instInhabited
 
--- Porting note: this was `pi.subsingleton` in lean3-core
 instance [Subsingleton K] : Subsingleton (EdgeLabelling G K) :=
-  instSubsingletonForall
+  Pi.instSubsingleton
 
 instance [Unique K] : Unique (EdgeLabelling G K) :=
   Pi.unique
@@ -135,7 +130,7 @@ def TopEdgeLabelling.mk (f : ∀ x y : V, x ≠ y → K)
   fun ⟨e, he⟩ => by
     -- Regression: The weaker Lean 4 code generator here is annoying
     revert he
-    refine' Quotient.hrecOn e (fun xy => f xy.1 xy.2) _
+    refine Quotient.hrecOn e (fun xy => f xy.1 xy.2) ?_
     rintro ⟨a, b⟩ ⟨c, d⟩ ⟨⟩
     · rfl
     refine Function.hfunext ?_ ?_
@@ -232,7 +227,7 @@ theorem toEdgeLabelling_labelGraph_compl (G : SimpleGraph V) [DecidableRel G.Adj
 
 theorem labelGraph_toEdgeLabelling [DecidableEq V] (C : TopEdgeLabelling V (Fin 2)) :
     (C.labelGraph 1).toEdgeLabelling = C := by
-  refine' TopEdgeLabelling.ext_get _
+  refine TopEdgeLabelling.ext_get ?_
   intro x y h
   simp only [h, Ne.eq_def, not_false_iff, toEdgeLabelling_get, TopEdgeLabelling.labelGraph_adj,
     exists_true_left]
@@ -292,8 +287,8 @@ theorem monochromaticOf_insert {x : V} (hx : x ∉ m) :
   classical
   rintro ⟨h₁, h₂⟩
   simp only [TopEdgeLabelling.MonochromaticOf, Ne.eq_def, Set.mem_insert_iff, forall_eq_or_imp,
-    eq_self_iff_true, not_true, IsEmpty.forall_iff, true_and_iff]
-  refine' ⟨fun _ hy _ => h₂ _ hy, fun y hy => ⟨fun _ => _, fun z hz => h₁ hy hz⟩⟩
+    eq_self_iff_true, not_true, IsEmpty.forall_iff, true_and]
+  refine ⟨fun _ hy _ => h₂ _ hy, fun y hy => ⟨fun _ => ?_, fun z hz => h₁ hy hz⟩⟩
   rw [TopEdgeLabelling.get_swap]
   exact h₂ y hy
 
@@ -407,12 +402,12 @@ theorem isRamseyValid_iff_eq {n : K → ℕ} :
     IsRamseyValid V n ↔
       ∀ C : TopEdgeLabelling V K, ∃ (m : Finset V) (c : K),
         C.MonochromaticOf m c ∧ n c = m.card := by
-  refine' forall_congr' fun C => _
+  refine forall_congr' fun C => ?_
   rw [exists_comm, @exists_comm (Finset V)]
-  refine' exists_congr fun c => _
+  refine exists_congr fun c => ?_
   constructor
   · rintro ⟨a, ha, ha'⟩
-    obtain ⟨b, hb, hb'⟩ := exists_smaller_set a _ ha'
+    obtain ⟨b, hb, hb'⟩ := exists_subset_card_eq ha'
     exact ⟨b, ha.subset hb, hb'.symm⟩
   · rintro ⟨a, ha, ha'⟩
     exact ⟨_, ha, ha'.le⟩
@@ -425,7 +420,7 @@ theorem isRamseyValid_iff_embedding_aux {n : ℕ} (c : K) :
     have : Fintype.card m = n := by rw [Fintype.card_coe, hm']
     classical
     obtain ⟨e⟩ := Fintype.truncEquivFinOfCardEq this
-    refine' ⟨⟨e.symm.toEmbedding.trans (Function.Embedding.subtype _), _⟩⟩
+    refine ⟨⟨e.symm.toEmbedding.trans (Function.Embedding.subtype _), ?_⟩⟩
     intro a b
     simp only [Ne.eq_def, Function.Embedding.trans_apply, Equiv.coe_toEmbedding,
       Function.Embedding.coe_subtype, labelGraph_adj, top_adj, ← Subtype.ext_iff,
@@ -436,10 +431,10 @@ theorem isRamseyValid_iff_embedding_aux {n : ℕ} (c : K) :
     intro h
     exact ⟨h, hm (e.symm a).prop (e.symm b).prop _⟩
   rintro ⟨f⟩
-  refine' ⟨(univ : Finset (Fin n)).map f.toEmbedding, _, _⟩
+  refine ⟨(univ : Finset (Fin n)).map f.toEmbedding, ?_, ?_⟩
   · rw [MonochromaticOf]
     simp only [Ne.eq_def, RelEmbedding.inj, coe_map, RelEmbedding.coe_toEmbedding, Set.mem_image,
-      coe_univ, Set.mem_univ, true_and_iff, forall_exists_index, forall_apply_eq_imp_iff]
+      coe_univ, Set.mem_univ, true_and, forall_exists_index, forall_apply_eq_imp_iff]
     intro x y h
     have : (⊤ : SimpleGraph (Fin n)).Adj x y := h
     simpa [-top_adj, ←f.map_rel_iff, h, RelEmbedding.inj] using this
@@ -454,7 +449,7 @@ theorem isRamseyValid_iff_embedding {n : K → ℕ} :
       ∀ C : TopEdgeLabelling V K,
         ∃ c : K, Nonempty ((⊤ : SimpleGraph (Fin (n c))) ↪g C.labelGraph c) := by
   rw [isRamseyValid_iff_eq]
-  refine' forall_congr' fun C => _
+  refine forall_congr' fun C => ?_
   rw [exists_comm]
   simp only [isRamseyValid_iff_embedding_aux]
 
@@ -510,7 +505,7 @@ theorem IsRamseyValid.remove_twos {n : K → ℕ} (h : IsRamseyValid V n) :
     exact isRamseyValid_of_zero ⟨c, by simp [hc]⟩ hc
   by_cases h' : ∃ k, n k ≤ 1
   · obtain ⟨k, hk⟩ := h'
-    refine' ramsey_base ⟨⟨k, _⟩, hk⟩
+    refine ramsey_base ⟨⟨k, ?_⟩, hk⟩
     linarith
   simp only [not_exists, not_le, Nat.lt_iff_add_one_le] at h'
   intro C
@@ -519,7 +514,7 @@ theorem IsRamseyValid.remove_twos {n : K → ℕ} (h : IsRamseyValid V n) :
   rw [Finset.one_lt_card_iff] at this
   obtain ⟨a, b, ha, hb, hab⟩ := this
   have : Subtype.val (C.get a b hab) = c := hm ha hb hab
-  refine' ⟨m, _, _, hc.trans_eq' (congr_arg n this)⟩
+  refine ⟨m, _, ?_, hc.trans_eq' (congr_arg n this)⟩
   rwa [← monochromaticOf_injective _ Subtype.val_injective, this]
 
 theorem IsRamseyValid.of_remove_twos {n : K → ℕ}
@@ -530,9 +525,9 @@ theorem IsRamseyValid.of_remove_twos {n : K → ℕ}
   by_cases h'' : ∃ (x y : V) (H : x ≠ y), n (C.get x y H) = 2
   · obtain ⟨x, y, H, hxy⟩ := h''
     have : x ∉ ({y} : Set V) := by simpa
-    refine' ⟨({x, y} : Finset V), C.get x y H, _, _⟩
+    refine ⟨({x, y} : Finset V), C.get x y H, ?_, ?_⟩
     · rw [coe_pair, monochromaticOf_insert this]
-      refine' ⟨monochromaticOf_singleton, _⟩
+      refine ⟨monochromaticOf_singleton, ?_⟩
       simp only [Set.mem_singleton_iff]
       rintro _ rfl
       rfl
@@ -546,7 +541,7 @@ theorem IsRamseyValid.of_remove_twos {n : K → ℕ}
     dsimp
     exact get_swap _ _ _
   obtain ⟨m, c, hm, hc⟩ := h C'
-  refine' ⟨m, c, _, hc⟩
+  refine ⟨m, c, ?_, hc⟩
   intro x hx y hy h
   exact Subtype.ext_iff.1 (hm hx hy h)
 
@@ -588,9 +583,9 @@ theorem ramsey_fin_induct_aux {V : Type*} [DecidableEq K] {n : K → ℕ} (N : K
   rcases ne_or_eq k k' with (hk | rfl)
   · exact ⟨_, _, hm'.map, by simpa [hk.symm] using hk'⟩
   have : x ∉ (m'.map (Function.Embedding.subtype _) : Set V) := by simp [hx k]
-  refine' ⟨insert (x : V) (m'.map (Function.Embedding.subtype _)), k, _, _⟩
+  refine ⟨insert (x : V) (m'.map (Function.Embedding.subtype _)), k, ?_, ?_⟩
   · rw [coe_insert, monochromaticOf_insert this]
-    refine' ⟨hm'.map, fun y hy => _⟩
+    refine ⟨hm'.map, fun y hy => ?_⟩
     generalize_proofs
     simp only [mem_neighborFinset, mem_coe, mem_map, Function.Embedding.coe_subtype, exists_prop,
       Subtype.exists, Subtype.coe_mk, exists_and_right, exists_eq_right,
@@ -604,7 +599,7 @@ theorem ramsey_fin_induct [DecidableEq K] [Fintype K] (n : K → ℕ) (N : K →
     (hN : ∀ k, IsRamseyValid (Fin (N k)) (Function.update n k (n k - 1))) :
     IsRamseyValid (Fin (∑ k, (N k - 1) + 2)) n := by
   by_cases h : ∃ k, n k ≤ 1
-  · refine' ramsey_base' _ h _
+  · refine ramsey_base' _ h ?_
     rw [Fintype.card_fin]
     exact (Nat.le_add_left _ _).trans' (by norm_num)
   push_neg at h
@@ -635,7 +630,7 @@ theorem ramsey_fin_induct [DecidableEq K] [Fintype K] (n : K → ℕ) (N : K →
     rw [← card_biUnion, this, card_compl, ← card_univ, card_fin, card_singleton,
       Nat.add_succ_sub_one]
     rintro x _ y _ h
-    refine' neighborFinset_disjoint _
+    refine neighborFinset_disjoint ?_
     exact EdgeLabelling.pairwiseDisjoint (by simp) (by simp) h
   have : ∃ k, N k - 1 < (m k).card := by
     by_contra!
@@ -644,13 +639,13 @@ theorem ramsey_fin_induct [DecidableEq K] [Fintype K] (n : K → ℕ) (N : K →
     simp only [add_le_iff_nonpos_right, le_zero_iff, Nat.one_ne_zero] at this
   obtain ⟨k, hk⟩ := this
   rw [tsub_lt_iff_right (hN' _), Nat.lt_add_one_iff] at hk
-  refine' ramsey_fin_induct_aux _ m x hN _ ⟨k, hk⟩ _
+  refine ramsey_fin_induct_aux _ m x hN ?_ ⟨k, hk⟩ ?_
   · simp [m]
   · simp [m]
 
 theorem ramsey_fin_exists [Finite K] (n : K → ℕ) : ∃ N, IsRamseyValid (Fin N) n := by
   classical
-  refine' @WellFoundedLT.induction _ _ _ (fun a => ∃ N, IsRamseyValid (Fin N) a) n _
+  refine @WellFoundedLT.induction _ _ _ (fun a => ∃ N, IsRamseyValid (Fin N) a) n ?_
   clear n
   intro n ih
   by_cases h : ∃ k, n k = 0
@@ -683,7 +678,7 @@ theorem ramsey_fin_induct' [DecidableEq K] [Fintype K] (n : K → ℕ) (N : K �
     · simp only [Function.update_same, tsub_eq_zero_iff_le] at hk'
       exact hk'.not_lt (hn _)
     rw [Function.update_noteq hk.symm] at hk'
-    simpa only [le_zero_iff] using (hn k').trans_eq hk'
+    simpa only [nonpos_iff_eq_zero, OfNat.ofNat_ne_zero] using (hn k').trans_eq hk'
   have h : ∀ x : K, x ∈ (univ : Finset K) → 1 ≤ N x := by simpa using hN'
   have := ramsey_fin_induct n N hN
   rwa [sum_tsub _ h, tsub_add_eq_add_tsub, ← Fintype.card_eq_sum_ones] at this
@@ -744,14 +739,13 @@ theorem ramsey_fin_induct_two_evens {i j Ni Nj : ℕ} (hi : 2 ≤ i) (hj : 2 ≤
     by
     rw [← card_biUnion, this, card_compl, ← card_univ, card_fin, card_singleton, Nat.sub_sub]
     rintro x _ y _ h
-    refine' neighborFinset_disjoint _
+    refine neighborFinset_disjoint ?_
     exact EdgeLabelling.pairwiseDisjoint (by simp) (by simp) h
   have : Ni ≤ (m 0).card ∨ Nj ≤ (m 1).card :=
     by
     have : (m 0).card + 1 ≠ Ni := by
       intro h
       rw [← h] at hNi
-      simp at hx
         -- regression (maybe temporary): this extra simp is a weirdness with Lean 4 simp/zeta
       simp [hx, parity_simps] at hNi
     rw [eq_tsub_iff_add_eq_of_le (add_le_add hNi' hNj'), Fin.sum_univ_two] at e
@@ -761,7 +755,7 @@ theorem ramsey_fin_induct_two_evens {i j Ni Nj : ℕ} (hi : 2 ≤ i) (hj : 2 ≤
     have := add_le_add h'.1 h'.2
     rw [add_add_add_comm, ← add_assoc, e] at this
     simp only [add_le_iff_nonpos_right, le_zero_iff, Nat.one_ne_zero] at this
-  refine' ramsey_fin_induct_aux ![Ni, Nj] m x _ (by simp [m]) _ _
+  refine ramsey_fin_induct_aux ![Ni, Nj] m x ?_ (by simp [m]) ?_ ?_
   · rw [Fin.forall_fin_two, Function.update_head, Function.update_cons_one]
     exact ⟨hi', hj'⟩
   · rwa [Fin.exists_fin_two]
@@ -860,7 +854,7 @@ theorem exists_le_of_ramseyNumber_le [Nonempty K] (i : ℕ) (hi : ramseyNumber n
 
 @[simp]
 theorem ramseyNumber_empty [IsEmpty K] : ramseyNumber n = 2 := by
-  refine' ramseyNumber_eq_of _ _
+  refine ramseyNumber_eq_of ?_ ?_
   · exact IsRamseyValid.empty_colours
   simp [IsRamseyValid]
 
@@ -877,7 +871,7 @@ theorem exists_le_one_of_ramseyNumber_le_one (hi : ramseyNumber n ≤ 1) : ∃ k
 
 theorem ramseyNumber_eq_one (hc : ∃ c, n c = 1) (hc' : ∀ c, n c ≠ 0) : ramseyNumber n = 1 := by
   obtain ⟨c, hc⟩ := hc
-  refine' (ramseyNumber_le_one ⟨c, hc.le⟩).antisymm _
+  refine (ramseyNumber_le_one ⟨c, hc.le⟩).antisymm ?_
   rwa [Nat.succ_le_iff, ramseyNumber_pos]
 
 theorem ramseyNumber_eq_one_iff : ((∃ c, n c = 1) ∧ ∀ c, n c ≠ 0) ↔ ramseyNumber n = 1 := by
@@ -888,14 +882,14 @@ theorem ramseyNumber_eq_one_iff : ((∃ c, n c = 1) ∧ ∀ c, n c ≠ 0) ↔ ra
   have : ramseyNumber n ≠ 0 := by rw [h]; simp
   rw [Ne.eq_def, ramseyNumber.eq_zero_iff, not_exists] at this
   obtain ⟨k, hk⟩ := exists_le_one_of_ramseyNumber_le_one h.le
-  refine' ⟨⟨k, hk.antisymm _⟩, this⟩
+  refine ⟨⟨k, hk.antisymm ?_⟩, this⟩
   rw [Nat.succ_le_iff, pos_iff_ne_zero]
   exact this _
 
 theorem ramseyNumber_unique_colour [Unique K] : ramseyNumber n = n default :=
   by
-  refine' le_antisymm (ramseyNumber_min_fin (isRamseyValid_unique (by simp))) _
-  refine' ramseyNumber_ge_min _ fun k => _
+  refine le_antisymm (ramseyNumber_min_fin (isRamseyValid_unique (by simp))) ?_
+  refine ramseyNumber_ge_min _ fun k => ?_
   rw [Subsingleton.elim default k]
 
 @[simp]
@@ -922,7 +916,7 @@ theorem ramseyNumber_remove_two {n : K → ℕ} {n' : K' → ℕ} (f : K' → K)
 @[simp]
 theorem ramseyNumber_cons_two {i : ℕ} {n : Fin i → ℕ} :
     ramseyNumber (Matrix.vecCons 2 n) = ramseyNumber n := by
-  refine' (ramseyNumber_remove_two Fin.succ _ _ _ _).symm <;> simp [Fin.forall_fin_succ]
+  refine (ramseyNumber_remove_two Fin.succ ?_ ?_ ?_ ?_).symm <;> simp [Fin.forall_fin_succ]
 
 @[simp]
 theorem ramseyNumber_cons_zero {i : ℕ} {n : Fin i → ℕ} : ramseyNumber (Matrix.vecCons 0 n) = 0 :=
@@ -931,7 +925,7 @@ theorem ramseyNumber_cons_zero {i : ℕ} {n : Fin i → ℕ} : ramseyNumber (Mat
 theorem ramseyNumber_cons_one_of_one_le {i : ℕ} {n : Fin i → ℕ} (h : ∀ k, n k ≠ 0) :
     ramseyNumber (Matrix.vecCons 1 n) = 1 :=
   by
-  refine' ramseyNumber_eq_one ⟨0, rfl⟩ _
+  refine ramseyNumber_eq_one ⟨0, rfl⟩ ?_
   rw [Fin.forall_fin_succ]
   simpa using h
 
@@ -961,13 +955,13 @@ theorem ramseyNumber_two_colour_bound_aux {i j : ℕ} (hi : 2 ≤ i) (hj : 2 ≤
     ramseyNumber ![i, j] ≤ ramseyNumber ![i - 1, j] + ramseyNumber ![i, j - 1] :=
   by
   rw [ramseyNumber_le_iff_fin]
-  refine' ramsey_fin_induct_two hi hj _ _ <;> exact ramseyNumber_spec_fin _
+  refine ramsey_fin_induct_two hi hj ?_ ?_ <;> exact ramseyNumber_spec_fin _
 
 theorem ramseyNumber_two_colour_bound (i j : ℕ) (hij : i ≠ 1 ∨ j ≠ 1) :
     ramseyNumber ![i, j] ≤ ramseyNumber ![i - 1, j] + ramseyNumber ![i, j - 1] :=
   by
   wlog h : i ≤ j generalizing i j
-  · refine' (ramseyNumber_pair_swap _ _).trans_le ((this _ _ hij.symm (le_of_not_le h)).trans _)
+  · refine (ramseyNumber_pair_swap _ _).trans_le ((this _ _ hij.symm (le_of_not_le h)).trans ?_)
     rw [ramseyNumber_pair_swap, add_comm, add_le_add_iff_right, ramseyNumber_pair_swap]
   rcases i with (_ | _ | i)
   · simp
@@ -993,7 +987,7 @@ theorem ramseyNumber_three_colour_bound {i j k : ℕ} (hi : 2 ≤ i) (hj : 2 ≤
       ramseyNumber ![i - 1, j, k] + ramseyNumber ![i, j - 1, k] + ramseyNumber ![i, j, k - 1] - 1 :=
   by
   rw [ramseyNumber_le_iff_fin]
-  refine' ramsey_fin_induct_three hi hj hk _ _ _ <;> exact ramseyNumber_spec_fin _
+  refine ramsey_fin_induct_three hi hj hk ?_ ?_ ?_ <;> exact ramseyNumber_spec_fin _
 
 /-- The diagonal ramsey number, defined by R(k, k). -/
 def diagonalRamsey (k : ℕ) : ℕ :=
@@ -1023,9 +1017,9 @@ theorem ramseyNumber_le_choose : ∀ i j : ℕ, ramseyNumber ![i, j] ≤ (i + j 
   | 1, j + 1 => by rw [ramseyNumber_one_succ, Nat.choose_zero_right]
   | i + 1, 1 => by rw [ramseyNumber_succ_one, Nat.succ_sub_succ_eq_sub, Nat.choose_self]
   | i + 2, j + 2 => by
-    refine' (ramseyNumber_two_colour_bound_aux (Nat.le_add_left _ _) (Nat.le_add_left _ _)).trans _
+    refine (ramseyNumber_two_colour_bound_aux (Nat.le_add_left _ _) (Nat.le_add_left _ _)).trans ?_
     rw [Nat.add_succ_sub_one, Nat.add_succ_sub_one, ← add_assoc, Nat.add_sub_cancel]
-    refine' (add_le_add (ramseyNumber_le_choose _ _) (ramseyNumber_le_choose _ _)).trans _
+    refine (add_le_add (ramseyNumber_le_choose _ _) (ramseyNumber_le_choose _ _)).trans ?_
     rw [add_add_add_comm, Nat.add_sub_cancel, ← add_assoc, Nat.add_sub_cancel, add_add_add_comm,
       add_right_comm i 2, Nat.choose_succ_succ (i + j + 1) i]
     rfl
@@ -1041,14 +1035,14 @@ theorem ramseyNumber_pair_le_two_pow {i j : ℕ} : ramseyNumber ![i, j] ≤ 2 ^ 
   (ramseyNumber_le_choose _ _).trans Nat.choose_le_two_pow
 
 theorem ramseyNumber_pair_le_two_pow' {i j : ℕ} : ramseyNumber ![i, j] ≤ 2 ^ (i + j) :=
-  ramseyNumber_pair_le_two_pow.trans (pow_le_pow_right one_le_two (Nat.sub_le _ _))
+  ramseyNumber_pair_le_two_pow.trans (pow_le_pow_right₀ one_le_two (Nat.sub_le _ _))
 
 theorem diagonalRamsey_le_four_pow_sub_one {i : ℕ} : diagonalRamsey i ≤ 4 ^ (i - 1) :=
   ramseyNumber_pair_le_two_pow.trans_eq
     (by rw [show 4 = 2 ^ 2 from rfl, ← pow_mul, Nat.mul_sub_left_distrib, two_mul, mul_one])
 
 theorem diagonalRamsey_le_four_pow {i : ℕ} : diagonalRamsey i ≤ 4 ^ i :=
-  diagonalRamsey_le_four_pow_sub_one.trans (pow_le_pow_right (by norm_num) (Nat.sub_le _ _))
+  diagonalRamsey_le_four_pow_sub_one.trans (pow_le_pow_right₀ (by norm_num) (Nat.sub_le _ _))
 
 /-- A good bound when i is small and j is large. For `i = 1, 2` this is equality (as long as
 `j ≠ 0`), and for `i = 3` and `i = 4` it is the best possible polynomial upper bound, although
@@ -1058,11 +1052,11 @@ theorem ramseyNumber_le_right_pow_left (i j : ℕ) : ramseyNumber ![i, j] ≤ j 
   rcases Nat.eq_zero_or_pos j with (rfl | hj)
   · rw [ramseyNumber_pair_swap, ramseyNumber_cons_zero]
     exact zero_le'
-  refine' (ramseyNumber_le_choose i j).trans _
+  refine (ramseyNumber_le_choose i j).trans ?_
   have : i + j - 2 ≤ i - 1 + (j - 1) := add_tsub_add_le_tsub_add_tsub.trans' le_rfl
   -- the way naturals are handled in lean 4 makes me need to change this proof
-  refine' (Nat.choose_le_choose _ this).trans _
-  refine' (Nat.choose_add_le_pow_left _ _).trans_eq _
+  refine (Nat.choose_le_choose _ this).trans ?_
+  refine (Nat.choose_add_le_pow_left _ _).trans_eq ?_
   rw [Nat.sub_add_cancel hj]
 
 /-- A simplification of `ramsey_number_le_right_pow_left` which is more convenient for asymptotic

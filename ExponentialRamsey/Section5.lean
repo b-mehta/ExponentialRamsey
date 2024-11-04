@@ -7,8 +7,6 @@ import Section4
 import Prereq.GraphProbability
 import Algebra.Order.Chebyshev
 
-#align_import section5
-
 /-!
 # Section 5
 -/

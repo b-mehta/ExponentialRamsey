@@ -6,8 +6,6 @@ Authors: Bhavik Mehta
 import Analysis.SpecialFunctions.Log.Deriv
 import Analysis.SpecialFunctions.Log.Base
 
-#align_import log2_estimates
-
 /-!
 # Estimates on log base 2 of rationals by iterative squaring
 -/

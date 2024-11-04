@@ -6,8 +6,6 @@ Authors: Bhavik Mehta
 import ExponentialRamsey.Prereq.Ramsey
 import Mathlib.Combinatorics.Pigeonhole
 
-#align_import prereq.constructive
-
 /-!
 # Constructive lower bounds on Ramsey numbers
 -/
@@ -44,7 +42,7 @@ theorem isRamseyValid_myLabelling {k l : ℕ} : ¬IsRamseyValid (Fin k × Fin l)
     obtain ⟨a, b, c, d, habm, rfl, hcdm, rfl, hi⟩ := hi
     have := hm habm hcdm hi
     simp only [myLabelling, TopEdgeLabelling.mk_get] at this
-    simp only [Ne.eq_def, Prod.mk.inj_iff, eq_self_iff_true, true_and_iff] at hi
+    simp only [Ne.eq_def, Prod.mk.inj_iff, eq_self_iff_true, true_and] at hi
     simp [if_neg hi] at this
   · have h₁ : ∀ i ∈ m, Prod.snd i ∈ (Finset.univ : Finset (Fin l)) := by simp
     have h₂ : (Finset.univ : Finset (Fin l)).card * 1 < m.card :=
@@ -56,7 +54,7 @@ theorem isRamseyValid_myLabelling {k l : ℕ} : ¬IsRamseyValid (Fin k × Fin l)
     obtain ⟨a, b, c, d, habm, rfl, hcdm, rfl, hi⟩ := hi
     have := hm habm hcdm hi
     simp only [myLabelling, TopEdgeLabelling.mk_get] at this
-    simp only [Ne.eq_def, Prod.mk.inj_iff, eq_self_iff_true, true_and_iff] at hi
+    simp only [Ne.eq_def, Prod.mk.inj_iff, eq_self_iff_true, true_and] at hi
     simp [if_neg hi] at this
 
 theorem ramsey_product_bound (k l : ℕ) : k * l < ramseyNumber ![k + 1, l + 1] :=
@@ -80,16 +78,16 @@ def myOtherLabelling' (α : Type*) [DecidableEq α] (l : ℕ) (a b : α) :
       else 0)
     (by
       intro x y _
-      refine' if_congr _ rfl rfl
+      refine if_congr ?_ rfl rfl
       rw [Sym2.eq_swap, Ne.eq_def y.2, @eq_comm _ y.1, @eq_comm _ y.2])
 
 theorem myOtherLabelling_swap' (α : Type*) [DecidableEq α] (l : ℕ) (a b : α) :
     myOtherLabelling' α l a b = myOtherLabelling' α l b a :=
   by
-  refine' TopEdgeLabelling.ext_get _
+  refine TopEdgeLabelling.ext_get ?_
   intro x y h
   simp only [myOtherLabelling', TopEdgeLabelling.mk_get]
-  refine' if_congr _ rfl rfl
+  refine if_congr ?_ rfl rfl
   rw [@Sym2.eq_swap _ a]
 
 open scoped BigOperators
@@ -108,7 +106,7 @@ theorem isRamseyValid_myOtherLabelling'_zero {α : Type*} [Fintype α] [Decidabl
     by_contra!
     have := hm hab hab' this
     rw [myOtherLabelling', TopEdgeLabelling.mk_get] at this
-    simp only[eq_self_iff_true, true_or_iff, if_true, Fin.one_eq_zero_iff,
+    simp only[eq_self_iff_true, true_or, if_true, Fin.one_eq_zero_iff,
       Nat.succ_succ_ne_one] at this
   have : ∀ i ∈ (Finset.univ : Finset α), (Finset.filter (fun x : _ × Fin l => x.fst = i) m).card = 1 :=
     by
@@ -139,23 +137,23 @@ theorem isRamseyValid_myOtherLabelling'_zero {α : Type*} [Fintype α] [Decidabl
     have := hm (hf _) (hf _) this
     rw [myOtherLabelling', TopEdgeLabelling.mk_get, if_pos] at this
     · simp only [Fin.one_eq_zero_iff, Nat.succ_succ_ne_one] at this
-    refine' Or.inr (Or.inr ⟨_, ‹_›⟩)
+    refine Or.inr (Or.inr ⟨?_, ‹_›⟩)
     dsimp
     rw [Sym2.congr_left]
     exact hi₁
   have h₂ : ∀ i, i ≠ x → f i = f y := h₁ hxy hm
   have h₃ : ∀ i, i ≠ y → f i = f x := by
-    refine' h₁ hxy.symm _
+    refine h₁ hxy.symm ?_
     rwa [myOtherLabelling_swap']
   have h₄ : f x ≠ f y := by
     intro h'
     have : (x, f x) ≠ (y, f y) := by
-      simp only [hxy, Ne.eq_def, Prod.mk.inj_iff, false_and_iff, not_false_iff]
+      simp only [hxy, Ne.eq_def, Prod.mk.inj_iff, false_and, not_false_iff]
     have := hm (hf _) (hf _) this
     rw [myOtherLabelling', TopEdgeLabelling.mk_get, if_pos] at this
     · simp only [Fin.one_eq_zero_iff, Nat.succ_succ_ne_one] at this
     exact Or.inr (Or.inl ⟨rfl, h'⟩)
-  refine' h₄ _
+  refine h₄ ?_
   rw [← h₂ z hxz.symm, h₃ z hyz.symm]
 
 theorem isRamseyValid_myOtherLabelling_one {α : Type*} [DecidableEq α] [Finite α] {l : ℕ}
@@ -170,7 +168,7 @@ theorem isRamseyValid_myOtherLabelling_one {α : Type*} [DecidableEq α] [Finite
   have h₀ : ∀ x : α, ((({x}ᶜ : Finset α).biUnion f').image Prod.snd).card ≤ l :=
     by
     intro x
-    refine' (Finset.card_le_univ _).trans _
+    refine (Finset.card_le_univ _).trans ?_
     rw [Fintype.card_fin]
   have h₀' :
     ∀ x y,
@@ -185,7 +183,7 @@ theorem isRamseyValid_myOtherLabelling_one {α : Type*} [DecidableEq α] [Finite
     by_contra!
     have h := hm hab hab' this
     rw [myOtherLabelling', TopEdgeLabelling.mk_get] at h
-    simp only [Ne.eq_def, Prod.mk.inj_iff, eq_self_iff_true, and_true_iff] at this
+    simp only [Ne.eq_def, Prod.mk.inj_iff, eq_self_iff_true, and_true] at this
     simp [this, ha, ha'] at h
   have hx : ((({x}ᶜ : Finset α).biUnion f').image Prod.snd).card ≤ l := h₀ _
   have hy : ((({y}ᶜ : Finset α).biUnion f').image Prod.snd).card ≤ l := h₀ _
@@ -214,19 +212,19 @@ theorem isRamseyValid_myOtherLabelling_one {α : Type*} [DecidableEq α] [Finite
     rintro y b'' hab'' rfl
     apply h'
     have : (x, b) ≠ (y, b'') := by
-      simp only [Ne.eq_def, Prod.mk.inj_iff, h, false_and_iff, not_false_iff]
+      simp only [Ne.eq_def, Prod.mk.inj_iff, h, false_and, not_false_iff]
     have := hm hxb hab'' this
     rw [myOtherLabelling', TopEdgeLabelling.mk_get] at this
-    simp only [eq_self_iff_true, true_and_iff, Ne.eq_def, not_true, false_and_iff, or_false_iff,
-      ite_eq_left_iff, Fin.zero_eq_one_iff, Nat.succ_succ_ne_one, h, false_or_iff, imp_false,
+    simp only [eq_self_iff_true, true_and, Ne.eq_def, not_true, false_and, or_false,
+      ite_eq_left_iff, Fin.zero_eq_one_iff, Nat.succ_succ_ne_one, h, false_or, imp_false,
       Classical.not_not] at this
     cases this
     have : (x, b') ≠ (y, b) := by
-      simp only [Ne.eq_def, Prod.mk.inj_iff, h, false_and_iff, not_false_iff]
+      simp only [Ne.eq_def, Prod.mk.inj_iff, h, false_and, not_false_iff]
     have := hm hxb' hab'' this
     rw [myOtherLabelling', TopEdgeLabelling.mk_get] at this
-    simp only [eq_self_iff_true, true_and_iff, Ne.eq_def, not_true, false_and_iff, or_false_iff,
-      ite_eq_left_iff, Fin.zero_eq_one_iff, Nat.succ_succ_ne_one, h, false_or_iff, imp_false,
+    simp only [eq_self_iff_true, true_and, Ne.eq_def, not_true, false_and, or_false,
+      ite_eq_left_iff, Fin.zero_eq_one_iff, Nat.succ_succ_ne_one, h, false_or, imp_false,
       Classical.not_not] at this
     rw [this]
   rw [← this y, f'y, Finset.empty_union]
@@ -244,9 +242,9 @@ theorem isRamseyValid_myOtherLabelling {k l : ℕ} :
       (myOtherLabelling' (Fin (k + 3)) l 0 1).MonochromaticOf m 0 ∧
         Fintype.card (Fin (k + 3)) = m.card :=
       by simpa using hm
-    refine' isRamseyValid_myOtherLabelling'_zero (2 : Fin (k + 3)) _ _ _ this
+    refine isRamseyValid_myOtherLabelling'_zero (2 : Fin (k + 3)) ?_ ?_ ?_ this
     all_goals exact ne_of_beq_false rfl -- was "decide"
-  · refine' isRamseyValid_myOtherLabelling_one _ _ _ hm
+  · refine isRamseyValid_myOtherLabelling_one _ _ ?_ hm
     norm_num
 
 theorem ramsey_product_bound' (k l : ℕ) : (k + 3) * l < ramseyNumber ![k + 3, l + 2] :=
@@ -271,7 +269,7 @@ theorem sub_one_mul_sub_one_le_ramseyNumber {k l : ℕ} : (k - 1) * (l - 1) ≤ 
   · simp
   cases' l
   · simp
-  refine' (sub_one_mul_sub_one_lt_ramseyNumber _ _).le <;> simp
+  refine (sub_one_mul_sub_one_lt_ramseyNumber ?_ ?_).le <;> simp
 
 theorem mul_sub_two_lt_ramseyNumber {k l : ℕ} (hk : 3 ≤ k) (hl : l ≠ 0) :
     k * (l - 2) < ramseyNumber ![k, l] :=
@@ -288,7 +286,7 @@ theorem hMul_sub_two_le_ramseyNumber {k l : ℕ} (hk : 3 ≤ k) : k * (l - 2) �
   by
   cases l
   · simp
-  refine' (mul_sub_two_lt_ramseyNumber hk _).le
+  refine (mul_sub_two_lt_ramseyNumber hk ?_).le
   simp
 
 theorem left_lt_ramseyNumber_three {k : ℕ} (hk : 2 ≤ k) : k < ramseyNumber ![k, 3] :=
@@ -299,7 +297,7 @@ theorem left_lt_ramseyNumber_three {k : ℕ} (hk : 2 ≤ k) : k < ramseyNumber !
   · norm_num at hk
   cases k
   · norm_num
-  refine' (mul_sub_two_lt_ramseyNumber _ _).trans_le' _
+  refine (mul_sub_two_lt_ramseyNumber ?_ ?_).trans_le' ?_
   · simp only [Nat.succ_le_succ_iff]
     exact Nat.zero_le _
   · norm_num

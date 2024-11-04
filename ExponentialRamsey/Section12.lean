@@ -6,8 +6,6 @@ Authors: Bhavik Mehta
 import NecessaryLogEstimates
 import Analysis.SpecialFunctions.Log.Monotone
 
-#align_import section12
-
 /-!
 # Section 12
 -/

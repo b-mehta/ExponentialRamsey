@@ -5,8 +5,6 @@ Authors: Bhavik Mehta
 -/
 import Mathlib.Analysis.Calculus.MeanValue
 
-#align_import prereq.mathlib.analysis.calculus.mean_value
-
 /-!
 # Stuff for analysis.calculus.mean_value
 -/
@@ -15,7 +13,7 @@ import Mathlib.Analysis.Calculus.MeanValue
 theorem Convex.strictMonoOn_of_hasDerivAt_pos {D : Set ℝ} (hD : Convex ℝ D) {f f' : ℝ → ℝ}
     (hf : ∀ x ∈ D, HasDerivAt f (f' x) x) (hf' : ∀ x ∈ interior D, 0 < f' x) : StrictMonoOn f D :=
   by
-  refine' strictMonoOn_of_deriv_pos hD _ _
+  refine strictMonoOn_of_deriv_pos hD ?_ ?_
   · exact HasDerivAt.continuousOn hf
   intro x hx
   rw [HasDerivAt.deriv (hf x (interior_subset hx))]
@@ -24,7 +22,7 @@ theorem Convex.strictMonoOn_of_hasDerivAt_pos {D : Set ℝ} (hD : Convex ℝ D) 
 theorem Convex.strictAntiOn_of_hasDerivAt_neg {D : Set ℝ} (hD : Convex ℝ D) {f f' : ℝ → ℝ}
     (hf : ∀ x ∈ D, HasDerivAt f (f' x) x) (hf' : ∀ x ∈ interior D, f' x < 0) : StrictAntiOn f D :=
   by
-  refine' strictAntiOn_of_deriv_neg hD _ _
+  refine strictAntiOn_of_deriv_neg hD ?_ ?_
   · exact HasDerivAt.continuousOn hf
   intro x hx
   rw [HasDerivAt.deriv (hf x (interior_subset hx))]

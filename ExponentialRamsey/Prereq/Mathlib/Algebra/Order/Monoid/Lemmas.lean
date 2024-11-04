@@ -6,8 +6,6 @@ Authors: Bhavik Mehta
 -/
 import Mathlib.Algebra.Order.Monoid.Unbundled.Basic
 
-#align_import prereq.mathlib.algebra.order.monoid.lemmas
-
 /-!
 # Stuff for Mathlib.Algebra.Order.Monoid.Unbundled.Basic
 -/
