@@ -523,16 +523,21 @@ theorem diagonalRamsey_bound_refined_again {k : ℕ} (hk : k ≠ 0) :
   norm_num1
 
 theorem e_times_sqrt_two_plus_log_two_gt_four : 4 < exp 1 * sqrt 2 + log 2 := by
-  have : 1.4 < sqrt 2 := by rw [lt_sqrt] <;> norm_num
+  have h₁ := log_two_gt_d9
+  have h₂ := exp_one_gt_d9
+  norm_num at h₁ h₂
+  have : 7/5 < sqrt 2 := by rw [lt_sqrt] <;> norm_num
   -- linarith broke: https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/linarith.20regression.20on.20real.20numbers
-  sorry
-  -- nlinarith [log_two_gt_d9, exp_one_gt_d9]
+  nlinarith
 
 theorem e_times_sqrt_two_plus_log_two_lt_five : exp 1 * sqrt 2 + log 2 < 5 := by
-  have : sqrt 2 < 1.5 := by rw [sqrt_lt] <;> norm_num
+  have h₁ := log_two_lt_d9
+  have h₂ := exp_one_lt_d9
+  norm_num at h₁ h₂
+  have : sqrt 2 < 3/2 := by rw [sqrt_lt] <;> norm_num
+  have := exp_pos 1
   -- linarith broke: https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/linarith.20regression.20on.20real.20numbers
-  sorry
-  -- nlinarith [log_two_lt_d9, exp_one_lt_d9, exp_one_gt_d9]
+  nlinarith
 
 theorem diagonalRamsey_bound_simpler_aux {k : ℕ} (hk' : exp 1 * sqrt 2 + log 2 ≤ k) :
     sqrt 2 ^ k < diagonalRamsey k :=
@@ -594,10 +599,16 @@ theorem diagonalRamsey_upper_bound_simpler {k : ℕ} : (diagonalRamsey k : ℝ) 
   swap; · norm_num1
   refine' sqrt_le_sqrt _
   suffices 12 * Real.pi ≤ k * (16 * Real.pi - 1) by linarith
-  have : 49 ≤ 16 * Real.pi - 1 := by sorry -- linarith only [pi_gt_d6]
+  have : 49 ≤ 16 * Real.pi - 1 := by
+    have := pi_gt_d6
+    norm_num at this
+    linarith only [this]
   -- linarith broke: https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/linarith.20regression.20on.20real.20numbers
   refine' (mul_le_mul_of_nonneg_left this (Nat.cast_nonneg _)).trans' _
-  have : 12 * Real.pi ≤ 38 := by sorry -- linarith only [pi_lt_d2]
+  have : 12 * Real.pi ≤ 38 := by
+    have := pi_lt_d2
+    norm_num at this
+    linarith only [this]
   have : (1 : ℝ) ≤ k := Nat.one_le_cast.2 hk
   linarith
 
