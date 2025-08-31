@@ -3,7 +3,7 @@ Copyright (c) 2023 Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta
 -/
-import Mathlib.Analysis.Calculus.MeanValue
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
 
 /-!
 # Stuff for analysis.calculus.mean_value
@@ -27,4 +27,3 @@ theorem Convex.strictAntiOn_of_hasDerivAt_neg {D : Set ℝ} (hD : Convex ℝ D) 
   intro x hx
   rw [HasDerivAt.deriv (hf x (interior_subset hx))]
   exact hf' x hx
-

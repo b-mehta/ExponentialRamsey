@@ -40,7 +40,7 @@ theorem upper_monotone_aux (n : ℕ) :
     ((n : ℝ) + 1 / 2) / (n + 1) ≤ Real.sqrt (n + 1 / 3) / Real.sqrt (n + 1 + 1 / 3) := by
   rw [← Real.sqrt_div]
   refine Real.le_sqrt_of_sq_le ?_
-  rw [div_pow, div_le_div_iff]
+  rw [div_pow, div_le_div_iff₀]
   · ring_nf -- regression: this makes the goal look ugly,
     gcongr _ + _ * ?_ + _ + _
     norm_num1
@@ -48,7 +48,7 @@ theorem upper_monotone_aux (n : ℕ) :
 
 theorem lower_monotone_aux (n : ℕ) :
     Real.sqrt (n + 1 / 4) / Real.sqrt (n + 1 + 1 / 4) ≤ (n + 1 / 2) / (n + 1) := by
-  rw [← Real.sqrt_div, sqrt_le_left, div_pow, div_le_div_iff]
+  rw [← Real.sqrt_div, sqrt_le_left, div_pow, div_le_div_iff₀]
   · ring_nf
     gcongr ?_ + _ + _ + _
     norm_num1
@@ -65,7 +65,7 @@ theorem centralBinomialLower_monotone : Monotone centralBinomialLower := by
   intro n
   rw [centralBinomialLower, centralBinomialLower, _root_.pow_succ', ←div_div]
   refine div_le_div_of_nonneg_right ?_ (by positivity)
-  rw [le_div_iff₀, mul_assoc, mul_comm, ← div_le_div_iff, centralBinom_ratio, mul_comm,
+  rw [le_div_iff₀, mul_assoc, mul_comm, ← div_le_div_iff₀, centralBinom_ratio, mul_comm,
     mul_div_assoc, Nat.cast_add_one]
   refine mul_le_mul_of_nonneg_left (lower_monotone_aux n) (by positivity)
   · positivity
@@ -86,7 +86,7 @@ theorem centralBinomialUpper_monotone : Antitone centralBinomialUpper :=
   rw [centralBinomialUpper, centralBinomialUpper, _root_.pow_succ', ← div_div]
     -- regression: I needed to qualify pow_succ
   refine div_le_div_of_nonneg_right ?_ (by positivity)
-  rw [div_le_iff₀, mul_assoc, mul_comm _ (_ * _), ← div_le_div_iff, mul_comm, mul_div_assoc,
+  rw [div_le_iff₀, mul_assoc, mul_comm _ (_ * _), ← div_le_div_iff₀, mul_comm, mul_div_assoc,
     centralBinom_ratio, Nat.cast_add_one]
   refine mul_le_mul_of_nonneg_left (upper_monotone_aux _) (by positivity)
   · rw [Nat.cast_pos]
@@ -111,9 +111,11 @@ theorem centralBinom_limit :
     ←two_mul]
   field_simp
   ring_nf
-  rw [exp_mul, mul_comm n 2, pow_mul (2 : ℝ)]
-  norm_cast
+  rw [sq_sqrt, cast_mul, sqrt_mul, sqrt_mul, ← mul_assoc]
   ring_nf -- this was a 7 line rw proof in Lean 3, this one is more principled but hmmm
+  rw [sq_sqrt, sq_sqrt, mul_comm n 2, pow_mul (2 : ℝ)]
+  ring_nf
+  all_goals positivity
 
 theorem centralBinomialUpper_limit : Tendsto centralBinomialUpper atTop (𝓝 (√π)⁻¹) :=
   by

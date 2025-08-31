@@ -17,28 +17,6 @@ open Set
 
 open scoped Nat
 
-section
-
-variable {α : Type*} [Lattice α]
-
-/-- The unordered open-open interval. -/
-def uIoo (x y : α) : Set α :=
-  Ioo (x ⊓ y) (x ⊔ y)
-
-theorem uIoo_of_le {x y : α} (h : x ≤ y) : uIoo x y = Ioo x y := by
-  rw [uIoo, inf_eq_left.2 h, sup_eq_right.2 h]
-
-theorem uIoo_of_ge {x y : α} (h : y ≤ x) : uIoo x y = Ioo y x := by
-  rw [uIoo, inf_eq_right.2 h, sup_eq_left.2 h]
-
-theorem uIoo_comm (x y : α) : uIoo x y = uIoo y x := by rw [uIoo, uIoo, inf_comm, sup_comm]
-
-theorem uIoo_subset_Ioo {a₁ a₂ b₁ b₂ : α} (ha : a₁ ∈ Icc a₂ b₂) (hb : b₁ ∈ Icc a₂ b₂) :
-    uIoo a₁ b₁ ⊆ Ioo a₂ b₂ :=
-  Ioo_subset_Ioo (le_inf ha.1 hb.1) (sup_le ha.2 hb.2)
-
-end
-
 theorem taylor_mean_remainder_unordered {f : ℝ → ℝ} {g g' : ℝ → ℝ} {x x₀ : ℝ} {n : ℕ} (hx : x₀ ≠ x)
     (hf : ContDiffOn ℝ n f (uIcc x₀ x))
     (hf' : DifferentiableOn ℝ (iteratedDerivWithin n f (uIcc x₀ x)) (uIoo x₀ x))
@@ -50,7 +28,7 @@ theorem taylor_mean_remainder_unordered {f : ℝ → ℝ} {g g' : ℝ → ℝ} {
         ((x - x') ^ n / n ! * (g x - g x₀) / g' x') •
           iteratedDerivWithin (n + 1) f (uIcc x₀ x) x' :=
   by
-  rcases Ne.lt_or_lt hx with (hx₀ | hx₀)
+  rcases Ne.lt_or_gt hx with (hx₀ | hx₀)
   · rw [uIcc_of_le hx₀.le] at hf hf' gcont ⊢
     rw [uIoo_of_le hx₀.le] at g'_ne gdiff hf' ⊢
     exact taylor_mean_remainder hx₀ hf hf' gcont gdiff g'_ne
@@ -67,7 +45,9 @@ theorem taylor_mean_remainder_unordered {f : ℝ → ℝ} {g g' : ℝ → ℝ} {
   rw [mul_comm, ← div_left_inj' (g'_ne y hy), mul_div_cancel_right₀ _ (g'_ne y hy)] at h
   rw [← neg_sub, ← h]
   field_simp [g'_ne y hy, n.factorial_ne_zero]
-  ring
+  norm_num
+  ring_nf
+  simp_rw [mul_inv_cancel_right₀ (g'_ne y hy)]
 
 theorem taylor_mean_remainder_lagrange_unordered {f : ℝ → ℝ} {x x₀ : ℝ} {n : ℕ} (hx : x₀ ≠ x)
     (hf : ContDiffOn ℝ n f (uIcc x₀ x))
@@ -98,11 +78,12 @@ theorem taylor_mean_remainder_lagrange_unordered {f : ℝ → ℝ} {x x₀ : ℝ
   simp only [sub_self, zero_pow, Ne.eq_def, Nat.succ_ne_zero, not_false_iff, zero_sub, mul_neg] at h
   rw [h, neg_div, ← div_neg, neg_mul, neg_neg]
   field_simp [n.cast_add_one_ne_zero, n.factorial_ne_zero, xy_ne y hy]
-  rw [← mul_assoc (n ! : ℝ), ← Nat.cast_add_one, ← Nat.cast_mul, mul_comm (n !), ← n.factorial_succ]
-  ring
+  rw [← Nat.cast_add_one, ← Nat.cast_mul, mul_comm (n !), ← n.factorial_succ]
+  norm_num
+  ring_nf
+  repeat rw [mul_inv_cancel_right₀ (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero (1 + n)))]
 
-
--- x' should be in uIoo x₀ x
+-- x' should be in uIooL x₀ x
 theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ} {x₀ x a b : ℝ} {n : ℕ}
     (hab : a < b) (hx : x ∈ Icc a b) (hx₀ : x₀ ∈ Icc a b) (hf : ContDiffOn ℝ n f (Icc a b))
     (hf' : DifferentiableOn ℝ (iteratedDerivWithin n f (Icc a b)) (Ioo a b))
@@ -113,11 +94,11 @@ theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ}
           ((x - x') ^ n / n ! * (g x - g x₀)) • iteratedDerivWithin (n + 1) f (Icc a b) x' :=
   by
   rcases eq_or_ne x₀ x with (rfl | hx')
-  · simp only [sub_self, taylorWithinEval_self, MulZeroClass.mul_zero, zero_div, zero_smul,
-      eq_self_iff_true, exists_prop, and_true, MulZeroClass.zero_mul]
+  · simp only [sub_self, taylorWithinEval_self, MulZeroClass.mul_zero, zero_smul, and_true,
+    MulZeroClass.zero_mul]
     obtain ⟨x', hx'⟩ := ((Ioo_infinite hab).diff (Set.finite_singleton x₀)).nonempty
     exact ⟨x', by simpa using hx'⟩
-  rcases Ne.lt_or_lt hx' with (hx' | hx')
+  rcases Ne.lt_or_gt hx' with (hx' | hx')
   · have h₁ : Icc x₀ x ⊆ Icc a b := Icc_subset_Icc hx₀.1 hx.2
     have h₂ : Ioo x₀ x ⊆ Ioo a b := Ioo_subset_Ioo hx₀.1 hx.2
     obtain ⟨y, hy, h⟩ :=
@@ -129,8 +110,9 @@ theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ}
     refine ⟨y, h₂ hy, hy.2.ne, ?_⟩
     -- The rest is simplifications and trivial calculations
     simp only [taylorWithinEval_self] at h
-    field_simp [← h, n.factorial_ne_zero]
-    ring
+    rw [← h]
+    norm_num
+    field_simp [n.factorial_ne_zero]
   · have h₁ : Icc x x₀ ⊆ Icc a b := Icc_subset_Icc hx.1 hx₀.2
     have h₂ : Ioo x x₀ ⊆ Ioo a b := Ioo_subset_Ioo hx.1 hx₀.2
     obtain ⟨y, hy, h⟩ :=
@@ -143,6 +125,7 @@ theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ}
     -- The rest is simplifications and trivial calculations
     simp only [taylorWithinEval_self] at h
     rw [← neg_sub, neg_mul, ← h]
+    norm_num
     field_simp [n.factorial_ne_zero]
     ring
 
@@ -198,8 +181,8 @@ theorem taylor_mean_remainder_cauchy_central {f : ℝ → ℝ} {x x₀ a b : ℝ
     ⟨y, hy, h⟩
   refine ⟨y, hy, ?_⟩
   rw [h]
+  norm_num
   field_simp [n.factorial_ne_zero]
-  ring
 
 theorem taylor_mean_remainder_bound_central {f : ℝ → ℝ} {a b C x x₀ : ℝ} {n : ℕ} (hab : a ≤ b)
     (hf : ContDiffOn ℝ (n + 1) f (Icc a b)) (hx : x ∈ Icc a b) (hx₀ : x₀ ∈ Icc a b)

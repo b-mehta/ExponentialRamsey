@@ -19,7 +19,7 @@ theorem choose_add_le_pow_left (s t : ℕ) : (s + t).choose s ≤ (t + 1) ^ s :=
   exact Nat.div_le_of_le_mul asc_le_pow_mul_factorial
 
 theorem choose_le_pow_left (s t : ℕ) : s.choose t ≤ (s + 1 - t) ^ t := by
-  cases' le_or_lt t s with h h
+  cases' le_or_gt t s with h h
   · obtain ⟨s, rfl⟩ := exists_add_of_le h
     refine (choose_add_le_pow_left t s).trans ?_
     rw [add_assoc, Nat.add_sub_cancel_left]

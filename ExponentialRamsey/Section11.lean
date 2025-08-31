@@ -5,7 +5,7 @@ Authors: Bhavik Mehta
 -/
 import Section10
 import Prereq.Mathlib.InformationTheory.BinaryEntropy
-import Prereq.Mathlib.Analysis.Calculus.MeanValue
+import Prereq.Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Prereq.Mathlib.Analysis.SpecialFunctions.Log.Base
 
 /-!

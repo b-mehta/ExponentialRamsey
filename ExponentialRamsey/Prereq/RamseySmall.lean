@@ -68,8 +68,7 @@ def rescale (x : F) (hx : IsSquare x) (hx' : x ≠ 0) : paleyGraph F ≃g paleyG
     intro a b
     simp only [paleyGraph]
     simp (config := { contextual := true }) only [hx', Units.mulLeft_apply, Units.val_mk0, Ne.eq_def,
-      mul_eq_mul_left_iff, or_false, not_and, and_congr_right_iff, not_false_iff,
-      forall_true_left]
+      mul_eq_mul_left_iff, or_false, and_congr_right_iff]
     intro h
     have : a - b ≠ 0 := by rwa [sub_ne_zero]
     refine or_congr_left ?_
@@ -83,7 +82,7 @@ non-square.
 -/
 @[simps!]
 def selfCompl (hF : card F % 4 ≠ 3) (x : F) (hx : ¬IsSquare x) : (paleyGraph F)ᶜ ≃g paleyGraph F :=
-  have hx' : x ≠ 0 := fun h => hx (h.symm ▸ isSquare_zero)
+  have hx' : x ≠ 0 := fun h => hx (h.symm ▸ IsSquare.zero)
   { toEquiv := (Units.mk0 x hx').mulLeft
     map_rel_iff' := by
       intro a b
@@ -127,7 +126,7 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
     rw [← Nat.mod_mod_of_dvd (card F) (show 2 ∣ 4 by norm_num), hF, Nat.one_mod]
   have : ∃ x : F, ¬IsSquare x := by
     apply FiniteField.exists_nonsquare
-    rwa [Ne.eq_def, FiniteField.even_card_iff_char_two, Nat.mod_two_ne_zero]
+    rwa [Ne.eq_def, FiniteField.even_card_iff_char_two, ← ne_eq, Nat.mod_two_ne_zero]
   rw [exists_comm] at h
   simp only [isRamseyValid_iff_embedding_aux] at h
   rw [Fin.exists_fin_two, paleyLabelling, toEdgeLabelling_labelGraph,
@@ -156,7 +155,7 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
       rw [← hf, Ne.eq_def, RelEmbedding.inj]
       simp only [Fin.one_eq_zero_iff, Nat.succ_succ_ne_one, not_false_iff]
     refine ⟨f.trans (rescale (f 1) hf1 hf2).symm.toRelEmbedding, ?_⟩
-    simp only [hf, hf2, RelEmbedding.coe_trans, RelIso.coe_toRelEmbedding, Function.comp_apply, 
+    simp only [hf, hf2, RelEmbedding.coe_trans, RelIso.coe_toRelEmbedding, Function.comp_apply,
       rescale_symm_apply, mul_zero, isUnit_iff_ne_zero, ne_eq, not_false_eq_true,
       IsUnit.inv_mul_cancel, and_self]
   have hss : Symmetric fun x y : F => IsSquare (y - x) := by
@@ -169,9 +168,9 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
           (1 : F) ∉ m ∧
             (insert (0 : F) (insert (1 : F) (m : Set F))).Pairwise fun x y => IsSquare (y - x) by
     obtain ⟨m, hm_card, hm₀, hm₁, hm₂⟩ := this
-    rw [Set.pairwise_insert_of_symmetric_of_not_mem hss,
-      Set.pairwise_insert_of_symmetric_of_not_mem hss] at hm₂
-    simp only [Finset.mem_coe, Set.mem_insert_iff, sub_zero, forall_eq_or_imp, isSquare_one,
+    rw [Set.pairwise_insert_of_symmetric_of_notMem hss,
+      Set.pairwise_insert_of_symmetric_of_notMem hss] at hm₂
+    simp only [Finset.mem_coe, Set.mem_insert_iff, sub_zero, forall_eq_or_imp, IsSquare.one,
       true_and] at hm₂
     · exact ⟨m, hm_card.symm, hm₀, hm₁, hm₂.2, hm₂.1.2, hm₂.1.1⟩
     · exact hm₁
@@ -186,13 +185,13 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
   · rw [Finset.card_sdiff, Finset.card_map, Finset.card_pair, Finset.card_fin, Nat.add_sub_cancel]
     · simp only [Ne.eq_def, zero_ne_one, not_false_iff]
     exact this
-  · simp only [Finset.mem_sdiff, Finset.mem_insert, eq_self_iff_true, Finset.mem_singleton, zero_ne_one,
-      or_false, not_true, and_false, not_false_iff]
-  · simp only [Finset.mem_sdiff, Finset.mem_insert, one_ne_zero, Finset.mem_singleton, eq_self_iff_true,
+  · simp only [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton, zero_ne_one, or_false,
+      not_true, and_false, not_false_iff]
+  · simp only [Finset.mem_sdiff, Finset.mem_insert, one_ne_zero, Finset.mem_singleton,
       false_or, not_true, and_false, not_false_iff]
   rw [Finset.insert_eq, Finset.insert_eq, ← Finset.union_assoc, ← Finset.insert_eq, Finset.union_comm,
       Finset.sdiff_union_of_subset this]
-  simp only [Set.Pairwise, Finset.mem_coe, Finset.mem_map, exists_prop, Finset.mem_univ, true_and,
+  simp only [Set.Pairwise, Finset.mem_coe, Finset.mem_map, Finset.mem_univ, true_and,
     forall_exists_index, Ne.eq_def, RelEmbedding.coe_toEmbedding, forall_apply_eq_imp_iff,
     RelEmbedding.inj]
   intro x y h
@@ -243,7 +242,7 @@ theorem paley_seventeen_bound : ¬IsRamseyValid (ZMod 17) ![4, 4] := by
     forall_eq_or_imp, forall_eq, Finset.coe_pair, not_or, @eq_comm (ZMod 17) 0,
     @eq_comm (ZMod 17) 1] at this
   obtain ⟨a, b, hab, ha₀, hb₀, ha₁, hb₁, ha, hb, ha₁', hb₁', h⟩ := this
-  rw [Set.pairwise_insert_of_symmetric_of_not_mem] at h
+  rw [Set.pairwise_insert_of_symmetric_of_notMem] at h
   rotate_left
   · intro x y h
     exact symmetric_isSquare (by norm_num) h
@@ -373,10 +372,8 @@ theorem clebsch_bound : ¬IsRamseyValid (Fin 4 → ZMod 2) ![3, 3, 3] := by
   have : m.card = 3 := by
     clear hm
     revert c
-    simp only [Fin.forall_fin_succ, Fin.forall_fin_two, Matrix.cons_val_zero, Fin.succ_zero_eq_one,
-      Matrix.cons_val_one, Matrix.head_cons, Fin.succ_one_eq_two, and_self_iff, eq_comm, imp_self,
-      Matrix.cons_vec_bit0_eq_alt0, Matrix.cons_vecAppend, Matrix.empty_vecAppend,
-      Matrix.cons_vecAlt0]
+    simp only [Fin.forall_fin_succ, Matrix.cons_val_zero, Fin.succ_zero_eq_one, Matrix.cons_val_one,
+      Fin.succ_one_eq_two, eq_comm, imp_self]
     simp only [Matrix.cons_val_two, Matrix.tail_cons, Matrix.head_cons, imp_self,
       Matrix.cons_val_succ, Matrix.cons_val_fin_one, IsEmpty.forall_iff, and_self]
   clear hc
@@ -384,9 +381,9 @@ theorem clebsch_bound : ¬IsRamseyValid (Fin 4 → ZMod 2) ![3, 3, 3] := by
   obtain ⟨x, y, z, hxy, hxz, hyz, rfl⟩ := this
   have hxyz : x ∉ ({y, z} : Set (Fin 4 → ZMod 2)) := by simp [hxy, hxz]
   have hyz' : y ∉ ({z} : Set (Fin 4 → ZMod 2)) := by simp [hyz]
-  simp only [Finset.coe_insert, Finset.coe_pair, monochromaticOf_insert hxyz,
-    monochromaticOf_insert hyz', Set.mem_singleton_iff, Set.mem_insert_iff,
-    monochromaticOf_singleton, true_and, clebschColouring, mk_get, Finset.coe_singleton] at hm
+  simp only [Finset.coe_insert, monochromaticOf_insert hxyz, monochromaticOf_insert hyz',
+    Set.mem_singleton_iff, Set.mem_insert_iff, monochromaticOf_singleton, true_and,
+    clebschColouring, mk_get, Finset.coe_singleton] at hm
   have hyz'' := partsPairGet_spec' (hm.1 _ rfl)
   have hxy'' := partsPairGet_spec' (hm.2 _ (Or.inl rfl))
   have hxz'' := partsPairGet_spec' (hm.2 _ (Or.inr rfl))
