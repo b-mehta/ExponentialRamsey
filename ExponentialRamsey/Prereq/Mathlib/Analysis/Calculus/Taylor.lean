@@ -83,7 +83,7 @@ theorem taylor_mean_remainder_lagrange_unordered {f : ℝ → ℝ} {x x₀ : ℝ
   ring_nf
   repeat rw [mul_inv_cancel_right₀ (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero (1 + n)))]
 
--- x' should be in uIooL x₀ x
+-- x' should be in uIoo x₀ x
 theorem taylor_mean_remainder_central_aux {f : ℝ → ℝ} {g g' : ℝ → ℝ} {x₀ x a b : ℝ} {n : ℕ}
     (hab : a < b) (hx : x ∈ Icc a b) (hx₀ : x₀ ∈ Icc a b) (hf : ContDiffOn ℝ n f (Icc a b))
     (hf' : DifferentiableOn ℝ (iteratedDerivWithin n f (Icc a b)) (Ioo a b))

@@ -111,7 +111,7 @@ theorem isRamseyValid_myOtherLabelling'_zero {α : Type*} [Fintype α] [Decidabl
     by
     rw [← Finset.sum_eq_sum_iff_of_le this, ← Finset.card_eq_sum_ones, Finset.card_univ,
         ← Finset.card_eq_sum_card_fiberwise, ← hm']
-    intro x xm; simp only [Finset.coe_univ, Set.mem_univ]
+    simp +contextual only [Set.MapsTo, Finset.mem_coe, Finset.coe_univ, Set.mem_univ, implies_true]
   have : ∀ i : α, ∃ a : α × Fin l, a ∈ m ∧ a.fst = i :=
     by
     intro i
