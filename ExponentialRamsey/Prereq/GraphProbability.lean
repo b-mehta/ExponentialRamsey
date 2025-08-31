@@ -6,10 +6,10 @@ Authors: Bhavik Mehta
 
 import ExponentialRamsey.Prereq.Mathlib.Analysis.SpecialFunctions.ExplicitStirling
 import ExponentialRamsey.Prereq.RamseySmall
-import Mathlib.Analysis.Asymptotics.Asymptotics
+import Mathlib.Analysis.Asymptotics.Defs
 import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Data.Complex.ExponentialBounds
-import Mathlib.Data.Real.Pi.Bounds
+import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.Order.Partition.Finpartition
 import Mathlib.Tactic.IntervalCases
 
@@ -145,11 +145,13 @@ attribute [local instance] Fintype.toLocallyFiniteOrder
 
 section
 
-variable [Fintype V] [DecidableEq V] [Fintype (SimpleGraph V)] [@DecidableRel (SimpleGraph V) (· < ·)] [@DecidableRel (SimpleGraph V) (· ≤ ·)] [∀ G : SimpleGraph V, DecidableRel G.Adj]
+variable [Fintype V] [DecidableEq V] [Fintype (SimpleGraph V)]
+  [@DecidableRel (SimpleGraph V) _ (· < ·)] [@DecidableRel (SimpleGraph V) _ (· ≤ ·)]
+  [∀ G : SimpleGraph V, DecidableRel G.Adj]
 
 theorem weightingAux_sum_between (H₁ H₂ : SimpleGraph V)
     (h : H₁ ≤ H₂) :
-    ∑ G in Finset.Icc H₁ H₂, weighting V p G =
+    ∑ G ∈ Finset.Icc H₁ H₂, weighting V p G =
       p ^ H₁.edgeFinset.card * (1 - p) ^ H₂ᶜ.edgeFinset.card :=
   by
   simp only [weighting]
@@ -161,8 +163,8 @@ theorem weightingAux_sum_between (H₁ H₂ : SimpleGraph V)
       (H₁ᶜ ⊓ H₂).edgeFinset.powerset.image fun s => s ∪ H₁.edgeFinset :=
     by
     ext s
-    simp only [mem_image, mem_powerset, mem_Icc, exists_prop, compl_sup, edgeSet_inf,
-      Set.subset_toFinset, Set.subset_inter_iff, and_assoc, compl_compl]
+    simp only [mem_image, mem_powerset, mem_Icc, edgeSet_inf, Set.subset_toFinset,
+      Set.subset_inter_iff, and_assoc]
     constructor
     · rintro ⟨G, hG₁, hG₂, rfl⟩
       refine ⟨(G \ H₁).edgeFinset, ?_, ?_, ?_⟩
@@ -181,8 +183,9 @@ theorem weightingAux_sum_between (H₁ H₂ : SimpleGraph V)
     exact not_isDiag_of_mem_edgeSet _ (hs₁ he)
   rw [h₁, Finset.sum_image]
   swap
-  · simp only [edgeFinset_inf', mem_powerset, subset_inter_iff, and_imp, compl_edgeFinset_eq,
-      subset_sdiff]
+  · simp only [edgeFinset_inf', Set.InjOn, compl_edgeFinset_eq]
+    norm_cast
+    simp only [mem_powerset, subset_inter_iff, and_imp, subset_sdiff]
     rintro G - hG₁ _ G' - hG'₁ _ h'
     rw [← disjUnion_eq_union _ _ hG₁, ← disjUnion_eq_union _ _ hG'₁] at h'
     exact disjUnion_inj_right h'
@@ -190,7 +193,7 @@ theorem weightingAux_sum_between (H₁ H₂ : SimpleGraph V)
     by
     intro x
     simp (config := { contextual := true }) only [edgeFinset_inf', mem_powerset, subset_inter_iff,
-      compl_edgeFinset_eq, subset_sdiff, imp_true_iff, and_imp, and_assoc]
+      compl_edgeFinset_eq, subset_sdiff, imp_true_iff, and_assoc]
   simp only [weightingAux]
   have : (H₁ᶜ ⊓ H₂).edgeFinset.card + H₁.edgeFinset.card = H₂.edgeFinset.card :=
     by
@@ -203,7 +206,7 @@ theorem weightingAux_sum_between (H₁ H₂ : SimpleGraph V)
     rw [← this, Nat.add_sub_cancel]
   have :
     p ^ H₁.edgeFinset.card * (1 - p) ^ H₂ᶜ.edgeFinset.card *
-        ∑ x in (H₁ᶜ ⊓ H₂).edgeFinset.powerset,
+        ∑ x ∈ (H₁ᶜ ⊓ H₂).edgeFinset.powerset,
           p ^ x.card * (1 - p) ^ ((H₁ᶜ ⊓ H₂).edgeFinset.card - x.card) =
       p ^ H₁.edgeFinset.card * (1 - p) ^ H₂ᶜ.edgeFinset.card :=
     by
@@ -224,7 +227,7 @@ theorem sum_weighting : ∑ G, weighting V p G = 1 := by
   have : Icc (⊥ : SimpleGraph V) ⊤ = Finset.univ := by
     rw [← coe_inj, coe_Icc, Set.Icc_bot_top, coe_univ]
   rw [← this, weightingAux_sum_between ⊥ ⊤ bot_le]
-  simp_rw [edgeFinset_bot', edgeFinset_card, compl_top, edgeSet_bot, Set.empty_card, card_empty,
+  simp_rw [edgeFinset_bot', edgeFinset_card, compl_top, edgeSet_bot, Set.card_empty, card_empty,
     pow_zero, mul_one]
 
 end
@@ -268,7 +271,6 @@ theorem card_edgeSet_spanningCoe_top [Fintype V] [DecidableEq V] (s : Finset V)
     Fintype.card (spanningCoe (⊤ : SimpleGraph s)).edgeSet = s.card.choose 2 :=
   by
   rw [@card_edgeSet_map s, card_top_edgeSet] -- needed to pass in s explicitly
-  change (Fintype.card s).choose 2 = _
   rw [Fintype.card_coe]
 
 instance decidableLe [Fintype V] {H : SimpleGraph V} [DecidableRel G.Adj] [DecidableRel H.Adj] :
@@ -294,8 +296,8 @@ theorem cliqueOn_monochromaticOf {K : Type*} (C : TopEdgeLabelling V K) (k : K) 
     CliqueOn (C.labelGraph k) m ↔ C.MonochromaticOf m k :=
   by
   simp only [CliqueOn, TopEdgeLabelling.MonochromaticOf, Le.def, map_adj, SetCoe.exists,
-    TopEdgeLabelling.labelGraph_adj, Function.Embedding.coe_subtype, Subtype.coe_mk, top_adj,
-    Ne.eq_def, Subtype.mk_eq_mk, forall_exists_index, and_imp]
+    TopEdgeLabelling.labelGraph_adj, Function.Embedding.coe_subtype, top_adj, Ne.eq_def,
+    Subtype.mk_eq_mk, forall_exists_index, and_imp]
   constructor
   · intro h x hx y hy h'
     obtain ⟨_, z⟩ := h x hx y hy h' rfl rfl
@@ -335,7 +337,9 @@ def numberOfThings [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel
 
 section
 
-variable [Fintype V] [DecidableEq V] [Fintype (SimpleGraph V)] [@DecidableRel (SimpleGraph V) (· < ·)] [@DecidableRel (SimpleGraph V) (· ≤ ·)] [∀ G : SimpleGraph V, DecidableRel G.Adj]
+variable [Fintype V] [DecidableEq V] [Fintype (SimpleGraph V)]
+  [@DecidableRel (SimpleGraph V) _ (· < ·)] [@DecidableRel (SimpleGraph V) _ (· ≤ ·)]
+  [∀ G : SimpleGraph V, DecidableRel G.Adj]
 
 theorem weighted_number_cliques {k : ℕ} :
     ∑ G, weighting V p G * G.numberOfCliques k = (card V).choose k * p ^ k.choose 2 :=
@@ -353,11 +357,12 @@ theorem weighted_number_cliques {k : ℕ} :
     simp only [mem_filter, mem_univ, true_and, mem_Icc, le_top, and_true, CliqueOn]
     rfl
   rw [this]
-  have : ∑ G : SimpleGraph V in _, weighting V p G = _ :=
+  have : ∑ G ∈ Icc _ ⊤, weighting V p G = _ :=
     weightingAux_sum_between (spanningCoe (⊤ : SimpleGraph x)) ⊤ le_top
   rw [edgeFinset_card, edgeFinset_card] at this
-  simp only [compl_top, edgeSet_bot, Set.empty_card', pow_zero, mul_one] at this
-  suffices h : Fintype.card ((spanningCoe (⊤ : SimpleGraph x)).edgeSet) = k.choose 2 by simp only [h, this]
+  simp only [compl_top, edgeSet_bot, Set.card_empty, pow_zero, mul_one] at this
+  suffices h : Fintype.card ((spanningCoe (⊤ : SimpleGraph x)).edgeSet) = k.choose 2 by
+    simp only [h, this]
   convert (card_edgeSet_spanningCoe_top x).trans _
   rw [mem_powersetCard] at hx
   simp only [hx]
@@ -399,7 +404,7 @@ theorem basic_bound [Fintype V] {k l : ℕ} {p : ℝ} (hp : 0 < p) (hp' : p < 1)
   by
   classical
   by_contra!
-  refine hV.not_le ?_
+  refine hV.not_ge ?_
   rw [← weighted_number_things, ← @sum_weighting V p _]
   refine sum_le_sum ?_
   intro i _
@@ -407,7 +412,7 @@ theorem basic_bound [Fintype V] {k l : ℕ} {p : ℝ} (hp : 0 < p) (hp' : p < 1)
   swap
   · rw [Nat.one_le_cast, numberOfThings, Nat.succ_le_iff, add_pos_iff, numberOfCliques,
       numberOfIndeps, card_pos, card_pos, filter_nonempty_iff, filter_nonempty_iff]
-    simp only [exists_prop, mem_powersetCard_univ, or_iff_not_imp_left, not_exists, not_and]
+    simp only [mem_powersetCard_univ, or_iff_not_imp_left, not_exists, not_and]
     exact this _
   letI := Classical.decRel i.Adj
   exact (weighting_pos hp hp').le
@@ -423,7 +428,7 @@ theorem basic_ramsey_bound {k l n : ℕ} {p : ℝ} (hp : 0 < p) (hp' : p < 1)
   letI := Classical.decRel G.Adj
   let C := G.toEdgeLabelling
   obtain ⟨m, hm⟩ := h C
-  rw [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, ←
+  rw [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, ←
     indepOn_monochromaticOf, ← cliqueOn_monochromaticOf, toEdgeLabelling_labelGraph] at hm
   rcases hm with (hm | hm)
   · exact hG₂ m hm.2.symm hm.1
@@ -456,7 +461,7 @@ theorem basic_off_diagonal_ramsey_bound {k l n : ℕ} {p : ℝ} (hp : 0 < p) (hp
       refine div_le_self (by positivity) ?_
       rw [Nat.one_le_cast, Nat.succ_le_iff]
       exact Nat.factorial_pos _
-    · refine (pow_le_pow_left (by linarith) (one_sub_le_exp_neg p) _).trans ?_
+    · refine (pow_le_pow_left₀ (by linarith) (one_sub_le_exp_neg p) _).trans ?_
       rw [← rpow_natCast, ← exp_one_rpow, ← rpow_mul (exp_pos _).le, exp_one_rpow, exp_le_exp,
         mul_div_assoc]
       refine mul_le_mul_of_nonpos_left ?_ (by simpa using hp.le)
@@ -478,7 +483,7 @@ theorem diagonalRamsey_bound_refined_aux {n k : ℕ} (hk : k ≠ 0)
   refine basic_diagonalRamsey_bound ?_
   have : (n : ℝ) ^ k ≤ 2 ^ (-1 : ℝ) * (sqrt 2 ^ (k - 1 : ℝ)) ^ k * (k / exp 1) ^ k :=
     by
-    refine (pow_le_pow_left (Nat.cast_nonneg _) hn _).trans_eq ?_
+    refine (pow_le_pow_left₀ (Nat.cast_nonneg _) hn _).trans_eq ?_
     rw [mul_inv, mul_right_comm _ (sqrt 2)⁻¹, mul_right_comm _ (sqrt 2)⁻¹, mul_assoc, ←
       rpow_neg_one (sqrt 2), ← rpow_natCast (sqrt 2), ← rpow_add, neg_add_eq_sub, mul_pow,
       mul_comm (exp 1)⁻¹, mul_right_comm, mul_assoc, ← div_eq_mul_inv, mul_pow, ← rpow_natCast, ←
@@ -498,7 +503,7 @@ theorem diagonalRamsey_bound_refined_aux {n k : ℕ} (hk : k ≠ 0)
   refine (mul_le_mul_of_nonneg_right this (by positivity)).trans_eq ?_
   rw [← rpow_div_two_eq_sqrt, ← rpow_natCast, ← rpow_mul, ← rpow_add, ← rpow_add,
     Nat.cast_choose_two]
-  · ring_nf
+  · ring_nf; exact rpow_zero 2
   · norm_num1
   · norm_num1
   · norm_num1

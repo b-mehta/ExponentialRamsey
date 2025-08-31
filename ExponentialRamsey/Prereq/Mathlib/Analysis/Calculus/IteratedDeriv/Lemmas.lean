@@ -28,10 +28,6 @@ theorem iteratedFDerivWithin_nhds {u : Set E} {x : E} {f : E → F} {n : ℕ} (h
     iteratedFDerivWithin 𝕜 n f u x = iteratedFDeriv 𝕜 n f x := by
   rw [← iteratedFDerivWithin_univ, ← univ_inter u, iteratedFDerivWithin_inter hu]
 
-theorem iteratedDerivWithin_of_isOpen {s : Set 𝕜} {f : 𝕜 → F} (n : ℕ) (hs : IsOpen s) :
-    EqOn (iteratedDerivWithin n f s) (iteratedDeriv n f) s := fun x hx => by
-  rw [iteratedDerivWithin, iteratedDeriv, iteratedFDerivWithin_of_isOpen _ hs hx]
-
 theorem iteratedDerivWithin_nhds {u : Set 𝕜} {x : 𝕜} {f : 𝕜 → F} {n : ℕ} (hu : u ∈ 𝓝 x) :
     iteratedDerivWithin n f u x = iteratedDeriv n f x := by
   rw [iteratedDerivWithin, iteratedDeriv, iteratedFDerivWithin_nhds hu]

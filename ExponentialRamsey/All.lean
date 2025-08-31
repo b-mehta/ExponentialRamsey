@@ -17,7 +17,7 @@ import ExponentialRamsey.Prereq.GraphProbability
 import ExponentialRamsey.Prereq.Mathlib.Algebra.BigOperators.Ring
 import ExponentialRamsey.Prereq.Mathlib.Algebra.Order.Monoid.Lemmas
 import ExponentialRamsey.Prereq.Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
-import ExponentialRamsey.Prereq.Mathlib.Analysis.Calculus.MeanValue
+import ExponentialRamsey.Prereq.Mathlib.Analysis.Calculus.Deriv.MeanValue
 import ExponentialRamsey.Prereq.Mathlib.Analysis.Calculus.Taylor
 import ExponentialRamsey.Prereq.Mathlib.Analysis.SpecialFunctions.ExplicitStirling
 import ExponentialRamsey.Prereq.Mathlib.Analysis.SpecialFunctions.Log.Base

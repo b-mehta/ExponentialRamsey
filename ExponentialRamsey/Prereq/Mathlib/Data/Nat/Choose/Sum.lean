@@ -14,8 +14,9 @@ namespace Nat
 
 open Finset
 
-theorem choose_le_two_pow {n k : ℕ} : n.choose k ≤ 2 ^ n := by
-  cases' le_or_lt k n with h h
+-- choose_le_two_pow exists in Mathlib.Data.Nat.Choose.Bounds but is not well-named
+theorem choose_le_two_pow' {n k : ℕ} : n.choose k ≤ 2 ^ n := by
+  cases' le_or_gt k n with h h
   · rw [← sum_range_choose n]
     refine single_le_sum (fun _ _ => zero_le') ?_
     rwa [mem_range_succ_iff]
@@ -23,4 +24,3 @@ theorem choose_le_two_pow {n k : ℕ} : n.choose k ≤ 2 ^ n := by
   exact zero_le'
 
 end Nat
-

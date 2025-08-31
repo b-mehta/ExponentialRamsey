@@ -91,8 +91,7 @@ theorem neighborSet_iInf {ι : Type*} [Nonempty ι] {s : ι → SimpleGraph V} {
     (⨅ i, s i).neighborSet x = ⋂ i, (s i).neighborSet x :=
   by
   ext y
-  simp only [mem_neighborSet, iInf_adj, Ne.eq_def, Set.iInf_eq_iInter, Set.mem_iInter,
-    and_iff_left_iff_imp]
+  simp only [mem_neighborSet, iInf_adj, Ne.eq_def, Set.mem_iInter, and_iff_left_iff_imp]
   intro h
   inhabit ι
   exact (h default).ne
