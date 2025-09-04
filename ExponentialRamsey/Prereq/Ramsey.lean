@@ -948,6 +948,25 @@ theorem ramseyNumber_multicolour_bound (h : ∀ k, 2 ≤ n k) :
   rw [ramseyNumber_le_iff_fin]
   exact ramsey_fin_induct' _ _ h fun k => ramseyNumber_spec_fin _
 
+theorem ramseyNumber_le_multinomial [Nonempty K] (n : K → ℕ) (hr : 2 ≤ Fintype.card K) :
+    ramseyNumber n ≤ Nat.multinomial univ (fun i => n i - 1) := by
+  by_cases h : ∀ k, 1 < n k
+  · apply le_trans (ramseyNumber_multicolour_bound h)
+    rw [Nat.multinomial_rec (fun i => Nat.sub_pos_of_lt (h i)) univ_nonempty, tsub_le_iff_right]
+    gcongr
+    convert ramseyNumber_le_multinomial _ hr
+    simp only [Function.update, eq_rec_constant, dite_eq_ite]
+    split <;> rfl
+  · push_neg at h
+    apply le_trans (ramseyNumber_le_one h)
+    exact Nat.one_le_iff_ne_zero.mpr (Nat.pos_iff_ne_zero.mp (Nat.multinomial_pos _ _))
+termination_by ∑ k, n k
+decreasing_by
+  rw [sum_update_of_mem (mem_univ _), sdiff_singleton_eq_erase, add_comm,
+    ← Nat.add_sub_assoc (le_of_lt (h _)), sum_erase_add _ _ (mem_univ _)]
+  simp only [tsub_lt_self_iff, zero_lt_one, and_true, gt_iff_lt]
+  exact Nat.succ_le_iff.mpr (sum_pos (fun k _ => Nat.zero_lt_of_lt (h k)) univ_nonempty)
+
 theorem ramseyNumber_le_pow (n : K → ℕ) (hr : 2 ≤ Fintype.card K) :
     ramseyNumber n ≤ (Fintype.card K) ^ ∑ k, n k := by
   by_cases h : ∀ k, 1 < n k

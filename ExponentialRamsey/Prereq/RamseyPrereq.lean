@@ -9,6 +9,7 @@ import ExponentialRamsey.Prereq.Mathlib.Combinatorics.SimpleGraph.Basic
 import ExponentialRamsey.Prereq.Mathlib.Combinatorics.SimpleGraph.DegreeSum
 import ExponentialRamsey.Prereq.Mathlib.Data.Nat.Choose.Basic
 import ExponentialRamsey.Prereq.Mathlib.Data.Nat.Choose.Central
+import ExponentialRamsey.Prereq.Mathlib.Data.Nat.Choose.Multinomial
 import ExponentialRamsey.Prereq.Mathlib.Data.Nat.Choose.Sum
 import ExponentialRamsey.Prereq.Mathlib.Data.Nat.Factorial.Basic
 import ExponentialRamsey.Prereq.Mathlib.Data.Fin.VecNotation
@@ -24,4 +25,3 @@ theorem Fin.eq_zero_iff_ne_one : ∀ {x : Fin 2}, x = 0 ↔ x ≠ 1 := by decide
 
 theorem Fin.fin_two_eq_zero_of_ne_one {x : Fin 2} (hx : x ≠ 1) : x = 0 := by
   rwa [Fin.eq_zero_iff_ne_one]
-
