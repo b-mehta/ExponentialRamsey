@@ -295,7 +295,7 @@ theorem Fin.fin_two_eq_zero_iff_ne_one {x : Fin 2} : x = 0 ↔ x ≠ 1 :=
 theorem cliqueOn_monochromaticOf {K : Type*} (C : TopEdgeLabelling V K) (k : K) (m : Set V) :
     CliqueOn (C.labelGraph k) m ↔ C.MonochromaticOf m k :=
   by
-  simp only [CliqueOn, TopEdgeLabelling.MonochromaticOf, Le.def, map_adj, SetCoe.exists,
+  simp only [CliqueOn, EdgeLabelling.MonochromaticOf, Le.def, map_adj, SetCoe.exists,
     TopEdgeLabelling.labelGraph_adj, Function.Embedding.coe_subtype, top_adj, Ne.eq_def,
     Subtype.mk_eq_mk, forall_exists_index, and_imp]
   constructor
@@ -303,12 +303,12 @@ theorem cliqueOn_monochromaticOf {K : Type*} (C : TopEdgeLabelling V K) (k : K) 
     obtain ⟨_, z⟩ := h x hx y hy h' rfl rfl
     exact z
   · rintro h x y a ha b hb hab rfl rfl
-    exact ⟨hab, h ha hb _⟩
+    exact ⟨hab, h ha hb hab⟩
 
 theorem labelGraph_fin_two_compl (C : TopEdgeLabelling V (Fin 2)) :
     (C.labelGraph 1)ᶜ = C.labelGraph 0 := by
-  classical rw [← labelGraph_toEdgeLabelling C, toEdgeLabelling_labelGraph,
-    toEdgeLabelling_labelGraph_compl]
+  classical rw [← TopEdgeLabelling.labelGraph_toTopEdgeLabelling C, toTopEdgeLabelling_labelGraph,
+    toTopEdgeLabelling_labelGraph_compl]
 
 theorem indepOn_monochromaticOf (C : TopEdgeLabelling V (Fin 2)) (m : Set V) :
     IndepOn (C.labelGraph 1) m ↔ C.MonochromaticOf m 0 := by
@@ -426,10 +426,10 @@ theorem basic_ramsey_bound {k l n : ℕ} {p : ℝ} (hp : 0 < p) (hp' : p < 1)
   intro h
   obtain ⟨G, hG₁, hG₂⟩ := basic_bound hp hp' hV
   letI := Classical.decRel G.Adj
-  let C := G.toEdgeLabelling
+  let C := G.toTopEdgeLabelling
   obtain ⟨m, hm⟩ := h C
   rw [Fin.exists_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, ←
-    indepOn_monochromaticOf, ← cliqueOn_monochromaticOf, toEdgeLabelling_labelGraph] at hm
+    indepOn_monochromaticOf, ← cliqueOn_monochromaticOf, toTopEdgeLabelling_labelGraph] at hm
   rcases hm with (hm | hm)
   · exact hG₂ m hm.2.symm hm.1
   · exact hG₁ m hm.2.symm hm.1
