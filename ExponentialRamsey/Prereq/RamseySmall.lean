@@ -381,14 +381,14 @@ theorem clebsch_bound : ¬IsRamseyValid (Fin 4 → ZMod 2) ![3, 3, 3] := by
   obtain ⟨x, y, z, hxy, hxz, hyz, rfl⟩ := this
   have hxyz : x ∉ ({y, z} : Set (Fin 4 → ZMod 2)) := by simp [hxy, hxz]
   have hyz' : y ∉ ({z} : Set (Fin 4 → ZMod 2)) := by simp [hyz]
-  simp only [Finset.coe_insert, monochromaticOf_insert, monochromaticOf_insert,
+  simp only [MonochromaticBetween, Finset.coe_insert, monochromaticOf_insert,
     Set.mem_singleton_iff, Set.mem_insert_iff, monochromaticOf_singleton, true_and,
-    clebschColouring, mk_get, Finset.coe_singleton] at hm
-  have hyz'' := partsPairGet_spec' (hm.1 _ rfl hyz)
-  have hxy'' := partsPairGet_spec' (hm.2 _ (Or.inl rfl) hxy)
-  have hxz'' := partsPairGet_spec' (hm.2 _ (Or.inr rfl) hxz)
+    clebschColouring, mk_get, Finset.coe_singleton, forall_eq, forall_eq_or_imp] at hm
+  have hyz'' : z + y ∈ parts c := partsPairGet_spec' (hm.1 hyz.symm)
+  have hxy'' : y + x ∈ parts c := partsPairGet_spec' (hm.2.1 hxy.symm)
+  have hxz'' : z + x ∈ parts c := partsPairGet_spec' (hm.2.2 hxz.symm)
   apply parts_property _ _ hxz'' _ hyz''
-  rwa [← CharTwo.sub_eq_add, add_sub_add_right_eq_sub, CharTwo.sub_eq_add]
+  rwa [← CharTwo.sub_eq_add, add_sub_add_left_eq_sub, CharTwo.sub_eq_add, add_comm]
 
 end
 
