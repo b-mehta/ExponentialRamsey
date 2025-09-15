@@ -100,7 +100,7 @@ def selfCompl (hF : card F % 4 ≠ 3) (x : F) (hx : ¬IsSquare x) : (paleyGraph 
 /-- The Paley graph on a finite field `F` viewed as a labelling of edges. -/
 def paleyLabelling (F : Type*) [Field F] [Fintype F] [DecidableEq F] :
     TopEdgeLabelling F (Fin 2) :=
-  toEdgeLabelling (paleyGraph F)
+  toTopEdgeLabelling (paleyGraph F)
 
 -- smaller `k` don't need the paley construction
 /--
@@ -129,8 +129,8 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
     rwa [Ne.eq_def, FiniteField.even_card_iff_char_two, ← ne_eq, Nat.mod_two_ne_zero]
   rw [exists_comm] at h
   simp only [isRamseyValid_iff_embedding_aux] at h
-  rw [Fin.exists_fin_two, paleyLabelling, toEdgeLabelling_labelGraph,
-    toEdgeLabelling_labelGraph_compl] at h
+  rw [Fin.exists_fin_two, paleyLabelling, toTopEdgeLabelling_labelGraph,
+    toTopEdgeLabelling_labelGraph_compl] at h
   have : Nonempty ((⊤ : SimpleGraph (Fin (k + 2))) ↪g paleyGraph F) :=
     by
     rcases h with (⟨⟨h⟩⟩ | h)
@@ -356,13 +356,13 @@ theorem partsPairGet_symm (i j : Fin 4 → ZMod 2) (hij : i ≠ j) :
   rw [← this]
   exact partsPairGet_spec hij
 
-open TopEdgeLabelling
+open EdgeLabelling
 
 /-- an explicit definition of the clebsch colouring
 TODO: find the source I used for this
 -/
 def clebschColouring : TopEdgeLabelling (Fin 4 → ZMod 2) (Fin 3) :=
-  TopEdgeLabelling.mk partsPairGet partsPairGet_symm
+  EdgeLabelling.mk partsPairGet partsPairGet_symm
 
 theorem clebsch_bound : ¬IsRamseyValid (Fin 4 → ZMod 2) ![3, 3, 3] := by
   rw [isRamseyValid_iff_eq]
@@ -381,14 +381,14 @@ theorem clebsch_bound : ¬IsRamseyValid (Fin 4 → ZMod 2) ![3, 3, 3] := by
   obtain ⟨x, y, z, hxy, hxz, hyz, rfl⟩ := this
   have hxyz : x ∉ ({y, z} : Set (Fin 4 → ZMod 2)) := by simp [hxy, hxz]
   have hyz' : y ∉ ({z} : Set (Fin 4 → ZMod 2)) := by simp [hyz]
-  simp only [Finset.coe_insert, monochromaticOf_insert hxyz, monochromaticOf_insert hyz',
+  simp only [MonochromaticBetween, Finset.coe_insert, monochromaticOf_insert,
     Set.mem_singleton_iff, Set.mem_insert_iff, monochromaticOf_singleton, true_and,
-    clebschColouring, mk_get, Finset.coe_singleton] at hm
-  have hyz'' := partsPairGet_spec' (hm.1 _ rfl)
-  have hxy'' := partsPairGet_spec' (hm.2 _ (Or.inl rfl))
-  have hxz'' := partsPairGet_spec' (hm.2 _ (Or.inr rfl))
+    clebschColouring, mk_get, Finset.coe_singleton, forall_eq, forall_eq_or_imp] at hm
+  have hyz'' : z + y ∈ parts c := partsPairGet_spec' (hm.1 hyz.symm)
+  have hxy'' : y + x ∈ parts c := partsPairGet_spec' (hm.2.1 hxy.symm)
+  have hxz'' : z + x ∈ parts c := partsPairGet_spec' (hm.2.2 hxz.symm)
   apply parts_property _ _ hxz'' _ hyz''
-  rwa [← CharTwo.sub_eq_add, add_sub_add_right_eq_sub, CharTwo.sub_eq_add]
+  rwa [← CharTwo.sub_eq_add, add_sub_add_left_eq_sub, CharTwo.sub_eq_add, add_comm]
 
 end
 
