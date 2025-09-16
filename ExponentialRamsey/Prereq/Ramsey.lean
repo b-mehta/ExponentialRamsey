@@ -972,6 +972,53 @@ theorem ramseyNumber_multicolour_bound (h : ∀ k, 2 ≤ n k) :
   rw [ramseyNumber_le_iff_fin]
   exact ramsey_fin_induct' _ _ h fun k => ramseyNumber_spec_fin _
 
+theorem ramseyNumber_le_multinomial [Nonempty K] (n : K → ℕ) (hr : 2 ≤ Fintype.card K) :
+    ramseyNumber n ≤ Nat.multinomial univ (fun i => n i - 1) := by
+  by_cases h : ∀ k, 1 < n k
+  · apply le_trans (ramseyNumber_multicolour_bound h)
+    rw [Nat.multinomial_rec (fun i => Nat.sub_pos_of_lt (h i)) univ_nonempty, tsub_le_iff_right]
+    gcongr
+    convert ramseyNumber_le_multinomial _ hr
+    simp only [Function.update, eq_rec_constant, dite_eq_ite]
+    split <;> rfl
+  · push_neg at h
+    apply le_trans (ramseyNumber_le_one h)
+    exact Nat.one_le_iff_ne_zero.mpr (Nat.pos_iff_ne_zero.mp (Nat.multinomial_pos _ _))
+termination_by ∑ k, n k
+decreasing_by
+  rw [sum_update_of_mem (mem_univ _), sdiff_singleton_eq_erase, add_comm,
+    ← Nat.add_sub_assoc (le_of_lt (h _)), sum_erase_add _ _ (mem_univ _)]
+  simp only [tsub_lt_self_iff, zero_lt_one, and_true, gt_iff_lt]
+  exact Nat.succ_le_iff.mpr (sum_pos (fun k _ => Nat.zero_lt_of_lt (h k)) univ_nonempty)
+
+theorem ramseyNumber_le_pow (n : K → ℕ) (hr : 2 ≤ Fintype.card K) :
+    ramseyNumber n ≤ (Fintype.card K) ^ ∑ k, n k := by
+  by_cases h : ∀ k, 1 < n k
+  · let sub_one (l : K) := Function.update n l (n l - 1)
+    have sum_le_single : 1 ≤ ∑ k, n k := by
+      trans ∑ k : K, 2
+      · simp only [sum_const, card_univ, smul_eq_mul]; linarith [hr]
+      · exact sum_le_sum (by simp only [mem_univ, forall_const]; exact h)
+    have sub_one_sum (l : K) : ∑ k, sub_one l k = ∑ k, n k - 1 := by
+      simp only [mem_univ, sum_update_of_mem, sdiff_singleton_eq_erase, add_comm, sub_one]
+      rw [← Nat.add_sub_assoc (le_of_lt (h l)), Finset.sum_erase_add]
+      exact mem_univ l
+    apply le_trans (ramseyNumber_multicolour_bound h)
+    trans ∑ l, (Fintype.card K) ^ ∑ k, sub_one l k
+    · trans ∑ l, ramseyNumber (sub_one l)
+      · simp [sub_one, hr]
+      · gcongr; exact ramseyNumber_le_pow (sub_one _) hr
+    · simp_rw [sub_one_sum, ← Nat.pow_sub_mul_pow (Fintype.card K) (sum_le_single)]
+      simp [mul_comm]
+  · push_neg at h
+    apply le_trans (ramseyNumber_le_one h)
+    exact Nat.one_le_pow (∑ k, n k) (Fintype.card K) (Nat.zero_lt_of_lt hr)
+termination_by ∑ k, n k
+decreasing_by
+  rw [sub_one_sum]
+  simp only [tsub_lt_self_iff, zero_lt_one, and_true, gt_iff_lt]
+  exact sum_le_single
+
 -- if the conditions `hi` or `hj` fail, we find a stronger bound from previous results
 -- cf `ramsey_number_le_one`
 theorem ramseyNumber_two_colour_bound_aux {i j : ℕ} (hi : 2 ≤ i) (hj : 2 ≤ j) :
