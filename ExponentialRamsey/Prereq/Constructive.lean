@@ -198,14 +198,16 @@ theorem isRamseyValid_myOtherLabelling_one {α : Type*} [DecidableEq α] [Finite
   suffices m.card ≤ l + 1 by
     rw [← hm'] at this
     norm_num at this
-  cases' le_or_gt (f' x).card 1 with hx' hx'
+  cases le_or_gt (f' x).card 1
   · rw [← this x, Finset.union_comm]
-    exact (Finset.card_union_le _ _).trans (add_le_add hx hx')
+    expose_names
+    exact (Finset.card_union_le _ _).trans (add_le_add hx h_1)
   clear hm_alt
   have f'y : f' y = ∅ := by
-    rw [Finset.one_lt_card] at hx'
-    simp only [Finset.mem_filter, Prod.exists, Ne.eq_def, and_assoc, f'] at hx'
-    obtain ⟨_, b, hxb, rfl, x, b', hxb', rfl, h'⟩ := hx'
+    expose_names
+    rw [Finset.one_lt_card] at h_1
+    simp only [Finset.mem_filter, Prod.exists, Ne.eq_def, and_assoc, f'] at h_1
+    obtain ⟨_, b, hxb, rfl, x, b', hxb', rfl, h'⟩ := h_1
     rw [Finset.eq_empty_iff_forall_notMem]
     simp only [Prod.forall, Finset.mem_filter, not_and, f']
     rintro y b'' hab'' rfl
@@ -254,17 +256,17 @@ end Product
 theorem sub_one_mul_sub_one_lt_ramseyNumber {k l : ℕ} (hk : k ≠ 0) (hl : l ≠ 0) :
     (k - 1) * (l - 1) < ramseyNumber ![k, l] :=
   by
-  cases' k with k
+  cases k
   · simp at hk
-  cases' l with l
+  cases l
   · simp at hl
-  exact Product.ramsey_product_bound k l
+  exact Product.ramsey_product_bound _ _
 
 theorem sub_one_mul_sub_one_le_ramseyNumber {k l : ℕ} : (k - 1) * (l - 1) ≤ ramseyNumber ![k, l] :=
   by
-  cases' k
+  cases k
   · simp
-  cases' l
+  cases l
   · simp
   refine (sub_one_mul_sub_one_lt_ramseyNumber ?_ ?_).le <;> simp
 
@@ -272,12 +274,13 @@ theorem mul_sub_two_lt_ramseyNumber {k l : ℕ} (hk : 3 ≤ k) (hl : l ≠ 0) :
     k * (l - 2) < ramseyNumber ![k, l] :=
   by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le' hk
-  cases' l with l
+  cases l
   · simp at hl
-  cases' l with l
+  expose_names
+  cases n
   · rw [ramseyNumber_pair_swap, ramseyNumber_one_succ]
     simp
-  exact Product.ramsey_product_bound' k l
+  exact Product.ramsey_product_bound' k _
 
 theorem hMul_sub_two_le_ramseyNumber {k l : ℕ} (hk : 3 ≤ k) : k * (l - 2) ≤ ramseyNumber ![k, l] :=
   by
@@ -288,11 +291,13 @@ theorem hMul_sub_two_le_ramseyNumber {k l : ℕ} (hk : 3 ≤ k) : k * (l - 2) �
 
 theorem left_lt_ramseyNumber_three {k : ℕ} (hk : 2 ≤ k) : k < ramseyNumber ![k, 3] :=
   by
-  cases' k with k
-  · simp at hk
-  cases' k with k
-  · norm_num at hk
   cases k
+  · simp at hk
+  expose_names
+  cases n
+  · norm_num at hk
+  expose_names
+  cases n
   · norm_num
   refine (mul_sub_two_lt_ramseyNumber ?_ ?_).trans_le' ?_
   · simp only [Nat.succ_le_succ_iff]

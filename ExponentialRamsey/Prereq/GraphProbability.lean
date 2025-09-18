@@ -80,15 +80,17 @@ theorem card_compl_edgeFinset_eq [Fintype V] [Fintype G.edgeSet]
     [Fintype Gᶜ.edgeSet] : Gᶜ.edgeFinset.card = (card V).choose 2 - G.edgeFinset.card := by
   classical
   rw [compl_edgeFinset_eq, card_sdiff, card_filter_not_diag]
-  simp only [subset_iff, mem_edgeFinset, mem_filter, mem_univ, true_and]
-  apply not_isDiag_of_mem_edgeSet
+  have : G.edgeFinset ⊆ filter (fun a => ¬a.IsDiag) univ :=
+    fun _ ad => by simp [G.not_isDiag_of_mem_edgeFinset ad]
+  rw [inter_comm, inter_eq_right.mpr this]
 
 theorem card_edgeFinset_eq_sub_compl' [Fintype V] [Fintype G.edgeSet]
     [Fintype Gᶜ.edgeSet] : G.edgeFinset.card = (card V).choose 2 - Gᶜ.edgeFinset.card := by
   classical
   rw [compl_edgeFinset_eq', card_sdiff, card_filter_not_diag]
-  simp only [subset_iff, mem_edgeFinset, mem_filter, mem_univ, true_and]
-  apply not_isDiag_of_mem_edgeSet
+  have : Gᶜ.edgeFinset ⊆ filter (fun a => ¬a.IsDiag) univ :=
+    fun _ ad => by simp [Gᶜ.not_isDiag_of_mem_edgeFinset ad]
+  rw [inter_comm, inter_eq_right.mpr this]
 
 variable {p : ℝ} {s : Finset (Sym2 V)}
 

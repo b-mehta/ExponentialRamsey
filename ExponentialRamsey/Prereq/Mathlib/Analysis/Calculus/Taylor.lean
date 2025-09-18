@@ -63,11 +63,11 @@ theorem taylor_mean_remainder_lagrange_unordered {f : ℝ → ℝ} {x x₀ : ℝ
     intro y hy
     refine pow_ne_zero _ ?_
     rw [sub_ne_zero]
-    cases' le_total x₀ x with h h
-    · rw [uIoo_of_le h] at hy
-      exact hy.2.ne'
-    · rw [uIoo_of_ge h] at hy
-      exact hy.1.ne
+    cases le_total x₀ x with
+    | inl h => rw [uIoo_of_le h] at hy
+               exact hy.2.ne'
+    | inr h => rw [uIoo_of_ge h] at hy
+               exact hy.1.ne
   have hg' : ∀ y : ℝ, y ∈ uIoo x₀ x → -(↑n + 1) * (x - y) ^ n ≠ 0 := fun y hy =>
     mul_ne_zero (neg_ne_zero.mpr (Nat.cast_add_one_ne_zero n)) (xy_ne y hy)
   -- We apply the general theorem with g(t) = (x - t)^(n+1)

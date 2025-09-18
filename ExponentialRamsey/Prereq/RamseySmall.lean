@@ -182,9 +182,7 @@ theorem no_paley_mono_set [DecidableEq F] {k : ℕ} (hF : card F % 4 = 1)
     rw [Finset.insert_subset_iff, Finset.singleton_subset_iff, ← hf₀, ← hf₁]
     exact ⟨Finset.mem_map_of_mem _ (by simp), Finset.mem_map_of_mem _ (by simp)⟩
   refine ⟨(Finset.univ : Finset (Fin (k + 2))).map f.toEmbedding \ {0, 1}, ?_, ?_, ?_, ?_⟩
-  · rw [Finset.card_sdiff, Finset.card_map, Finset.card_pair, Finset.card_fin, Nat.add_sub_cancel]
-    · simp only [Ne.eq_def, zero_ne_one, not_false_iff]
-    exact this
+  · simp [card_sdiff, card_map, card_univ, Fintype.card_fin, inter_comm, inter_eq_right.mpr this]
   · simp only [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton, zero_ne_one, or_false,
       not_true, and_false, not_false_iff]
   · simp only [Finset.mem_sdiff, Finset.mem_insert, one_ne_zero, Finset.mem_singleton,
