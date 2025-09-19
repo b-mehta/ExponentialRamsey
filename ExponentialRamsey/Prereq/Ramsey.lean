@@ -526,7 +526,7 @@ theorem isRamseyValid_unique [Fintype V] [Unique K] {n : K → ℕ} (hV : n defa
 
 theorem IsRamseyValid.remove_twos {n : K → ℕ} (h : IsRamseyValid V n) :
     IsRamseyValid V fun k : { k : K // n k ≠ 2 } => n k := by
-  cases' isEmpty_or_nonempty V with hV hV
+  cases isEmpty_or_nonempty V
   · obtain ⟨c, hc⟩ := h.exists_zero_of_isEmpty
     exact isRamseyValid_of_zero ⟨c, by simp [hc]⟩ hc
   by_cases h' : ∃ k, n k ≤ 1

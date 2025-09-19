@@ -26,7 +26,7 @@ open Finset
 instance [Subsingleton V] : IsEmpty (edgeSet G) := by
   constructor
   rintro ⟨i, hi⟩
-  induction' i using Sym2.inductionOn with i j
+  induction i using Sym2.inductionOn
   simp only [mem_edgeSet] at hi
   cases hi.ne (Subsingleton.elim _ _)
 
@@ -54,10 +54,8 @@ theorem disjoint_left {G H : SimpleGraph V} : Disjoint G H ↔ ∀ x y, G.Adj x 
 
 @[simp]
 theorem adj_sup_iff {ι V : Type*} {s : Finset ι} {f : ι → SimpleGraph V} {x y : V} :
-    (s.sup f).Adj x y ↔ ∃ i ∈ s, (f i).Adj x y := by
-  induction' s using Finset.cons_induction_on with a s has ih
-  · simp
-  · simp [or_and_right, exists_or, ih]
+    (s.sup f).Adj x y ↔ ∃ i ∈ s, (f i).Adj x y :=
+  Finset.cons_induction_on s (by simp) (by simp +contextual [or_and_right, exists_or])
 
 theorem top_hom_injective (f : (⊤ : SimpleGraph V') →g G) : Function.Injective f :=
   fun _ _ h => by_contra fun z => (f.map_rel z).ne h
