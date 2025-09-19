@@ -14,16 +14,16 @@ import Mathlib.Data.Nat.Factorial.Basic
 namespace Nat
 
 
-theorem asc_le_pow_mul_factorial {s t : ℕ} : t.ascFactorial s ≤ s.factorial * t ^ s := by
-  induction s
-  · simp
-  rcases t.eq_zero_or_pos with rfl | ht
-  · simp [zero_ascFactorial]
-  rw [ascFactorial_succ, factorial_succ, pow_succ', mul_mul_mul_comm]
-  expose_names
-  refine Nat.mul_le_mul ?_ h
-  rw [add_comm t, add_one_mul, Nat.add_le_add_iff_right]
-  exact Nat.le_mul_of_pos_right _ ht
+theorem asc_le_pow_mul_factorial {s t : ℕ} : t.ascFactorial s ≤ s.factorial * t ^ s :=
+  match s with
+  | 0 => by simp
+  | n + 1 => by
+    rcases t.eq_zero_or_pos with rfl | ht
+    · simp [zero_ascFactorial]
+    rw [ascFactorial_succ, factorial_succ, pow_succ', mul_mul_mul_comm]
+    refine Nat.mul_le_mul ?_ asc_le_pow_mul_factorial
+    rw [add_comm t, add_one_mul, Nat.add_le_add_iff_right]
+    exact Nat.le_mul_of_pos_right _ ht
 
 theorem asc_le_pow_mul_factorial' {s t : ℕ} : t.ascFactorial s ≤ s.factorial * t ^ s := by
   cases t

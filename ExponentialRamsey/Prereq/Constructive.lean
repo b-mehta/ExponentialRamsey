@@ -198,36 +198,36 @@ theorem isRamseyValid_myOtherLabelling_one {α : Type*} [DecidableEq α] [Finite
   suffices m.card ≤ l + 1 by
     rw [← hm'] at this
     norm_num at this
-  cases le_or_gt (f' x).card 1
-  · rw [← this x, Finset.union_comm]
-    expose_names
-    exact (Finset.card_union_le _ _).trans (add_le_add hx h_1)
-  clear hm_alt
-  have f'y : f' y = ∅ := by
-    expose_names
-    rw [Finset.one_lt_card] at h_1
-    simp only [Finset.mem_filter, Prod.exists, Ne.eq_def, and_assoc, f'] at h_1
-    obtain ⟨_, b, hxb, rfl, x, b', hxb', rfl, h'⟩ := h_1
-    rw [Finset.eq_empty_iff_forall_notMem]
-    simp only [Prod.forall, Finset.mem_filter, not_and, f']
-    rintro y b'' hab'' rfl
-    apply h'
-    have : (x, b) ≠ (y, b'') := by
-      simp only [Ne.eq_def, Prod.mk_inj, h, false_and, not_false_iff]
-    have := hm hxb hab'' this
-    rw [myOtherLabelling', EdgeLabelling.mk_get] at this
-    simp only [true_and, Ne.eq_def, not_true, false_and, or_false, ite_eq_left_iff,
-      Fin.zero_eq_one_iff, Nat.succ_succ_ne_one, h, false_or, imp_false, Classical.not_not] at this
-    cases this
-    have : (x, b') ≠ (y, b) := by
-      simp only [Ne.eq_def, Prod.mk_inj, h, false_and, not_false_iff]
-    have := hm hxb' hab'' this
-    rw [myOtherLabelling', EdgeLabelling.mk_get] at this
-    simp only [true_and, Ne.eq_def, not_true, false_and, or_false, ite_eq_left_iff,
-      Fin.zero_eq_one_iff, Nat.succ_succ_ne_one, h, false_or, imp_false, Classical.not_not] at this
-    rw [this]
-  rw [← this y, f'y, Finset.empty_union]
-  exact hy.trans (by simp)
+  match le_or_gt (f' x).card 1 with
+  | Or.inl h =>
+    rw [← this x, Finset.union_comm]
+    exact (Finset.card_union_le _ _).trans (add_le_add hx h)
+  | Or.inr h₁ =>
+    clear hm_alt
+    have f'y : f' y = ∅ := by
+      rw [Finset.one_lt_card] at h₁
+      simp only [Finset.mem_filter, Prod.exists, Ne.eq_def, and_assoc, f'] at h₁
+      obtain ⟨_, b, hxb, rfl, x, b', hxb', rfl, h'⟩ := h₁
+      rw [Finset.eq_empty_iff_forall_notMem]
+      simp only [Prod.forall, Finset.mem_filter, not_and, f']
+      rintro y b'' hab'' rfl
+      apply h'
+      have : (x, b) ≠ (y, b'') := by
+        simp only [Ne.eq_def, Prod.mk_inj, h, false_and, not_false_iff]
+      have := hm hxb hab'' this
+      rw [myOtherLabelling', EdgeLabelling.mk_get] at this
+      simp only [true_and, Ne.eq_def, not_true, false_and, or_false, ite_eq_left_iff,
+        Fin.zero_eq_one_iff, Nat.succ_succ_ne_one, h, false_or, imp_false, Classical.not_not] at this
+      cases this
+      have : (x, b') ≠ (y, b) := by
+        simp only [Ne.eq_def, Prod.mk_inj, h, false_and, not_false_iff]
+      have := hm hxb' hab'' this
+      rw [myOtherLabelling', EdgeLabelling.mk_get] at this
+      simp only [true_and, Ne.eq_def, not_true, false_and, or_false, ite_eq_left_iff,
+        Fin.zero_eq_one_iff, Nat.succ_succ_ne_one, h, false_or, imp_false, Classical.not_not] at this
+      rw [this]
+    rw [← this y, f'y, Finset.empty_union]
+    exact hy.trans (by simp)
 
 theorem isRamseyValid_myOtherLabelling {k l : ℕ} :
     ¬IsRamseyValid (Fin (k + 3) × Fin l) ![k + 3, l + 2] :=
@@ -274,13 +274,10 @@ theorem mul_sub_two_lt_ramseyNumber {k l : ℕ} (hk : 3 ≤ k) (hl : l ≠ 0) :
     k * (l - 2) < ramseyNumber ![k, l] :=
   by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le' hk
-  cases l
-  · simp at hl
-  expose_names
-  cases n
-  · rw [ramseyNumber_pair_swap, ramseyNumber_one_succ]
-    simp
-  exact Product.ramsey_product_bound' k _
+  match l with
+  | 0 => simp at hl
+  | 1 => rw [ramseyNumber_pair_swap, ramseyNumber_one_succ]; simp
+  | l + 2 => exact Product.ramsey_product_bound' k _
 
 theorem hMul_sub_two_le_ramseyNumber {k l : ℕ} (hk : 3 ≤ k) : k * (l - 2) ≤ ramseyNumber ![k, l] :=
   by
@@ -290,20 +287,16 @@ theorem hMul_sub_two_le_ramseyNumber {k l : ℕ} (hk : 3 ≤ k) : k * (l - 2) �
   simp
 
 theorem left_lt_ramseyNumber_three {k : ℕ} (hk : 2 ≤ k) : k < ramseyNumber ![k, 3] :=
-  by
-  cases k
-  · simp at hk
-  expose_names
-  cases n
-  · norm_num at hk
-  expose_names
-  cases n
-  · norm_num
-  refine (mul_sub_two_lt_ramseyNumber ?_ ?_).trans_le' ?_
-  · simp only [Nat.succ_le_succ_iff]
-    exact Nat.zero_le _
-  · norm_num
-  · simp
+  match k with
+  | 0 => by simp at hk
+  | 1 => by norm_num at hk
+  | 2 => by norm_num
+  | k + 3 =>  by
+    refine (mul_sub_two_lt_ramseyNumber ?_ ?_).trans_le' ?_
+    · simp only [Nat.succ_le_succ_iff]
+      exact Nat.zero_le _
+    · norm_num
+    · simp
 
 theorem left_lt_ramseyNumber {k l : ℕ} (hk : 2 ≤ k) (hl : 3 ≤ l) : k < ramseyNumber ![k, l] :=
   (left_lt_ramseyNumber_three hk).trans_le (ramseyNumber.mono_two le_rfl hl)
