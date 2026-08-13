@@ -20,6 +20,16 @@ import Mathlib.Tactic.IntervalCases
 
 open Finset
 
+namespace Fin
+
+theorem fin_two_eq_zero_iff_ne_one {x : Fin 2} : x = 0 ↔ x ≠ 1 :=
+  by
+  revert x
+  rw [forall_fin_two]
+  simp
+
+end Fin
+
 namespace SimpleGraph
 
 open scoped BigOperators
@@ -295,12 +305,6 @@ instance decidablePredIndepOn [Fintype V] [DecidableEq V] [DecidableRel G.Adj] :
 
 theorem Le.def {V : Type*} {G H : SimpleGraph V} : G ≤ H ↔ ∀ ⦃x y : V⦄, G.Adj x y → H.Adj x y :=
   Iff.rfl
-
-theorem Fin.fin_two_eq_zero_iff_ne_one {x : Fin 2} : x = 0 ↔ x ≠ 1 :=
-  by
-  revert x
-  rw [Fin.forall_fin_two]
-  simp
 
 theorem cliqueOn_monochromaticOf {K : Type*} (C : TopEdgeLabelling V K) (k : K) (m : Set V) :
     CliqueOn (C.labelGraph k) m ↔ C.MonochromaticOf m k :=

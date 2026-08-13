@@ -35,7 +35,7 @@ namespace SimpleGraph
 
 open scoped ExponentialRamsey
 
-open Filter _root_.Finset
+open Filter Finset
 
 theorem top_adjuster {α : Type*} [SemilatticeSup α] [Nonempty α] {p : α → Prop}
     (h : ∀ᶠ k : α in atTop, p k) : ∀ᶠ l : α in atTop, ∀ k : α, l ≤ k → p k := by
